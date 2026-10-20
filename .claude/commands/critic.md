@@ -21,14 +21,15 @@ Focus on the **modified or introduced lines** and their direct ripple effects (o
 The contract for this repository is:
 - `master_planning_agent_protocol.md` — the process: ground rules R1–R7, pillars P1–P3, the Workbook (§5), checkpoints (§7) and gates (§8).
 - `systems_analysis_and_design_project_framework.md` — the artifact catalog: what each artifact must contain and its acceptance checks.
-- this file (`.claude/commands/critic.md`).
+- this file (`.claude/commands/critic.md`), and `.github/workflows/critic.yml` with `.github/CRITIC.md`, which define how the critic runs. Weakening its triggers, its base-branch pinning or its fail-closed behaviour is a relaxation.
+- `AGENTS.md` and `CLAUDE.md` — the instructions every agent working here follows. Binding: `AGENTS.md` §2, §3 and §6, and every bullet of `CLAUDE.md` except "Local critic". Everything else (`AGENTS.md` §1, §4, §5, §7 and `CLAUDE.md`'s "Local critic" bullet) is a convention: a breach of a convention alone is at most ⚠️ DEBT, and updating a convention is not a contract relaxation. This never lowers a finding that is also a security hole or breaks a binding rule.
 
 Read the relevant parts before reviewing. **A violation is 🚨 CRITICAL**, in particular:
 - **Evidence honesty (R1):** a fact without a source tag; invented figures (costs, durations, user counts, benchmark or test results) presented as facts; an edited recorded user answer; in PLAN mode, reported test results or measurements.
 - **Traceability (R5):** a requirement with no forward trace to design and tests, or a design element or test with no requirement; matrix entries that point to IDs that do not exist.
 - **Change control (R7):** a baselined artifact changed without a `CR-nnn` and its impact analysis.
 - **Test-first (P2):** in BUILD mode, production code for a slice without test cases that were committed and failing first (or a planned mutation for tests that cannot fail first).
-- **Seed spec:** any edit to the user's filled-in seed spec; answers and changes belong in the Workbook.
+- **Seed spec:** any edit to the user's filled-in seed spec (`study-app-seed-spec.md`); answers and changes belong in the Workbook.
 - **Contract changes:** judge the change against the contract as it stands *before* the change (in CI, the base branch's copies). Then review any edit the change makes to the contract files:
   - Clarifying wording, fixing an error, or adding a rule consistent with the existing ones is normal. Check that the files still agree with each other.
   - Removing, relaxing or contradicting an existing rule, gate check or acceptance check is CRITICAL, unless the run context says a maintainer approved the contract change (the `contract-change` label). If it is approved, report the change as a ⚠️ DEBT finding that summarises exactly what was relaxed, so it stays visible.

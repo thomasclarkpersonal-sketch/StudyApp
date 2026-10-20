@@ -12,7 +12,7 @@ A same-repository, non-draft PR is reviewed when **any** of these is true:
 | :-- | :-- | :-- |
 | Lines changed (additions + deletions) | ≥ 300 | `CRITIC_MIN_LINES` |
 | Files changed | ≥ 20 | `CRITIC_MIN_FILES` |
-| It changes the contract (protocol, catalog or `critic.md`) | always | — |
+| It changes a contract file (protocol, catalog, `critic.md`, `critic.yml`, `CRITIC.md`, `AGENTS.md`, `CLAUDE.md`), or any `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, `.mcp.json` or `.claude/` path at any depth, including renames away | always | — |
 | Random sample, drawn once per PR number | 1 in 4 | `CRITIC_SAMPLE_ONE_IN` |
 | The PR has the `critic` label | always | — |
 
@@ -26,8 +26,10 @@ Example: `gh variable set CRITIC_SAMPLE_ONE_IN --body 10`.
 | ⚠️ DEBT | Warning, re-reported on every push until fixed or waived by a maintainer comment `critic-waive: <finding title>, <reason>`. |
 | 💡 SUGGESTION | Optional. |
 
-The critic judges a PR against `main`'s copies of the protocol, the catalog and `critic.md`, so a PR cannot change the
-rules it is judged by. Weakening an existing rule is CRITICAL unless a maintainer adds the `contract-change` label.
+The critic judges a PR against the base branch's copies of the contract files, so a PR cannot change the rules it is
+judged by. Before the review, every `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, `.mcp.json` and `.claude/` directory (at any depth) is reset to
+the base branch's copies (symlinks included), so Claude Code in CI does not load a PR's instructions, settings or
+hooks. Weakening an existing rule is CRITICAL unless a maintainer adds the `contract-change` label.
 If the critic errors or writes no report, the check fails (fail-closed); re-run the job.
 
 ## Setup (one time)
@@ -40,12 +42,18 @@ If the critic errors or writes no report, the check fails (fail-closed); re-run 
    - Fallback: if `CLAUDE_CODE_OAUTH_TOKEN` is not set, the critic uses the `ANTHROPIC_API_KEY` secret
      (billed per token; set a spend limit in the Anthropic console).
 2. **Labels** (already created): `critic`, `contract-change`.
-3. **Optional, to block merges on CRITICAL findings:** once the critic has run at least once, add a branch ruleset
-   for `main` (Settings → Rules → Rulesets) that requires the **Critic** status check.
+3. **Block merges on CRITICAL findings** (done): the `Protect main` ruleset (Settings → Rules → Rulesets) requires a pull
+   request and the **Critic** status check for `main`. A repository admin can bypass it when merging a PR. Keep it in
+   place: `AGENTS.md` relies on it.
 
 ## Security notes
 
-- Fork PRs and drafts are skipped: forks receive no secrets.
+- **Trust boundary:** the workflow uses the `pull_request_target` event, so `critic.yml` always runs from the base
+  branch and a PR's changes to it take effect only after merging. That event has access to secrets, so only PRs from
+  branches of this repository (people with write access) are reviewed, the PR's code is checked out but never
+  executed, and Claude may only read files, run read-only `git` commands and write its report. A report file committed
+  by the PR is deleted before the review.
+- Fork PRs and drafts are skipped.
 - The critic's job token is read-only for code (`contents: read`); Claude may only read files, run read-only `git`
   commands and write its report.
 - The only PR conversation the critic sees is `critic-waive` lines from people with write access, so comments

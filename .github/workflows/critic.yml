@@ -28,11 +28,15 @@
 # (e.g. adding some other label) must reach the same decision or it would hide a failing review.
 #
 # Fail-closed: if the critic errors or produces no report, the check fails. Re-run the job.
-# Fork PRs and drafts are not reviewed (forks receive no secrets).
+# Fork PRs and drafts are not reviewed. Changes to this workflow take effect only after merging.
 name: Critic
 
 on:
-  pull_request:
+  # pull_request_target runs THIS FILE from the base branch, so a PR cannot change how it is
+  # reviewed. It has access to secrets, so: only same-repository PRs are reviewed (gate job),
+  # the PR's code is checked out but never executed, and Claude may only read files, run
+  # read-only git commands and write its report.
+  pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review, labeled]
 
 concurrency:
@@ -121,9 +125,12 @@ jobs:
       BASE_REF: ${{ github.event.pull_request.base.ref }}
       CONTRACT_CHANGE_APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'contract-change') }}
     steps:
+      # pull_request_target checks out the base branch by default: check out the PR's head commit.
       - uses: actions/checkout@v6
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0  # the review diffs against the base branch
+          persist-credentials: false
 
       # Claude Code loads instructions and configuration from the working tree: every CLAUDE.md
       # and CLAUDE.local.md (nested ones when it reads files in that directory), AGENTS.md through
@@ -139,6 +146,30 @@ jobs:
           find . -path ./.git -prune -o \( -type d -o -type l \) -name .claude -prune -print0 | xargs -0 -r rm -rf
           git ls-tree -r -z --name-only "origin/$BASE_REF" | grep -zE "$AGENT_CONFIG_RE" \
             | xargs -0 -r git checkout "origin/$BASE_REF" --
+          # Files imported with @path from the (now base) instruction files, up to 5 levels deep:
+          # take them from the base branch too, or remove them if the base branch has none.
+          seen=""
+          for _ in 1 2 3 4 5; do
+            new=""
+            for f in $(find . -path ./.git -prune -o -type f \( -name CLAUDE.md -o -name CLAUDE.local.md -o -name AGENTS.md \) -print) $seen; do
+              [ -f "$f" ] || continue
+              for ref in $(grep -oE '(^|[[:space:]])@[^[:space:]`]+' "$f" | sed -E 's/^[[:space:]]*@//'); do
+                case "$ref" in "~"*|/*|*://*) continue ;; esac
+                p=$(realpath -m --relative-to=. "$(dirname "$f")/$ref")
+                case "$p" in ..*) continue ;; esac
+                case " $seen " in *" $p "*) continue ;; esac
+                seen="$seen $p"; new="$new $p"
+                if git cat-file -e "origin/$BASE_REF:$p" 2>/dev/null; then
+                  git checkout "origin/$BASE_REF" -- "$p"
+                else
+                  rm -f "$p"
+                fi
+              done
+            done
+            [ -z "$new" ] && break
+          done
+          # Never trust report files committed by the PR: the critic must write its own.
+          rm -f critic-report.md comment.md
           echo "Agent instruction/config files now from $BASE_REF:" | tee -a "$GITHUB_STEP_SUMMARY"
           git ls-tree -r --name-only "origin/$BASE_REF" | grep -E "$AGENT_CONFIG_RE" | tee -a "$GITHUB_STEP_SUMMARY" || true
 

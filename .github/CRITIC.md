@@ -48,11 +48,12 @@ If the critic errors or writes no report, the check fails (fail-closed); re-run 
 
 ## Security notes
 
-- **Trust boundary:** the workflow uses the `pull_request` event, so `critic.yml` itself runs from the PR. A PR that edits
-  it always triggers the critic, but it could also change how it is reviewed, so its green check is not proof of a
-  base-branch review: review changes to `critic.yml` by hand before merging.
-
-- Fork PRs and drafts are skipped: forks receive no secrets.
+- **Trust boundary:** the workflow uses the `pull_request_target` event, so `critic.yml` always runs from the base
+  branch and a PR's changes to it take effect only after merging. That event has access to secrets, so only PRs from
+  branches of this repository (people with write access) are reviewed, the PR's code is checked out but never
+  executed, and Claude may only read files, run read-only `git` commands and write its report. A report file committed
+  by the PR is deleted before the review.
+- Fork PRs and drafts are skipped.
 - The critic's job token is read-only for code (`contents: read`); Claude may only read files, run read-only `git`
   commands and write its report.
 - The only PR conversation the critic sees is `critic-waive` lines from people with write access, so comments

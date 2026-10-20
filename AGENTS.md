@@ -2,6 +2,8 @@
 
 Guidance for AI agents (and people) working in this repository. Read it before doing anything else.
 
+**Binding and conventions.** Sections 2, 3 and 6 of this file are binding, as is every bullet of `CLAUDE.md` except "Local critic". Sections 1, 4, 5 and 7 are conventions: a breach of a convention alone is at most DEBT, and updating a convention is not a contract change. This never lowers a finding that is also a security hole or breaks a binding rule.
+
 ## 1. What this repository is
 
 The planning, and possibly the build, of a personal **study app** for one university student:
@@ -54,8 +56,6 @@ Before every gate, run the self-check in protocol §10.
 
 ## 4. Working conventions
 
-Sections 1, 4, 5 and 7 of this file are conventions: a breach of a convention alone is at most DEBT, and updating a convention is not a contract change. This never lowers a finding that is also a security hole or breaks a binding rule. Sections 2, 3 and 6 are binding, as is every bullet of `CLAUDE.md` except "Local critic".
-
 - **Workbook:** `./workbook/`, laid out as in protocol §5.1, with IDs from §5.2 (`REQ-F-001`, `UC-03`, `ADR-004`, `SL-01`, …) and formats from §5.3: Markdown, Mermaid diagrams, OpenAPI 3.1, SQL DDL, JSON Schema.
 - **Chat output:** stage logs, questions and checkpoint summaries in the formats of protocol §7 and §9. Do not paste artifacts into chat once they are in files.
 - **Language:** British English, plain and direct. Use the user's terms (A18), not invented ones.
@@ -78,7 +78,7 @@ Pull requests are reviewed by an adversarial critic: Claude Code running `.claud
 
 The **contract** is the protocol, the catalog, the critic (`critic.md`, `critic.yml`, `CRITIC.md`) and the binding parts of `AGENTS.md` and `CLAUDE.md` (§4). The critic judges every PR against the base branch's copies. Adding or clarifying a rule is normal. Removing, relaxing or contradicting a binding rule is CRITICAL unless a maintainer adds the `contract-change` label.
 
-One limit: the workflow file `critic.yml` itself runs from the PR. A PR that changes it always triggers the critic, but its green check does not prove a base-branch review, so the user reviews such changes by hand before merging.
+The critic workflow runs from the base branch (`pull_request_target`), so a PR cannot change how it is reviewed: a PR's changes to `critic.yml` take effect only after merging, and are reviewed like any contract change.
 
 The CI critic does **not** replace the protocol's gate reviews (G1–G6). Gate reviews are run by a fresh Reviewer and written to `workbook/00-governance/reviews/`.
 

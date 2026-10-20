@@ -93,7 +93,7 @@ class ConfigTests(unittest.TestCase):
         env = {"CRITIC_LINE_THRESHOLD": "", "CRITIC_PROBABILITY": "", "CRITIC_MODELS": ""}
         with mock.patch.dict(os.environ, env, clear=True):
             c = critic.Config.from_env()
-        self.assertEqual((c.threshold, c.probability, c.models), (300, 0.25, ["argon", "opus"]))
+        self.assertEqual((c.threshold, c.probability, c.models), (300, 0.25, ["opus"]))
 
     def test_unknown_model_rejected(self):
         with mock.patch.dict(os.environ, {"CRITIC_MODELS": "gpt"}, clear=True):

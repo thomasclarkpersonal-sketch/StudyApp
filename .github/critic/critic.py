@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Adversarial PR critic.
 
-Decides whether to review a pull request, picks a random model (Gemini 4 Argon or
-Claude Opus 5.5), asks it for an adversarial review of the PR diff, and posts the
-result as a PR comment.
+Decides whether to review a pull request, asks Claude Opus 5.5 for an adversarial
+review of the PR diff, and posts the result as a PR comment. Set CRITIC_MODELS to
+"argon,opus" to pick at random between Gemini 4 Argon and Opus instead.
 
 Trigger rules (first match wins):
   1. The PR carries the critic label (default ``critic``)        -> always run
@@ -78,7 +78,7 @@ class Config:
             # Unset repo variables arrive as empty strings in Actions, so treat "" as unset.
             return os.environ.get(name) or default
 
-        models = [m.strip().lower() for m in env("CRITIC_MODELS", "argon,opus").split(",") if m.strip()]
+        models = [m.strip().lower() for m in env("CRITIC_MODELS", "opus").split(",") if m.strip()]
         unknown = [m for m in models if m not in MODELS]
         if unknown:
             raise SystemExit(f"CRITIC_MODELS contains unknown model(s): {unknown}; known: {list(MODELS)}")

@@ -12,7 +12,7 @@ A same-repository, non-draft PR is reviewed when **any** of these is true:
 | :-- | :-- | :-- |
 | Lines changed (additions + deletions) | ≥ 300 | `CRITIC_MIN_LINES` |
 | Files changed | ≥ 20 | `CRITIC_MIN_FILES` |
-| It changes the contract (protocol, catalog, `critic.md`, `AGENTS.md` or `CLAUDE.md`) | always | — |
+| It changes the contract (protocol, catalog, `critic.md`, `AGENTS.md`, `CLAUDE.md`) or any Claude Code instruction/config file (`CLAUDE.md`/`AGENTS.md` anywhere, `.claude/**`) | always | — |
 | Random sample, drawn once per PR number | 1 in 4 | `CRITIC_SAMPLE_ONE_IN` |
 | The PR has the `critic` label | always | — |
 
@@ -26,8 +26,9 @@ Example: `gh variable set CRITIC_SAMPLE_ONE_IN --body 10`.
 | ⚠️ DEBT | Warning, re-reported on every push until fixed or waived by a maintainer comment `critic-waive: <finding title>, <reason>`. |
 | 💡 SUGGESTION | Optional. |
 
-The critic judges a PR against `main`'s copies of the contract files, so a PR cannot change the rules it is judged by.
-Claude Code in CI also loads `main`'s `CLAUDE.md` and `AGENTS.md`, never the PR's. Weakening an existing rule is CRITICAL unless a maintainer adds the `contract-change` label.
+The critic judges a PR against the base branch's copies of the contract files, so a PR cannot change the rules it is
+judged by. Before the review, every `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md` and the `.claude/` directory are reset to
+the base branch's copies, so Claude Code in CI never loads a PR's instructions, settings or hooks. Weakening an existing rule is CRITICAL unless a maintainer adds the `contract-change` label.
 If the critic errors or writes no report, the check fails (fail-closed); re-run the job.
 
 ## Setup (one time)

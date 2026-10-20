@@ -19,7 +19,7 @@ If `workbook/` does not exist yet, no stage has started: begin at Stage 0 of the
 | :-- | :-- | :-- |
 | `master_planning_agent_protocol.md` | **Process**: stages, ground rules R1–R7, pillars P1–P3, Workbook, checkpoints, gates. If files conflict, it wins. | Contract file (§6) |
 | `systems_analysis_and_design_project_framework.md` | **Artifact catalog**: what each artifact (`A00`–`A72`) must contain and its acceptance checks. Read an artifact's entry before producing it. | Contract file (§6) |
-| `study-app-seed-spec.md` | **The filled-in seed spec.** Where the protocol refers to the user's filled-in `specs_template.md`, it means this file. | The user only. **Never edit it.** Record answers and changes in the Workbook. |
+| `study-app-seed-spec.md` | **The filled-in seed spec.** Where the protocol refers to the user's filled-in `specs_template.md`, it means this file. | **Nobody edits it** (protocol §0); the critic treats any edit as CRITICAL. Record answers and changes in the Workbook. |
 | `flashcard-pipeline.md`, `study-app-spec.md` | **User-supplied source documents** that the seed was filled in from. Cite them as `[DOC <file> §<section>]` and analyse them in A09. | The user only. Copies go in `workbook/02-analysis/sources/`. |
 | `specs_template.md` | The blank seed template. | Leave as is. |
 | `workbook/` | The Project Workbook (protocol §5): the single source of truth for every artifact. | The authoring roles, under change control once baselined (R7) |
@@ -31,7 +31,7 @@ The seed spec and the two source documents disagree in places. Do not resolve a 
 ## 3. Rules that always apply
 
 These summarise the protocol's ground rules. The protocol text is authoritative.
-- **Evidence honesty (R1).** Every fact in the Workbook carries a source tag: `[SEED §n]`, `[USER Q-nn]`, `[DOC <file> <location>]` or `[ASM-nnn]`. Never present invented figures (costs, durations, dates, user counts, benchmark or test results) as facts. In PLAN mode, never claim that anything was run, measured or tested.
+- **Evidence honesty (R1).** Every fact in the Workbook carries a source tag: `[SEED §n]`, `[USER Q-nn]`, `[DOC <file> <location>]` or `[ASM-nnn]`. A recorded user answer is never edited: append clarifications with a date. Never present invented figures (costs, durations, dates, user counts, benchmark or test results) as facts; unsourced estimates are ranges with their basis stated. In PLAN mode, never claim that anything was run, measured or tested, and report no security findings.
 - **Ask, don't guess (R2).** An unknown that would change scope, architecture, the data model or compliance becomes a question in `questions.md`, not a silent default.
 - **Human authority (R6).** Never skip a checkpoint. In STRICT mode (the default), stop at each checkpoint and wait for the user's reply.
 - **Always ask the user first** (seed §10) before anything that:
@@ -73,7 +73,7 @@ Pull requests are reviewed by an adversarial critic: Claude Code running `.claud
 - **⚠️ DEBT: fix it in the same PR.** Leave one only for a concrete reason, stated on the PR. A maintainer may then waive it with `critic-waive: <finding title>, <reason>`. **Agents never post waivers.**
 - **💡 SUGGESTION:** present each one to the user with your recommendation, and apply the cheap, in-scope ones.
 
-The **contract** is the protocol, the catalog, `critic.md`, `AGENTS.md` and `CLAUDE.md`. The critic judges every PR against `main`'s copies, so a PR cannot change the rules it is judged by. Adding or clarifying a rule is normal. Removing, relaxing or contradicting one is CRITICAL unless a maintainer adds the `contract-change` label.
+The **contract** is the protocol, the catalog, `critic.md`, `AGENTS.md` and `CLAUDE.md`. The critic judges every PR against the base branch's copies, so a PR cannot change the rules it is judged by. Adding or clarifying a rule is normal. Removing, relaxing or contradicting one is CRITICAL unless a maintainer adds the `contract-change` label.
 
 The CI critic does **not** replace the protocol's gate reviews (G1–G6). Gate reviews are run by a fresh Reviewer and written to `workbook/00-governance/reviews/`.
 

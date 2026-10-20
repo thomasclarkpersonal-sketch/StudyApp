@@ -29,7 +29,7 @@ Read the relevant parts before reviewing. **A violation is 🚨 CRITICAL**, in p
 - **Traceability (R5):** a requirement with no forward trace to design and tests, or a design element or test with no requirement; matrix entries that point to IDs that do not exist.
 - **Change control (R7):** a baselined artifact changed without a `CR-nnn` and its impact analysis.
 - **Test-first (P2):** in BUILD mode, production code for a slice without test cases that were committed and failing first (or a planned mutation for tests that cannot fail first).
-- **Seed spec:** an agent's edit to the user's filled-in seed spec (`study-app-seed-spec.md`); answers and changes belong in the Workbook.
+- **Seed spec:** any edit to the user's filled-in seed spec (`study-app-seed-spec.md`); answers and changes belong in the Workbook.
 - **Contract changes:** judge the change against the contract as it stands *before* the change (in CI, the base branch's copies). Then review any edit the change makes to the contract files:
   - Clarifying wording, fixing an error, or adding a rule consistent with the existing ones is normal. Check that the files still agree with each other.
   - Removing, relaxing or contradicting an existing rule, gate check or acceptance check is CRITICAL, unless the run context says a maintainer approved the contract change (the `contract-change` label). If it is approved, report the change as a ⚠️ DEBT finding that summarises exactly what was relaxed, so it stays visible.

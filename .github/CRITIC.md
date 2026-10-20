@@ -12,7 +12,7 @@ A same-repository, non-draft PR is reviewed when **any** of these is true:
 | :-- | :-- | :-- |
 | Lines changed (additions + deletions) | ≥ 300 | `CRITIC_MIN_LINES` |
 | Files changed | ≥ 20 | `CRITIC_MIN_FILES` |
-| It changes the contract (protocol, catalog, `critic.md`, `AGENTS.md`, `CLAUDE.md`) or any Claude Code instruction/config file (`CLAUDE.md`/`AGENTS.md` anywhere, `.claude/**`) | always | — |
+| It changes the contract (protocol, catalog, `critic.md`, `AGENTS.md`, `CLAUDE.md`) or any Claude Code instruction/config file (`CLAUDE.md`/`AGENTS.md` anywhere, any `.claude/` directory) | always | — |
 | Random sample, drawn once per PR number | 1 in 4 | `CRITIC_SAMPLE_ONE_IN` |
 | The PR has the `critic` label | always | — |
 
@@ -27,7 +27,7 @@ Example: `gh variable set CRITIC_SAMPLE_ONE_IN --body 10`.
 | 💡 SUGGESTION | Optional. |
 
 The critic judges a PR against the base branch's copies of the contract files, so a PR cannot change the rules it is
-judged by. Before the review, every `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md` and the `.claude/` directory are reset to
+judged by. Before the review, every `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md` and `.claude/` directory (at any depth) is reset to
 the base branch's copies, so Claude Code in CI never loads a PR's instructions, settings or hooks. Weakening an existing rule is CRITICAL unless a maintainer adds the `contract-change` label.
 If the critic errors or writes no report, the check fails (fail-closed); re-run the job.
 
@@ -41,8 +41,9 @@ If the critic errors or writes no report, the check fails (fail-closed); re-run 
    - Fallback: if `CLAUDE_CODE_OAUTH_TOKEN` is not set, the critic uses the `ANTHROPIC_API_KEY` secret
      (billed per token; set a spend limit in the Anthropic console).
 2. **Labels** (already created): `critic`, `contract-change`.
-3. **Optional, to block merges on CRITICAL findings:** once the critic has run at least once, add a branch ruleset
-   for `main` (Settings → Rules → Rulesets) that requires the **Critic** status check.
+3. **Block merges on CRITICAL findings** (done): the `Protect main` ruleset (Settings → Rules → Rulesets) requires a pull
+   request and the **Critic** status check for `main`. A repository admin can bypass it when merging a PR. Keep it in
+   place: `AGENTS.md` relies on it.
 
 ## Security notes
 

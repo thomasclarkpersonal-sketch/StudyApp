@@ -11,7 +11,7 @@
 #
 # The yardstick comes from the BASE branch: the contract files (CONTRACT_FILES) are read from the
 # base branch, so a PR cannot change the rules it is judged by. Claude Code's own instruction and
-# config files (every CLAUDE.md, CLAUDE.local.md, AGENTS.md and .claude/) are also reset to the base
+# config files (every CLAUDE.md, CLAUDE.local.md, AGENTS.md and .claude/ directory) are also reset to the base
 # branch before the review, so a PR cannot steer its reviewer.
 # Weakening an existing rule is CRITICAL unless a maintainer adds the `contract-change` label.
 #
@@ -47,7 +47,7 @@ env:
   CRITIC_SAMPLE_ONE_IN: ${{ vars.CRITIC_SAMPLE_ONE_IN || 4 }}
   CONTRACT_FILES: master_planning_agent_protocol.md systems_analysis_and_design_project_framework.md .claude/commands/critic.md AGENTS.md CLAUDE.md
   # Files Claude Code loads as instructions or configuration, anywhere in the tree.
-  AGENT_CONFIG_RE: '(^|/)(CLAUDE|CLAUDE\.local|AGENTS)\.md$|^\.claude/'
+  AGENT_CONFIG_RE: '(^|/)(CLAUDE|CLAUDE\.local|AGENTS)\.md$|(^|/)\.claude/'
 
 jobs:
   gate:
@@ -122,7 +122,7 @@ jobs:
 
       # Claude Code loads instructions and configuration from the working tree: every CLAUDE.md
       # and CLAUDE.local.md (nested ones when it reads files in that directory), AGENTS.md through
-      # imports, and .claude/ (settings, hooks, agents, commands). Reset all of them to the base
+      # imports, and every .claude/ directory (settings, hooks, agents, commands, skills). Reset all of them to the base
       # branch so a PR cannot steer its own review. The PR's versions stay visible to the critic
       # through git diff / git show.
       - name: Reset agent instruction and config files to the base branch
@@ -130,7 +130,7 @@ jobs:
           git ls-files -z | grep -zE "$AGENT_CONFIG_RE" | xargs -0 -r rm -f
           find . -path ./.git -prune -o -type f \
             \( -name CLAUDE.md -o -name CLAUDE.local.md -o -name AGENTS.md \) -print0 | xargs -0 -r rm -f
-          rm -rf .claude
+          find . -path ./.git -prune -o -type d -name .claude -prune -print0 | xargs -0 -r rm -rf
           git ls-tree -r -z --name-only "origin/$BASE_REF" | grep -zE "$AGENT_CONFIG_RE" \
             | xargs -0 -r git checkout "origin/$BASE_REF" --
           echo "Agent instruction/config files now from $BASE_REF:" | tee -a "$GITHUB_STEP_SUMMARY"
@@ -148,8 +148,10 @@ jobs:
               echo "Not on $BASE_REF (new in this PR): $f" | tee -a "$GITHUB_STEP_SUMMARY"
             fi
           done
-          # The review definition itself must come from the base branch: fail closed without it.
-          test -s .critic/base/.claude/commands/critic.md
+          # Only AGENTS.md / CLAUDE.md may be new; fail closed if any other contract file is missing.
+          for f in master_planning_agent_protocol.md systems_analysis_and_design_project_framework.md .claude/commands/critic.md; do
+            test -s ".critic/base/$f" || { echo "::error::$f is missing on $BASE_REF"; exit 1; }
+          done
 
       # Waivers are the only PR conversation the critic sees: lines starting with
       # `critic-waive` from people with write access. Everything else in the thread
@@ -186,7 +188,7 @@ jobs:
             or systems_analysis_and_design_project_framework.md, read the copies in .critic/base/
             instead. The working-tree copies of those files are part of the change under review.
             Contract-change label approved by a maintainer: ${{ env.CONTRACT_CHANGE_APPROVED }}.
-            Every CLAUDE.md, CLAUDE.local.md, AGENTS.md and the .claude/ directory in the working
+            Every CLAUDE.md, CLAUDE.local.md, AGENTS.md and .claude/ directory in the working
             tree are the base branch's copies (or absent if this PR adds them); read the PR's
             versions with git diff / git show.
 

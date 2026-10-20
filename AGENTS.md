@@ -60,6 +60,7 @@ Before every gate, run the self-check in protocol §10.
 - **Chat output:** stage logs, questions and checkpoint summaries in the formats of protocol §7 and §9. Do not paste artifacts into chat once they are in files.
 - **Language:** British English, plain and direct. Use the user's terms (A18), not invented ones.
 - **Mode and tier:** the seed leaves mode (PLAN/BUILD), checkpoint mode (STRICT/ADVISORY) and the build stack open, and sets the tier to Auto. Stage 0 sets a provisional tier, and Stage 0–1 settles all of them; they are recorded in `workbook/README.md`. The stack in seed §8 (React + TypeScript, `ts-fsrs`, Node, SQLite, Claude TypeScript SDK) is a recommendation until an ADR adopts it.
+  - **Settled at Stage 0 (2026-10-20):** **BUILD** mode, tier **M**, **ADVISORY** checkpoints (CP1 and CP2 stay STRICT, protocol §7). The pipeline runs in Claude Code. See `DEC-001`, `DEC-004` and `DEC-005` in `workbook/00-governance/assumptions-decisions.md`. The build stack is still open.
 
 ## 5. Git workflow
 

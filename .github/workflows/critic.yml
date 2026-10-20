@@ -1,0 +1,53 @@
+# Adversarial "critic" review on pull requests.
+#
+# Runs when a PR changes >= CRITIC_LINE_THRESHOLD lines, at random (CRITIC_PROBABILITY) otherwise,
+# or always when the PR has the `critic` label. Each run picks a random model (Gemini 4 Argon or
+# Claude Opus 5.5) and posts its review as a PR comment. See .github/critic/README.md.
+#
+# Required secrets:  GEMINI_API_KEY, ANTHROPIC_API_KEY (either one alone also works)
+# Optional variables: CRITIC_LINE_THRESHOLD, CRITIC_PROBABILITY, CRITIC_MODELS, CRITIC_LABEL,
+#                     CRITIC_IGNORE, CRITIC_MAX_DIFF_CHARS, CRITIC_ARGON_MODEL, CRITIC_OPUS_MODEL
+
+name: Critic
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  critic:
+    # Ignore unrelated label events entirely (no re-roll, no cancelling an in-flight review).
+    if: github.event.action != 'labeled' || github.event.label.name == (vars.CRITIC_LABEL || 'critic')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: critic-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    steps:
+      # Use the critic script and prompt from the BASE branch, so a PR cannot rewrite its own reviewer.
+      # PR code is never checked out or executed; the diff is fetched through the API.
+      - name: Checkout critic (base branch)
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          sparse-checkout: .github/critic
+          persist-credentials: false
+
+      - name: Run critic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CRITIC_LINE_THRESHOLD: ${{ vars.CRITIC_LINE_THRESHOLD }}
+          CRITIC_PROBABILITY: ${{ vars.CRITIC_PROBABILITY }}
+          CRITIC_MODELS: ${{ vars.CRITIC_MODELS }}
+          CRITIC_LABEL: ${{ vars.CRITIC_LABEL }}
+          CRITIC_IGNORE: ${{ vars.CRITIC_IGNORE }}
+          CRITIC_MAX_DIFF_CHARS: ${{ vars.CRITIC_MAX_DIFF_CHARS }}
+          CRITIC_ARGON_MODEL: ${{ vars.CRITIC_ARGON_MODEL }}
+          CRITIC_OPUS_MODEL: ${{ vars.CRITIC_OPUS_MODEL }}
+        run: python3 .github/critic/critic.py

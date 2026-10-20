@@ -6,9 +6,9 @@ The single source of truth for planning (and possibly building) the Study App, f
 
 | Setting | Value | Status | Source |
 | :-- | :-- | :-- | :-- |
-| Mode | PLAN | Default, pending Q-03 | `ASM-004` [SEED §10] |
-| Checkpoint mode | STRICT | Default, pending Q-10 | `ASM-006` [SEED §10] |
-| Tier | M | Provisional, pending Q-10 and CP1 | `DEC-001`, `ASM-007` |
+| Mode | BUILD | Set by the user | `DEC-004` [USER Q-03] |
+| Checkpoint mode | ADVISORY (CP1 and CP2 always STRICT) | Set by the user | `DEC-005` [USER Q-10] |
+| Tier | M | Confirmed by the user; recorded in A04 at Stage 1 | `DEC-001` [USER Q-10] |
 | Project types | BIS (study app) + DATA (generation pipeline) | Provisional, recorded in A04 at Stage 1 | `DEC-002` |
 | Risk flags | PD, INT, AI | Provisional | `DEC-003` |
 | Review depth | Standard | Set by seed | [SEED §10] |
@@ -19,7 +19,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 
 | Stage | Status | Gate | Checkpoint |
 | :-- | :-- | :-- | :-- |
-| 0 Intake & Clarification | In progress: questions Q-01 to Q-10 asked, waiting for answers | none (reviewed at G1) | — |
+| 0 Intake & Clarification | Complete (2026-10-20): Q-01 to Q-15 answered; Q-02 and Q-12 only in part (dates and time zone carried to CP1); documents requested | none (reviewed at G1) | — |
 | 1 Initiation, Feasibility & Tailoring | Not started | G1 | CP1 |
 | 2 Requirements Analysis & Sourcing | Not started | G2 | CP2 |
 | 3 Architecture & Design | Not started | G3 | CP3 |
@@ -29,6 +29,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 
 - **Current baseline:** none.
 - **Pending checkpoint:** none. The next is CP1, after G1.
+- **Carried to CP1:** exact midterm and exam dates (`ASM-045`); the university's time zone (`ASM-022`); the first success metric, since the MVP may arrive after the first midterm (`ASM-036`, [USER Q-11]); reported items reaching the pipeline in the MVP (`ASM-038`); subscription usage limits for pipeline runs (`ASM-044`); whether text extraction captures maths- and diagram-heavy slides (`ASM-016`).
 - **Branch:** `stage-0/intake`.
 
 ## Seed intake (Stage 0 step 1)
@@ -37,17 +38,17 @@ Each section of the seed is classified as *Filled*, *Unknown* or *Blank*. A sect
 
 | Seed § | Section | Classification | Unknown or open items → where covered |
 | :-- | :-- | :-- | :-- |
-| 1 | Project Overview | Filled | App name → `ASM-026`. Success metrics are proposals → `ASM-036`. Monthly budget in the metrics → Q-06 |
-| 2 | Users & Stakeholders | Filled | Tech comfort → `ASM-015`. Phone vs laptop use → Q-04 |
-| 3 | Core Features (Story Cards) | Filled | Scope disagreements with the source documents → Q-07 |
-| 4 | Key Data | Filled | Module count → Q-08, `ASM-012`. Years of history → `ASM-025`. Tutor conversation retention → `ASM-023`. Pipeline intermediate files → `ASM-024` |
-| 5 | External Systems & Integrations | Filled | Pipeline agent runtime → Q-05, `ASM-009` |
-| 6 | Existing System & Data Migration | Unknown | What's used today, existing cards and history → Q-09, `ASM-014`. Old system kept during transition → `ASM-032`. Documents → requested in [`questions.md`](00-governance/questions.md#documents-requested-stage-0-step-6) |
-| 7 | Quality Requirements | Filled | Performance targets are proposals → `ASM-037`. University AI policy → Q-01, `ASM-002`. University time zone → Q-02, `ASM-022`. Phone model → `ASM-027`. Offline vs MVP on laptop → Q-04, `ASM-008` |
-| 8 | Technical Preferences & Constraints | Filled | Hosting provider → `ASM-028`. Existing accounts → `ASM-019`. Technologies to avoid → `ASM-029`. Buy vs build and products considered → Q-09, `ASM-013` |
-| 9 | Project Constraints | Unknown | Build and running budget → Q-06, `ASM-010`, `ASM-030`. Midterm and exam dates → Q-02, `ASM-003`. Who builds → Q-03, `ASM-031`. Maintainer is the student (Filled) |
-| 10 | Agent Run Settings | Unknown | Mode → Q-03. Checkpoint mode and tier → Q-10. Project type set provisionally → `DEC-002`. Review depth, output location and the ask-first list are Filled |
-| 11 | Non-Goals | Filled | Carried to the out-of-scope list in A01 (Stage 1) |
+| 1 | Project Overview | Filled | App name → `ASM-026`. Success metrics are proposals → `ASM-036`. Monthly budget in the metrics → Q-06 (no fixed limit) |
+| 2 | Users & Stakeholders | Filled | Tech comfort → `ASM-015`. Phone vs laptop use → Q-04 (laptop only for the MVP) |
+| 3 | Core Features (Story Cards) | Filled | Scope disagreements with the source documents → Q-07 (seed wins), `ASM-038`, `DEC-006`. Story 4 order refined → Q-12, `ASM-040`. What matters before the first midterm → Q-11 |
+| 4 | Key Data | Filled | Modules → Q-08, Q-13, `ASM-012`, `DEC-007`. Years of history → `ASM-025`. Tutor conversation retention → `ASM-023`. Pipeline intermediate files → `ASM-024` |
+| 5 | External Systems & Integrations | Filled | Pipeline agent runtime → Q-05 (Claude Code), Q-15 (subscription), `ASM-044` |
+| 6 | Existing System & Data Migration | Unknown | What's used today, existing cards and history → Q-09, Q-14 (Anki, start fresh), `ASM-014`. Old system kept during transition → `ASM-032`. Documents → requested in [`questions.md`](00-governance/questions.md#documents-requested-stage-0-step-6) |
+| 7 | Quality Requirements | Filled | Performance targets are proposals → `ASM-037`. University AI policy → Q-01 (allowed). University time zone → `ASM-022`. Phone model → `ASM-027`. Offline vs MVP on laptop → Q-04, `ASM-008`. Language → `ASM-020` |
+| 8 | Technical Preferences & Constraints | Filled | Hosting provider → `ASM-028`. Existing accounts → `ASM-019`, `ASM-043`. Technologies to avoid → `ASM-029`. Buy vs build and products considered → Q-09 (one custom app) |
+| 9 | Project Constraints | Unknown | Build and running budget → Q-06, `ASM-010`, `ASM-030`. Midterm and exam dates → Q-02, Q-12, `ASM-045`. Who builds → Q-03 (the agent), `ASM-031`. Maintainer is the student (Filled) |
+| 10 | Agent Run Settings | Unknown | Mode → Q-03, `DEC-004`. Checkpoint mode and tier → Q-10, `DEC-005`, `DEC-001`. Project type set provisionally → `DEC-002`. Review depth, output location and the ask-first list are Filled |
+| 11 | Non-Goals | Filled | Carried to the out-of-scope list in A01 (Stage 1), with Mandarin added (`DEC-007`) |
 | 12 | Known Assumptions, Risks & Open Questions | Filled | User assumptions → `ASM-016`–`ASM-021`. Risks → carried to the Risk Register (A03) in Stage 1. Every open question in §12 → Q-01, Q-02, Q-03, Q-04, Q-05, Q-06, Q-08, Q-09, Q-10, `ASM-023`, `ASM-024`, `ASM-026` |
 
 No section is Blank.

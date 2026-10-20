@@ -32,13 +32,13 @@ If the critic errors or writes no report, the check fails (fail-closed); re-run 
 
 ## Setup (one time)
 
-1. **Claude subscription token and GitHub App.** In Claude Code, inside this repo, run `/install-github-app`.
-   It installs the Claude GitHub App on the repo and stores the `CLAUDE_CODE_OAUTH_TOKEN` secret; usage counts
+1. **Claude subscription token.** In Claude Code, inside this repo, run `/install-github-app`.
+   It installs the Claude GitHub App on the repo (not strictly needed: the critic uses the job's own token) and stores the `CLAUDE_CODE_OAUTH_TOKEN` secret; usage counts
    against the installing user's Claude subscription. If it pushes an `add-claude-github-actions-…` branch with
    its own workflows, delete that branch: this repo only uses `critic.yml`.
-   - Manual alternative: install https://github.com/apps/claude on this repository only, run `claude setup-token`,
-     then `gh secret set CLAUDE_CODE_OAUTH_TOKEN`.
-   - To bill an API key instead, see the comment above `claude_code_oauth_token` in `critic.yml`.
+   - Manual alternative: run `claude setup-token`, then `gh secret set CLAUDE_CODE_OAUTH_TOKEN`.
+   - Fallback: if `CLAUDE_CODE_OAUTH_TOKEN` is not set, the critic uses the `ANTHROPIC_API_KEY` secret
+     (billed per token; set a spend limit in the Anthropic console).
 2. **Labels** (already created): `critic`, `contract-change`.
 3. **Optional, to block merges on CRITICAL findings:** once the critic has run at least once, add a branch ruleset
    for `main` (Settings → Rules → Rulesets) that requires the **Critic** status check.

@@ -76,7 +76,7 @@ Pull requests are reviewed by an adversarial critic: Claude Code running `.claud
 - **⚠️ DEBT: fix it in the same PR.** Leave one only for a concrete reason, stated on the PR. A maintainer may then waive it with `critic-waive: <finding title>, <reason>`. **Agents never post waivers.**
 - **💡 SUGGESTION:** present each one to the user with your recommendation, and apply the cheap, in-scope ones.
 
-The **contract** is the protocol, the catalog, the critic (`critic.md`, `critic.yml`, `CRITIC.md`) and the binding parts of `AGENTS.md` and `CLAUDE.md` (§4). The critic judges every PR against the base branch's copies. Adding or clarifying a rule is normal. Removing, relaxing or contradicting a binding rule is CRITICAL unless a maintainer adds the `contract-change` label.
+The **contract** is the protocol, the catalog, the critic (`critic.md`, `critic.yml`, `CRITIC.md`) and the binding parts of `AGENTS.md` and `CLAUDE.md` (see the note at the top of this file). The critic judges every PR against the base branch's copies. Adding or clarifying a rule is normal. Removing, relaxing or contradicting a binding rule is CRITICAL unless a maintainer adds the `contract-change` label.
 
 The critic workflow runs from the base branch (`pull_request_target`), so a PR cannot change how it is reviewed: a PR's changes to `critic.yml` take effect only after merging, and are reviewed like any contract change.
 

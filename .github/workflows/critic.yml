@@ -9,7 +9,7 @@
 #                maintainer waives it with a `critic-waive: <finding title>, <reason>` comment.
 #   💡 SUGGESTION optional polish.
 #
-# The yardstick comes from the BASE branch: the contract files (CONTRACT_FILES) are read from the
+# The yardstick comes from the BASE branch: the contract files (*_CONTRACT_FILES) are read from the
 # base branch, so a PR cannot change the rules it is judged by. Claude Code's own instruction and
 # config files (every CLAUDE.md, CLAUDE.local.md, AGENTS.md and .claude/ directory) are also reset to the base
 # branch before the review, so a PR cannot steer its reviewer.
@@ -17,7 +17,8 @@
 #
 # A PR is reviewed when ANY of these is true:
 #   1. it is big:      additions + deletions >= CRITIC_MIN_LINES, or changed files >= CRITIC_MIN_FILES
-#   2. it changes the contract (CONTRACT_FILES) or any Claude Code instruction/config file
+#   2. it changes (or renames away) a contract file, the critic itself, or any Claude Code
+#      instruction/config file
 #   3. it is sampled:  1 in CRITIC_SAMPLE_ONE_IN PRs, picked at random once per PR number
 #   4. it is labelled: the PR carries the `critic` label
 # Thresholds can be overridden with repository variables of the same name.
@@ -45,9 +46,12 @@ env:
   CRITIC_MIN_LINES: ${{ vars.CRITIC_MIN_LINES || 300 }}
   CRITIC_MIN_FILES: ${{ vars.CRITIC_MIN_FILES || 20 }}
   CRITIC_SAMPLE_ONE_IN: ${{ vars.CRITIC_SAMPLE_ONE_IN || 4 }}
-  CONTRACT_FILES: master_planning_agent_protocol.md systems_analysis_and_design_project_framework.md .claude/commands/critic.md AGENTS.md CLAUDE.md
+  # Contract files that must exist on the base branch (the job fails closed without them) ...
+  REQUIRED_CONTRACT_FILES: master_planning_agent_protocol.md systems_analysis_and_design_project_framework.md .claude/commands/critic.md .github/workflows/critic.yml .github/CRITIC.md
+  # ... and contract files a PR may add.
+  OPTIONAL_CONTRACT_FILES: AGENTS.md CLAUDE.md
   # Files Claude Code loads as instructions or configuration, anywhere in the tree.
-  AGENT_CONFIG_RE: '(^|/)(CLAUDE|CLAUDE\.local|AGENTS)\.md$|(^|/)\.claude/'
+  AGENT_CONFIG_RE: '(^|/)(CLAUDE|CLAUDE\.local|AGENTS)\.md$|(^|/)\.claude(/|$)'
 
 jobs:
   gate:
@@ -73,8 +77,9 @@ jobs:
         run: |
           lines=$((ADDITIONS + DELETIONS))
           # Does the PR touch the contract? Fail closed: if the file list can't be read, review the PR.
-          if files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --paginate --jq '.[].filename'); then
-            contract=$(printf '%s\n' "$files" | grep -cxF -f <(tr ' ' '\n' <<<"$CONTRACT_FILES") || true)
+          # Both names of a renamed file count, so moving a contract file away is still a contract change.
+          if files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --paginate --jq '.[] | .filename, (.previous_filename // empty)'); then
+            contract=$(printf '%s\n' "$files" | grep -cxF -f <(tr ' ' '\n' <<<"$REQUIRED_CONTRACT_FILES $OPTIONAL_CONTRACT_FILES") || true)
             # Claude Code instruction/config files anywhere in the tree also count.
             agent_cfg=$(printf '%s\n' "$files" | grep -cE "$AGENT_CONFIG_RE" || true)
             contract=$((contract + agent_cfg))
@@ -92,7 +97,7 @@ jobs:
           elif [ "$contract" = "unknown" ]; then
             run=true; reason="could not list changed files (failing closed)"
           elif [ "$contract" -gt 0 ]; then
-            run=true; reason="changes the project contract or agent instruction files"
+            run=true; reason="changes the project contract, the critic or agent instruction files"
           elif [ "$draw" -eq 0 ]; then
             run=true; reason="randomly sampled (1 in $CRITIC_SAMPLE_ONE_IN)"
           fi
@@ -128,9 +133,10 @@ jobs:
       - name: Reset agent instruction and config files to the base branch
         run: |
           git ls-files -z | grep -zE "$AGENT_CONFIG_RE" | xargs -0 -r rm -f
-          find . -path ./.git -prune -o -type f \
+          # Files and symlinks named like instruction files, and .claude directories or symlinks, at any depth.
+          find . -path ./.git -prune -o \( -type f -o -type l \) \
             \( -name CLAUDE.md -o -name CLAUDE.local.md -o -name AGENTS.md \) -print0 | xargs -0 -r rm -f
-          find . -path ./.git -prune -o -type d -name .claude -prune -print0 | xargs -0 -r rm -rf
+          find . -path ./.git -prune -o \( -type d -o -type l \) -name .claude -prune -print0 | xargs -0 -r rm -rf
           git ls-tree -r -z --name-only "origin/$BASE_REF" | grep -zE "$AGENT_CONFIG_RE" \
             | xargs -0 -r git checkout "origin/$BASE_REF" --
           echo "Agent instruction/config files now from $BASE_REF:" | tee -a "$GITHUB_STEP_SUMMARY"
@@ -140,7 +146,7 @@ jobs:
       - name: Load the contract from the base branch
         run: |
           rm -rf .critic   # never trust a .critic/ directory committed by the PR
-          for f in $CONTRACT_FILES; do
+          for f in $REQUIRED_CONTRACT_FILES $OPTIONAL_CONTRACT_FILES; do
             if git cat-file -e "origin/$BASE_REF:$f" 2>/dev/null; then
               mkdir -p ".critic/base/$(dirname "$f")"
               git show "origin/$BASE_REF:$f" > ".critic/base/$f"
@@ -148,8 +154,8 @@ jobs:
               echo "Not on $BASE_REF (new in this PR): $f" | tee -a "$GITHUB_STEP_SUMMARY"
             fi
           done
-          # Only AGENTS.md / CLAUDE.md may be new; fail closed if any other contract file is missing.
-          for f in master_planning_agent_protocol.md systems_analysis_and_design_project_framework.md .claude/commands/critic.md; do
+          # Only the optional contract files may be new; fail closed if a required one is missing.
+          for f in $REQUIRED_CONTRACT_FILES; do
             test -s ".critic/base/$f" || { echo "::error::$f is missing on $BASE_REF"; exit 1; }
           done
 

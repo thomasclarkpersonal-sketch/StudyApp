@@ -53,8 +53,7 @@ Before every gate, run the self-check in protocol §10.
 
 ## 4. Working conventions
 
-Sections 4, 5 and 7 are conventions: the critic reports a breach as DEBT at most, and updating them is not a contract change. Sections 2, 3 and 6 are binding.
-
+Sections 1, 4, 5 and 7 of this file are conventions: the critic reports a breach as DEBT at most, and updating them is not a contract change. Sections 2, 3 and 6 are binding, as is every bullet of `CLAUDE.md` except "Local critic".
 
 - **Workbook:** `./workbook/`, laid out as in protocol §5.1, with IDs from §5.2 (`REQ-F-001`, `UC-03`, `ADR-004`, `SL-01`, …) and formats from §5.3: Markdown, Mermaid diagrams, OpenAPI 3.1, SQL DDL, JSON Schema.
 - **Chat output:** stage logs, questions and checkpoint summaries in the formats of protocol §7 and §9. Do not paste artifacts into chat once they are in files.
@@ -76,7 +75,9 @@ Pull requests are reviewed by an adversarial critic: Claude Code running `.claud
 - **⚠️ DEBT: fix it in the same PR.** Leave one only for a concrete reason, stated on the PR. A maintainer may then waive it with `critic-waive: <finding title>, <reason>`. **Agents never post waivers.**
 - **💡 SUGGESTION:** present each one to the user with your recommendation, and apply the cheap, in-scope ones.
 
-The **contract** is the protocol, the catalog, `critic.md`, `AGENTS.md` and `CLAUDE.md`. The critic judges every PR against the base branch's copies, so a PR cannot change the rules it is judged by. Adding or clarifying a rule is normal. Removing, relaxing or contradicting one is CRITICAL unless a maintainer adds the `contract-change` label.
+The **contract** is the protocol, the catalog, the critic (`critic.md`, `critic.yml`, `CRITIC.md`) and the binding parts of `AGENTS.md` and `CLAUDE.md` (§4). The critic judges every PR against the base branch's copies. Adding or clarifying a rule is normal. Removing, relaxing or contradicting a binding rule is CRITICAL unless a maintainer adds the `contract-change` label.
+
+One limit: the workflow file `critic.yml` itself runs from the PR. A PR that changes it always triggers the critic, but its green check does not prove a base-branch review, so the user reviews such changes by hand before merging.
 
 The CI critic does **not** replace the protocol's gate reviews (G1–G6). Gate reviews are run by a fresh Reviewer and written to `workbook/00-governance/reviews/`.
 

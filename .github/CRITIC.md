@@ -12,7 +12,7 @@ A same-repository, non-draft PR is reviewed when **any** of these is true:
 | :-- | :-- | :-- |
 | Lines changed (additions + deletions) | ≥ 300 | `CRITIC_MIN_LINES` |
 | Files changed | ≥ 20 | `CRITIC_MIN_FILES` |
-| It changes the contract (protocol, catalog, `critic.md`, `AGENTS.md`, `CLAUDE.md`) or any Claude Code instruction/config file (`CLAUDE.md`/`AGENTS.md` anywhere, any `.claude/` directory) | always | — |
+| It changes the contract (protocol, catalog, `critic.md`, `AGENTS.md`, `CLAUDE.md`) the critic itself (`critic.yml`, `CRITIC.md`), or any Claude Code instruction/config file (`CLAUDE.md`, `CLAUDE.local.md` or `AGENTS.md` anywhere, any `.claude` directory); renames away from these paths count too | always | — |
 | Random sample, drawn once per PR number | 1 in 4 | `CRITIC_SAMPLE_ONE_IN` |
 | The PR has the `critic` label | always | — |
 
@@ -28,7 +28,8 @@ Example: `gh variable set CRITIC_SAMPLE_ONE_IN --body 10`.
 
 The critic judges a PR against the base branch's copies of the contract files, so a PR cannot change the rules it is
 judged by. Before the review, every `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md` and `.claude/` directory (at any depth) is reset to
-the base branch's copies, so Claude Code in CI never loads a PR's instructions, settings or hooks. Weakening an existing rule is CRITICAL unless a maintainer adds the `contract-change` label.
+the base branch's copies (symlinks included), so Claude Code in CI does not load a PR's instructions, settings or
+hooks. Weakening an existing rule is CRITICAL unless a maintainer adds the `contract-change` label.
 If the critic errors or writes no report, the check fails (fail-closed); re-run the job.
 
 ## Setup (one time)
@@ -46,6 +47,10 @@ If the critic errors or writes no report, the check fails (fail-closed); re-run 
    place: `AGENTS.md` relies on it.
 
 ## Security notes
+
+- **Trust boundary:** the workflow uses the `pull_request` event, so `critic.yml` itself runs from the PR. A PR that edits
+  it always triggers the critic, but it could also change how it is reviewed, so its green check is not proof of a
+  base-branch review: review changes to `critic.yml` by hand before merging.
 
 - Fork PRs and drafts are skipped: forks receive no secrets.
 - The critic's job token is read-only for code (`contents: read`); Claude may only read files, run read-only `git`

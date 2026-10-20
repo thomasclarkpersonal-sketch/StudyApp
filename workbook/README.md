@@ -1,0 +1,74 @@
+# Study App — Project Workbook
+
+The single source of truth for planning (and possibly building) the Study App, following the Master Planning Agent Protocol v2.3. Seed spec: [`study-app-seed-spec.md`](../study-app-seed-spec.md). Source documents: [`flashcard-pipeline.md`](../flashcard-pipeline.md), [`study-app-spec.md`](../study-app-spec.md).
+
+## Run settings
+
+| Setting | Value | Status | Source |
+| :-- | :-- | :-- | :-- |
+| Mode | PLAN | Default, pending Q-03 | `ASM-004` [SEED §10] |
+| Checkpoint mode | STRICT | Default, pending Q-10 | `ASM-006` [SEED §10] |
+| Tier | M | Provisional, pending Q-10 and CP1 | `DEC-001`, `ASM-007` |
+| Project types | BIS (study app) + DATA (generation pipeline) | Provisional, recorded in A04 at Stage 1 | `DEC-002` |
+| Risk flags | PD, INT, AI | Provisional | `DEC-003` |
+| Review depth | Standard | Set by seed | [SEED §10] |
+| Output location | `./workbook/` | Set by seed | [SEED §10] |
+| Always ask the user first | Adding a paid service or significantly raising Claude API spend; changing card rules, question rules or reviewer rubrics; sending course material to any third party other than Anthropic; anything that could delete or overwrite review history | Set by seed | [SEED §10] |
+
+## Stage status
+
+| Stage | Status | Gate | Checkpoint |
+| :-- | :-- | :-- | :-- |
+| 0 Intake & Clarification | In progress: questions Q-01 to Q-10 asked, waiting for answers | none (reviewed at G1) | — |
+| 1 Initiation, Feasibility & Tailoring | Not started | G1 | CP1 |
+| 2 Requirements Analysis & Sourcing | Not started | G2 | CP2 |
+| 3 Architecture & Design | Not started | G3 | CP3 |
+| 4 Slice loop | Not started | G4 per slice | — |
+| 5 Release Readiness | Not started | G5 | CP4 |
+| 6 Maintenance Setup & Closedown | Not started | G6 | — |
+
+- **Current baseline:** none.
+- **Pending checkpoint:** none. The next is CP1, after G1.
+- **Branch:** `stage-0/intake`.
+
+## Seed intake (Stage 0 step 1)
+
+Each section of the seed is classified as *Filled*, *Unknown* or *Blank*. A section counts as Filled when its main content is present, even if some items in it are Unknown; every Unknown item that matters is covered by a question or an assumption.
+
+| Seed § | Section | Classification | Unknown or open items → where covered |
+| :-- | :-- | :-- | :-- |
+| 1 | Project Overview | Filled | App name → `ASM-026`. Success metrics are proposals → `ASM-036`. Monthly budget in the metrics → Q-06 |
+| 2 | Users & Stakeholders | Filled | Tech comfort → `ASM-015`. Phone vs laptop use → Q-04 |
+| 3 | Core Features (Story Cards) | Filled | Scope disagreements with the source documents → Q-07 |
+| 4 | Key Data | Filled | Module count → Q-08, `ASM-012`. Years of history → `ASM-025`. Tutor conversation retention → `ASM-023`. Pipeline intermediate files → `ASM-024` |
+| 5 | External Systems & Integrations | Filled | Pipeline agent runtime → Q-05, `ASM-009` |
+| 6 | Existing System & Data Migration | Unknown | What's used today, existing cards and history → Q-09, `ASM-014`. Old system kept during transition → `ASM-032`. Documents → requested in [`questions.md`](00-governance/questions.md#documents-requested-stage-0-step-6) |
+| 7 | Quality Requirements | Filled | Performance targets are proposals → `ASM-037`. University AI policy → Q-01, `ASM-002`. University time zone → Q-02, `ASM-022`. Phone model → `ASM-027`. Offline vs MVP on laptop → Q-04, `ASM-008` |
+| 8 | Technical Preferences & Constraints | Filled | Hosting provider → `ASM-028`. Existing accounts → `ASM-019`. Technologies to avoid → `ASM-029`. Buy vs build and products considered → Q-09, `ASM-013` |
+| 9 | Project Constraints | Unknown | Build and running budget → Q-06, `ASM-010`, `ASM-030`. Midterm and exam dates → Q-02, `ASM-003`. Who builds → Q-03, `ASM-031`. Maintainer is the student (Filled) |
+| 10 | Agent Run Settings | Unknown | Mode → Q-03. Checkpoint mode and tier → Q-10. Project type set provisionally → `DEC-002`. Review depth, output location and the ask-first list are Filled |
+| 11 | Non-Goals | Filled | Carried to the out-of-scope list in A01 (Stage 1) |
+| 12 | Known Assumptions, Risks & Open Questions | Filled | User assumptions → `ASM-016`–`ASM-021`. Risks → carried to the Risk Register (A03) in Stage 1. Every open question in §12 → Q-01, Q-02, Q-03, Q-04, Q-05, Q-06, Q-08, Q-09, Q-10, `ASM-023`, `ASM-024`, `ASM-026` |
+
+No section is Blank.
+
+## Source documents
+
+| Document | Supplied | Status |
+| :-- | :-- | :-- |
+| `study-app-seed-spec.md` | With the repository | Read in full at Stage 0 |
+| `flashcard-pipeline.md` | With the repository | Skimmed at Stage 0; full analysis in A09 (Stage 2) |
+| `study-app-spec.md` | With the repository | Skimmed at Stage 0; full analysis in A09 (Stage 2) |
+| Handbook, sample slides, past paper, semester calendar, screenshots | Requested | Not supplied yet. Must not be committed to this public repository |
+
+## Workbook index
+
+| Path | Contents |
+| :-- | :-- |
+| [`00-governance/assumptions-decisions.md`](00-governance/assumptions-decisions.md) | A00: assumption register, decision log, change requests |
+| [`00-governance/questions.md`](00-governance/questions.md) | Clarifying questions and answers |
+| [`00-governance/traceability-matrix.md`](00-governance/traceability-matrix.md) | Requirement traceability (from Stage 2) |
+| [`00-governance/checkpoints.md`](00-governance/checkpoints.md) | Checkpoint messages and replies |
+| [`00-governance/dispositions.md`](00-governance/dispositions.md) | Review dispositions |
+| `00-governance/reviews/` | Gate review files |
+| `01-initiation/` … `06-maintenance/` | Stage artifacts, as selected by the Tailoring Record (A04) |

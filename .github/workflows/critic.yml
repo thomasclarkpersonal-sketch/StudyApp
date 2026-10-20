@@ -1,7 +1,7 @@
 # Critic: an adversarial review of pull requests by Claude Code (Opus), following the review
 # definition in .claude/commands/critic.md. Posts one PR comment (updated on every push) and
-# FAILS the "Critic" check when the review contains CRITICAL findings. Make "Critic" a
-# required status check on main to block merges on them (.github/CRITIC.md).
+# FAILS the "Critic" check when the review contains CRITICAL findings. The "Protect main"
+# ruleset requires this check, so CRITICAL findings block the merge (.github/CRITIC.md).
 #
 # Findings have three tiers:
 #   🚨 CRITICAL   fails the check.
@@ -11,7 +11,7 @@
 #
 # The yardstick comes from the BASE branch: the contract files (*_CONTRACT_FILES) are read from the
 # base branch, so a PR cannot change the rules it is judged by. Claude Code's own instruction and
-# config files (every CLAUDE.md, CLAUDE.local.md, AGENTS.md and .claude/ directory) are also reset to the base
+# config files (every CLAUDE.md, CLAUDE.local.md, AGENTS.md, .mcp.json and .claude/ directory) are also reset to the base
 # branch before the review, so a PR cannot steer its reviewer.
 # Weakening an existing rule is CRITICAL unless a maintainer adds the `contract-change` label.
 #
@@ -51,7 +51,7 @@ env:
   # ... and contract files a PR may add.
   OPTIONAL_CONTRACT_FILES: AGENTS.md CLAUDE.md
   # Files Claude Code loads as instructions or configuration, anywhere in the tree.
-  AGENT_CONFIG_RE: '(^|/)(CLAUDE|CLAUDE\.local|AGENTS)\.md$|(^|/)\.claude(/|$)'
+  AGENT_CONFIG_RE: '(^|/)(CLAUDE|CLAUDE\.local|AGENTS)\.md$|(^|/)\.claude(/|$)|(^|/)\.mcp\.json$'
 
 jobs:
   gate:
@@ -127,15 +127,15 @@ jobs:
 
       # Claude Code loads instructions and configuration from the working tree: every CLAUDE.md
       # and CLAUDE.local.md (nested ones when it reads files in that directory), AGENTS.md through
-      # imports, and every .claude/ directory (settings, hooks, agents, commands, skills). Reset all of them to the base
+      # imports, every .claude/ directory (settings, hooks, agents, commands, skills) and .mcp.json. Reset all of them to the base
       # branch so a PR cannot steer its own review. The PR's versions stay visible to the critic
       # through git diff / git show.
       - name: Reset agent instruction and config files to the base branch
         run: |
           git ls-files -z | grep -zE "$AGENT_CONFIG_RE" | xargs -0 -r rm -f
-          # Files and symlinks named like instruction files, and .claude directories or symlinks, at any depth.
+          # Files and symlinks named like instruction or MCP config files, and .claude directories or symlinks, at any depth.
           find . -path ./.git -prune -o \( -type f -o -type l \) \
-            \( -name CLAUDE.md -o -name CLAUDE.local.md -o -name AGENTS.md \) -print0 | xargs -0 -r rm -f
+            \( -name CLAUDE.md -o -name CLAUDE.local.md -o -name AGENTS.md -o -name .mcp.json \) -print0 | xargs -0 -r rm -f
           find . -path ./.git -prune -o \( -type d -o -type l \) -name .claude -prune -print0 | xargs -0 -r rm -rf
           git ls-tree -r -z --name-only "origin/$BASE_REF" | grep -zE "$AGENT_CONFIG_RE" \
             | xargs -0 -r git checkout "origin/$BASE_REF" --
@@ -190,9 +190,10 @@ jobs:
             (the changes in pull request #${{ env.PR }}).
 
             The project contract is the BASE branch's version, already extracted under
-            .critic/base/: wherever the review definition names master_planning_agent_protocol.md
-            or systems_analysis_and_design_project_framework.md, read the copies in .critic/base/
-            instead. The working-tree copies of those files are part of the change under review.
+            .critic/base/ (every contract file that exists on the base branch: the protocol, the
+            catalog, critic.md, critic.yml, CRITIC.md, AGENTS.md and CLAUDE.md). Wherever the review
+            definition names a contract file, read its copy in .critic/base/ instead. The PR's
+            versions are part of the change under review.
             Contract-change label approved by a maintainer: ${{ env.CONTRACT_CHANGE_APPROVED }}.
             Every CLAUDE.md, CLAUDE.local.md, AGENTS.md and .claude/ directory in the working
             tree are the base branch's copies (or absent if this PR adds them); read the PR's
@@ -259,7 +260,7 @@ jobs:
             echo "<!-- studyapp-critic -->"
             echo "<!-- critic-counts critical=${count:-?} debt=${debt:-?} suggestions=${suggestions:-?} -->"
             echo "### 🧐 Critic"
-            echo "_Triggered because: ${REASON}. Rules: the contract files (protocol, catalog, \`critic.md\`, \`AGENTS.md\`, \`CLAUDE.md\`) as on \`${BASE_REF}\`. Reviewer: Claude Opus 5.5._"
+            echo "_Triggered because: ${REASON}. Rules: the contract files (protocol, catalog, \`critic.md\`, \`critic.yml\`, \`CRITIC.md\`, \`AGENTS.md\`, \`CLAUDE.md\`) as on \`${BASE_REF}\`. Reviewer: Claude Opus 5.5._"
             echo
             echo "$verdict"
             [ -n "${debt_line:-}" ] && { echo; echo "$debt_line"; }

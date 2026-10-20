@@ -22,7 +22,7 @@ The contract for this repository is:
 - `master_planning_agent_protocol.md` — the process: ground rules R1–R7, pillars P1–P3, the Workbook (§5), checkpoints (§7) and gates (§8).
 - `systems_analysis_and_design_project_framework.md` — the artifact catalog: what each artifact must contain and its acceptance checks.
 - this file (`.claude/commands/critic.md`), and `.github/workflows/critic.yml` with `.github/CRITIC.md`, which define how the critic runs. Weakening its triggers, its base-branch pinning or its fail-closed behaviour is a relaxation.
-- `AGENTS.md` and `CLAUDE.md` — the instructions every agent working here follows. Binding: `AGENTS.md` §2, §3 and §6, and every bullet of `CLAUDE.md` except "Local critic". Everything else (`AGENTS.md` §1, §4, §5, §7 and `CLAUDE.md`'s "Local critic" bullet) is a convention: a breach is at most ⚠️ DEBT, and updating it is not a contract relaxation.
+- `AGENTS.md` and `CLAUDE.md` — the instructions every agent working here follows. Binding: `AGENTS.md` §2, §3 and §6, and every bullet of `CLAUDE.md` except "Local critic". Everything else (`AGENTS.md` §1, §4, §5, §7 and `CLAUDE.md`'s "Local critic" bullet) is a convention: a breach of a convention alone is at most ⚠️ DEBT, and updating a convention is not a contract relaxation. This never lowers a finding that is also a security hole or breaks a binding rule.
 
 Read the relevant parts before reviewing. **A violation is 🚨 CRITICAL**, in particular:
 - **Evidence honesty (R1):** a fact without a source tag; invented figures (costs, durations, user counts, benchmark or test results) presented as facts; an edited recorded user answer; in PLAN mode, reported test results or measurements.

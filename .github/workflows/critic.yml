@@ -195,7 +195,7 @@ jobs:
             definition names a contract file, read its copy in .critic/base/ instead. The PR's
             versions are part of the change under review.
             Contract-change label approved by a maintainer: ${{ env.CONTRACT_CHANGE_APPROVED }}.
-            Every CLAUDE.md, CLAUDE.local.md, AGENTS.md and .claude/ directory in the working
+            Every CLAUDE.md, CLAUDE.local.md, AGENTS.md, .mcp.json and .claude/ directory in the working
             tree are the base branch's copies (or absent if this PR adds them); read the PR's
             versions with git diff / git show.
 

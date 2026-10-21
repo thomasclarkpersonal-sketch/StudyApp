@@ -20,7 +20,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 | Stage | Status | Gate | Checkpoint |
 | :-- | :-- | :-- | :-- |
 | 0 Intake & Clarification | Complete (2026-10-21): Q-01 to Q-15 answered (Q-02 and Q-12 in part); Q-16 carried to CP1; Q-17 answered (direct Canvas access); two of the requested documents received and skimmed | none (reviewed at G1) | — |
-| 1 Initiation, Feasibility & Tailoring | Not started | G1 | CP1 |
+| 1 Initiation, Feasibility & Tailoring | In review: A01–A07 written; Gate G1 (r1) | G1 | CP1 (STRICT) |
 | 2 Requirements Analysis & Sourcing | Not started | G2 | CP2 |
 | 3 Architecture & Design | Not started | G3 | CP3 |
 | 4 Slice loop | Not started | G4 per slice | — |
@@ -30,7 +30,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 - **Current baseline:** none.
 - **Pending checkpoint:** none. The next is CP1, after G1.
 - **Carried to CP1:** exact midterm dates, and which module has the first midterm (`ASM-045`); the university's time zone, inferred as Hong Kong (`ASM-022`); the first success metric, since the MVP may arrive after the first midterm (`ASM-036`, [USER Q-11]); reported items reaching the pipeline in the MVP (`ASM-038`); subscription usage limits for pipeline runs (`ASM-044`); reading slide images as well as text (`ASM-046`); the COMP 4901B final's format (Q-16, `ASM-047`); direct Canvas access, which drops a seed non-goal (`DEC-009`), with the university's terms on automated access (`ASM-048`) and its limits and credential handling (`ASM-049`, `ASM-050`).
-- **Branch:** `stage-0/intake`.
+- **Branch:** `stage-1/initiation` (branched from `stage-0/intake`).
 
 ## Seed intake (Stage 0 step 1)
 
@@ -81,4 +81,11 @@ No section is Blank.
 | [`00-governance/checkpoints.md`](00-governance/checkpoints.md) | Checkpoint messages and replies |
 | [`00-governance/dispositions.md`](00-governance/dispositions.md) | Review dispositions |
 | `00-governance/reviews/` | Gate review files |
-| `01-initiation/` … `06-maintenance/` | Stage artifacts, as selected by the Tailoring Record (A04) |
+| [`01-initiation/charter-scope.md`](01-initiation/charter-scope.md) | A01: charter and scope |
+| [`01-initiation/feasibility.md`](01-initiation/feasibility.md) | A02: feasibility |
+| [`01-initiation/risk-register.md`](01-initiation/risk-register.md) | A03: risk register |
+| [`01-initiation/tailoring.md`](01-initiation/tailoring.md) | A04: tailoring record |
+| [`01-initiation/wbs.md`](01-initiation/wbs.md), [`wbs.csv`](01-initiation/wbs.csv) | A05: work breakdown structure (the CSV is the single source) |
+| [`01-initiation/schedule.md`](01-initiation/schedule.md), [`schedule_calc.py`](01-initiation/schedule_calc.py) | A06: schedule (regenerate with `python3 workbook/01-initiation/schedule_calc.py`) |
+| [`01-initiation/baseline-project-plan.md`](01-initiation/baseline-project-plan.md) | A07: baseline project plan |
+| `02-analysis/` … `06-maintenance/` | Later stage artifacts, as selected by the Tailoring Record (A04) |

@@ -139,8 +139,8 @@ Each question gives the options, why it matters, and the default the agent assum
 - **Options:** (a) I know the mix and will give it · (b) I have a past paper and will add it to my material folder · (c) Neither; decide from the syllabus wording
 - **Why it matters:** question rule 3 weights question types "by how the relevant assessment is actually set" [DOC flashcard-pipeline.md §6.2]. Without the mix, the question bank may not fit the format (success metric: concepts quizzed before assessments [SEED §1]). [DOC ug_course_syllabus_template_doc_COMP4901B.docx.pdf p.2]
 - **Default if unanswered:** carried to CP1. The student enters the mix in `pipeline.config.json` before the first question-bank run for this module, and the agent invents no weighting. → `ASM-047`
-- **Status:** open (carried to CP1)
-- **Answer:** —
+- **Status:** resolved at CP1 (2026-10-21)
+- **Answer** (verbatim reply to CP1 on 2026-10-21): "Approve" — the CP1 default is adopted (`ASM-047`: recorded as unknown in `pipeline.config.json` until announced on Canvas or entered by the student before the question-bank run, with a balanced mix of MCQ and short-written variants as fallback).
 
 ### Q-17 · Reading Canvas directly
 - **Context:** in chat on 2026-10-21, the student wrote (verbatim): "When I get claude to do the cycle of adding study materials, I'll just give them the canvas link so I don't think there's much to worry avbout here"

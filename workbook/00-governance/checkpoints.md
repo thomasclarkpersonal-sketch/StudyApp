@@ -4,7 +4,7 @@ Protocol §7 and §8.1 step 8. Each checkpoint message and the user's reply is r
 
 ## CP1 — Scope and Plan (2026-10-21, STRICT)
 
-Status: **Pending user reply** (Stage 2 waits for this decision).
+Status: **Approved** (2026-10-21). Baseline set: `A01`, `A02`, `A03`, `A04`, `A05` (with `wbs.csv`), `A06` (with `schedule_calc.py`), `A07`.
 
 ```text
 HUMAN CHECKPOINT CP1 — Scope and Plan
@@ -50,6 +50,8 @@ On approval, these artifacts become the baseline: A01, A02, A03, A04, A05 (with 
 Full detail: workbook/README.md
 ```
 
-### User reply
+### User reply (verbatim, 2026-10-21)
 
-_Pending._
+```text
+Approve
+```

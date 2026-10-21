@@ -58,7 +58,7 @@ flowchart LR
 | Entity ID | Name | Role (`[SEED §2, §5]`, `[USER Q-17]`) | Direction |
 | :-- | :-- | :-- | :-- |
 | `E1` | `Student` | Single primary human actor (`[SEED §2]`): runs the pipeline, reviews flagged/spot-checked items, imports module files, completes daily reviews/quizzes/readings, manages deadlines, uses the tutor, and exports feedback. | Source & Sink |
-| `E2` | `Claude Code Runtime` | External agentic CLI host (`[SEED §5]`, `[USER Q-05]`, `DEC-005`, `REQ-N-022`): executes the Extractor, Card Creator, Card Reviewer, Question Creator, Question Reviewer, and Module Auditor subagents during interactive pipeline runs. | Source & Sink |
+| `E2` | `Claude Code Runtime` | External agentic CLI host (`[SEED §5]`, `[USER Q-05]`, `[USER Q-15]`, `ASM-058`, `REQ-N-022`): executes the Extractor, Card Creator, Card Reviewer, Question Creator, Question Reviewer, and Module Auditor subagents during interactive pipeline runs. | Source & Sink |
 | `E3` | `Anthropic Claude API` | External HTTPS API (`[SEED §5]`): invoked by the local/hosted study app backend in `R2`–`R3` for written-answer marking (`REQ-F-043`) and course-grounded tutoring (`REQ-F-045`–`REQ-F-048`) with prompt caching. | Source & Sink |
 | `E4` | `HKUST Canvas` | External university LMS (`[USER Q-17]`, `DEC-009`, `REQ-F-002`): read in read-only mode by the pipeline to fetch the student's course files, syllabi, pages, announcements, and assignments. | Source & Sink |
 | `E5` | `Calendar Application` | External calendar client (`[SEED §5]`, `REQ-F-057`): subscribes to or imports the `.ics` deadline and milestone feed (`GET /calendar.ics`). | Sink |

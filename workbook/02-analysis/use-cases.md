@@ -111,8 +111,8 @@ flowchart LR
   2. The system ingests the lecture file, renders slide page images, extracts normalized text and decoded LaTeXiT equations (`REQ-F-001`), wraps the content as untrusted data (`REQ-N-014`), and loads the module's `glossary.json`.
   3. The system invokes the Card Creator subagent to extract `concept-map.json` containing 8 to 20 concepts with stable IDs, one-line summaries, source locations, and importance levels (`core`, `supporting`, `detail`) (`REQ-F-007`).
   4. The system invokes the Card Creator subagent to draft 15 to 40 atomic flashcards (`basic`, `cloze`, or `reverse`) in `cards.draft.json` following the 10 card rules and module glossary (`REQ-F-008`).
-  5. The system invokes a fresh, context-isolated Card Reviewer subagent (`REQ-N-012`) to execute Pass 1 (blind-answer test on card fronts only) and Pass 2 (scoring the 8 card rubric criteria and concept coverage) and write `cards.review.r1.json` (`REQ-F-009`, `DT-01`).
-  6. The system freezes all `accept` cards, discards `reject` cards, and writes the accepted cards to `cards.final.json` (`REQ-F-010`).
+  5. The system invokes a fresh, context-isolated Card Reviewer subagent (`REQ-N-012`) to execute Pass 1 (blind-answer test on card fronts only) and Pass 2 (evaluating the 8 pass/fail card rubric criteria in `failed_criteria` and checking concept coverage) and write `cards.review.r1.json` (`REQ-F-009`, `DT-01`).
+  6. The system freezes all `accept` cards, discards `reject` cards (requesting a replacement under a new ID only if a concept still needs coverage), and writes the accepted cards to `cards.final.json` (`REQ-F-010`).
 - **Extensions:**
   - **2a.** The lecture file is missing, unreadable, or corrupt:
     - **2a1.** The system logs a structured ingestion error identifying the lecture path and halts processing for that lecture → *ends in failure*.
@@ -139,8 +139,8 @@ flowchart LR
 - **Main success scenario:**
   1. The system loads the lecture's reviewed `concept-map.json`, normalized source bundle, `glossary.json`, and target assessment format weights from `pipeline.config.json`.
   2. The system invokes the Question Creator subagent to draft question variants per concept (`3–5` for `core` per `DEC-006`, `2–3` for `supporting`, `0–1` for `detail`) weighted to the assessment format, with model answers, `2–5` marking points (or 4 MCQ options with distractor explanations), difficulty (`1`–`3`), and source citations (`REQ-F-011`, `REQ-F-012`).
-  3. The system invokes a fresh, context-isolated Question Reviewer subagent (`REQ-N-012`) to execute Pass 1 (answering from question stem and MCQ options only) and Pass 2 (scoring the 8 question rubric criteria and checking `core` variant counts) and write `questions.review.r1.json` (`REQ-F-013`, `DT-01`).
-  4. The system freezes `accept` questions, discards `reject` questions, and writes `questions.final.json` (`REQ-F-014`).
+  3. The system invokes a fresh, context-isolated Question Reviewer subagent (`REQ-N-012`) to execute Pass 1 (answering from question stem and MCQ options only) and Pass 2 (evaluating the 8 pass/fail question rubric criteria in `failed_criteria` and checking `core` variant counts) and write `questions.review.r1.json` (`REQ-F-013`, `DT-01`).
+  4. The system freezes `accept` questions, discards `reject` questions (requesting a replacement under a new ID only if a concept's variant count falls short), and writes `questions.final.json` (`REQ-F-014`).
   5. When all lectures in the module have completed Stages A and B, the system invokes the Module Auditor subagent to write `module-audit.json` checking learning-outcome coverage, assessment-scope variant counts, cross-lecture duplicates, and notation consistency (`REQ-F-015`).
   6. When the Module Auditor proposes cross-lecture synthesis cards or questions, the system routes them through a fresh Reviewer subagent and adds accepted synthesis items to the module output (`REQ-F-016`).
 - **Extensions:**
@@ -313,7 +313,7 @@ flowchart LR
   - **3b.** A due concept has zero non-flagged, non-suspended question variants available (`DT-03`):
     - **3b1.** The system skips the concept for this session, records a `topup` `FeedbackItem`, and advances to the next due concept → *returns to step 3*.
   - **5a.** In `R2`+, the question is a written or calculation type and Claude marking is enabled (`REQ-F-043`):
-    - **5a1.** The system executes `UC-12` to grade the response via the Anthropic Claude API → *returns to step 6*.
+    - **5a1.** The system executes `UC-12` to mark the response via the Anthropic Claude API → *returns to step 6*.
   - **6a.** The attempt is rated `Again` (`rating = 1`):
     - **6a1.** The system offers immediate review of the concept's linked flashcards (`Concept.card_ids`) (`REQ-F-034`); if the student accepts, the system presents those cards before advancing to the next concept → *returns to step 7*.
   - **6b.** In `R2`+, the student overrides the automatic or Claude-assigned rating (`REQ-F-044`):
@@ -398,7 +398,7 @@ flowchart LR
   1. During a concept quiz (`UC-08`) or mock exam (`UC-15`), the student submits a written (`short_answer`, `explain`, `scenario`, `compare`, `essay_plan`) or `calculation` answer for Claude marking (`REQ-F-043`).
   2. The system checks that the current calendar month's Claude API spend is below `Settings.monthly_spend_cap_usd` (`REQ-F-048`, `BR-041`).
   3. The system sends the question, `marking_points`, `model_answer`, and student response to the Anthropic Claude API (`E3`) with the module's glossary and slide text attached as a cached prompt prefix (`REQ-F-043`, `REQ-F-047`, `REQ-N-004`, `REQ-N-013`, `REQ-N-014`).
-  4. The system receives the structured grading response (`points_met`, `feedback`, suggested FSRS `rating`) and token usage, writes a `GradingCallLog` entry (`input_tokens`, `output_tokens`, `cost_usd`) (`REQ-F-048`), and displays the met/missed marking points, model answer, and feedback (`REQ-F-043`).
+  4. The system receives the structured marking response (`points_met`, `feedback`, suggested FSRS `rating`) and token usage, writes a `GradingCallLog` entry (`input_tokens`, `output_tokens`, `cost_usd`) (`REQ-F-048`), and displays the met/missed marking points, model answer, and feedback (`REQ-F-043`).
   5. The system records the `QuestionAttempt` with `grader = "claude"` and updates `ConceptState` via `ts-fsrs` (`REQ-F-034`, `DT-04`).
 - **Extensions:**
   - **2a.** Monthly Claude API spend has reached `Settings.monthly_spend_cap_usd` and blocking is enabled (`REQ-F-048`, `BR-041`):
@@ -460,7 +460,7 @@ flowchart LR
   5. On submission or timer expiry, the system marks all responses (MCQ auto-marking, self-marking, or `UC-12` Claude marking), updates `ConceptState` for each tested concept, and displays a mock exam results report broken down by concept (`REQ-F-054`).
 - **Extensions:**
   - **5a.** The countdown timer expires before the student answers every question:
-    - **5a1.** The system locks remaining unanswered questions, grades submitted answers, marks unanswered questions as `Again` (`rating = 1`), and displays the concept-breakdown report → *ends in success*.
+    - **5a1.** The system locks remaining unanswered questions, marks submitted answers, marks unanswered questions as `Again` (`rating = 1`), and displays the concept-breakdown report → *ends in success*.
 - **Related `REQ` and `BR` IDs:** `REQ-F-053`, `REQ-F-054`; `BR-043`.
 
 ---
@@ -501,7 +501,7 @@ flowchart LR
   1. When deployed in hosted mode (`R3`), the student authenticates with the configured single-owner password (`REQ-F-059`, `REQ-N-015`).
   2. The student installs the study app as a Progressive Web App (PWA) on phone or laptop (`REQ-F-060`).
   3. While offline, the student reviews cached due flashcards (`UC-07`), completes MCQ and self-marked quizzes (`UC-08`), and submits written quiz answers queued with `grader = "pending_claude"` (`REQ-F-060`, `REQ-F-061`, `REQ-N-009`).
-  4. When network connectivity returns, the system automatically submits queued `pending_claude` written answers for Claude grading and syncs local state (`REQ-F-061`, `REQ-N-009`).
+  4. When network connectivity returns, the system automatically submits queued `pending_claude` written answers for Claude marking and syncs local state (`REQ-F-061`, `REQ-N-009`).
   5. When browser notifications are enabled, the system notifies the student when daily reviews are due or when an unsubmitted deadline is within 24 hours (`REQ-F-062`).
 - **Extensions:**
   - **1a.** An unauthenticated request or invalid password is submitted in hosted mode (`REQ-N-015`):

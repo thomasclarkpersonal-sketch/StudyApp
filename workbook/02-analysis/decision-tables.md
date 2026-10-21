@@ -18,22 +18,23 @@ This document specifies the 6 decision tables (`DT-01`–`DT-06`) governing mult
 
 | Stub | `C1` | `C2` | `C3` | `C4` | `C5` | `C6` | `C7` | `C8` |
 | :-- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| **Cond 1:** Pass 1 blind-answer test matches Creator answer/key | Y | Y | Y | Y | N | N | N | N |
-| **Cond 2:** All 8 rubric criteria ≥ 4 and zero criteria ≤ 2 | Y | Y | N | N | Y | Y | N | N |
+| **Cond 1:** Pass 1 blind-answer matches Creator answer/key AND all non-trivia rubric criteria pass (`failed_criteria` has no fixable quality failure) | Y | Y | Y | Y | N | N | N | N |
+| **Cond 2:** Item tests a worthwhile, source-grounded concept (`value` / concept validity passes; item is not trivia or unsalvageable) | Y | Y | N | N | Y | Y | N | N |
 | **Cond 3:** Current review round $r < 3$ (revision budget remains) | Y | N | Y | N | Y | N | Y | N |
-| **Act 1:** Assign `accept` and freeze item into `*.final.json` | X | X | · | · | · | · | · | · |
-| **Act 2:** Assign `revise` and route item back to Creator for round $r + 1$ | · | · | X | · | X | · | X | · |
-| **Act 3:** Exhaust revision cap and route item to `flagged.json` (`failed_3_rounds`) | · | · | · | X | · | X | · | X |
+| **Act 1:** Assign `accept` (`failed_criteria = []`) and freeze item into `*.final.json` | X | X | · | · | · | · | · | · |
+| **Act 2:** Assign `revise` (`failed_criteria = [...]`) and route item back to Creator for round $r + 1$ | · | · | · | · | X | · | · | · |
+| **Act 3:** Assign `reject`, remove item immediately, and request replacement under a new ID only if concept coverage requires it | · | · | X | · | · | · | X | · |
+| **Act 4:** Exhaust revision cap and route item to `flagged.json` (`failed_3_rounds`) | · | · | · | X | · | X | · | X |
 
 ### 1.2 Reduced decision table (`DT-01-R1`–`DT-01-R5`) and trace (`G2.4`)
 
 | Reduced rule | Cond 1 | Cond 2 | Cond 3 | Action | Complete rules covered | Acceptance scenarios (`A19`) |
 | :-- | :-: | :-: | :-: | :-- | :-- | :-- |
-| `DT-01-R1` | Y | Y | – | **Act 1:** Freeze as `accept` | `DT-01-C1`, `DT-01-C2` | `AT-051` (`C1`), `AT-052` (`C2`) |
-| `DT-01-R2` | Y | N | Y | **Act 2:** Return as `revise` for round $r+1$ | `DT-01-C3` | `AT-053` (`C3`) |
-| `DT-01-R3` | N | – | Y | **Act 2:** Return as `revise` for round $r+1$ | `DT-01-C5`, `DT-01-C7` | `AT-055` (`C5`), `AT-057` (`C7`) |
-| `DT-01-R4` | Y | N | N | **Act 3:** Route to `flagged.json` (`failed_3_rounds`) | `DT-01-C4` | `AT-054` (`C4`) |
-| `DT-01-R5` | N | – | N | **Act 3:** Route to `flagged.json` (`failed_3_rounds`) | `DT-01-C6`, `DT-01-C8` | `AT-056` (`C6`), `AT-058` (`C8`) |
+| `DT-01-R1` | Y | Y | – | **Act 1:** Freeze as `accept` (`failed_criteria = []`) | `DT-01-C1`, `DT-01-C2` | `AT-051` (`C1`), `AT-052` (`C2`) |
+| `DT-01-R2` | N | Y | Y | **Act 2:** Return as `revise` (`failed_criteria = [...]`) for round $r+1$ | `DT-01-C5` | `AT-055` (`C5`) |
+| `DT-01-R3` | – | N | Y | **Act 3:** Remove as `reject` (replace under new ID only if coverage requires) | `DT-01-C3`, `DT-01-C7` | `AT-053` (`C3`), `AT-057` (`C7`) |
+| `DT-01-R4` | Y | N | N | **Act 4:** Route to `flagged.json` (`failed_3_rounds`) | `DT-01-C4` | `AT-054` (`C4`) |
+| `DT-01-R5` | N | – | N | **Act 4:** Route to `flagged.json` (`failed_3_rounds`) | `DT-01-C6`, `DT-01-C8` | `AT-056` (`C6`), `AT-058` (`C8`) |
 
 ---
 
@@ -94,6 +95,8 @@ This document specifies the 6 decision tables (`DT-01`–`DT-06`) governing mult
 | `DT-03-R3` | Y | N | Y | **Act 3:** Serve LRS variant closest to target difficulty + log `topup` | `DT-03-C3` | `AT-069` (`C3`) |
 | `DT-03-R4` | Y | N | N | **Act 4:** Serve sole LRS variant + log `topup` | `DT-03-C4` | `AT-070` (`C4`) |
 | `DT-03-R5` | N | – | – | **Act 5:** Skip concept + log `topup` `FeedbackItem` | `DT-03-C5`–`DT-03-C8` | `AT-071` (`C5`), `AT-072` (`C6`), `AT-073` (`C7`), `AT-074` (`C8`) |
+
+> *Note (`Obs 2`): Columns `C5` (`N, Y, Y`) and `C6` (`N, Y, N`) are logically unreachable because the unseen non-flagged variant set is a subset of all non-flagged variants (`|V_unseen| <= |V_avail|`); they are included for complete $2^3 = 8$ binary enumeration (`A15.1`) and handled as defensive fallback states under `DT-03-R5`.*
 
 ---
 
@@ -185,3 +188,5 @@ This document specifies the 6 decision tables (`DT-01`–`DT-06`) governing mult
 | `DT-06-R3` | Y | N | Y | **Act 3:** Defer `optional` items until total ≤ `daily_budget_min` | `DT-06-C3` | `AT-093` (`C3`) |
 | `DT-06-R4` | Y | N | N | **Act 4:** Keep all items (defensive no-optional state) | `DT-06-C4` | `AT-094` (`C4`) |
 | `DT-06-R5` | N | – | – | **Act 4:** Keep all candidate items (within budget) | `DT-06-C5`–`DT-06-C8` | `AT-095` (`C5`), `AT-096` (`C6`), `AT-097` (`C7`), `AT-098` (`C8`) |
+
+> *Note (`Obs 2`): Columns `C4` (`Y, N, N`), `C5` (`N, Y, Y`), and `C6` (`N, Y, N`) are logically unreachable because `total_duration = required_duration + optional_duration >= required_duration` (with `optional_duration = 0` when `Cond 3 = N`); they are included for complete $2^3 = 8$ binary enumeration (`A15.1`) and handled as defensive fallback states under `DT-06-R4` and `DT-06-R5`.*

@@ -21,7 +21,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 | :-- | :-- | :-- | :-- |
 | 0 Intake & Clarification | Complete (2026-10-21): Q-01 to Q-15 answered (Q-02 and Q-12 in part); Q-16 resolved at CP1; Q-17 answered (direct Canvas access); two of the requested documents received and skimmed | none (reviewed at G1) | — |
 | 1 Initiation, Feasibility & Tailoring | Complete (2026-10-21): Gate G1 APPROVED (r2, plus `CR-001` re-review); CP1 Approved | G1 (`reviews/G1-r1.md`, `reviews/G1-r2.md`, `reviews/G1-CR001.md`) | CP1 Approved (`checkpoints.md`) |
-| 2 Requirements Analysis & Sourcing | In review (`G2 r1`): `A09`–`A20`, `A22` and `traceability-matrix.md` complete | G2 (`reviews/G2-r1.md`) | CP2 (STRICT) |
+| 2 Requirements Analysis & Sourcing | In review (`G2 r2`): `A09`–`A20`, `A22` and `traceability-matrix.md` complete | G2 (`reviews/G2-r1.md`, `reviews/G2-r2.md`) | CP2 (STRICT) |
 | 3 Architecture & Design | Not started | G3 | CP3 |
 | 4 Slice loop | Not started | G4 per slice | — |
 | 5 Release Readiness | Not started | G5 | CP4 |
@@ -102,7 +102,7 @@ No section is Blank.
 | [`02-analysis/decision-tables.md`](02-analysis/decision-tables.md) | A15: complete and reduced decision tables (`DT-01`–`DT-06`) |
 | [`02-analysis/conceptual-data-model.md`](02-analysis/conceptual-data-model.md) | A16: conceptual data model (`E01`–`E28`, relationships, CRUD matrix) |
 | [`02-analysis/business-rules.md`](02-analysis/business-rules.md) | A17: business rules (`BR-001`–`BR-045`) |
-| [`02-analysis/glossary.md`](02-analysis/glossary.md), [`data-dictionary.csv`](02-analysis/data-dictionary.csv) | A18: glossary & data dictionary (34 terms, 172 attributes) |
+| [`02-analysis/glossary.md`](02-analysis/glossary.md), [`data-dictionary.csv`](02-analysis/data-dictionary.csv) | A18: glossary & data dictionary (34 terms, 262 attributes) |
 | [`02-analysis/acceptance-scenarios.md`](02-analysis/acceptance-scenarios.md), [`acceptance-scenarios.csv`](02-analysis/acceptance-scenarios.csv) | A19: Given / When / Then acceptance scenarios (`AT-001`–`AT-137`) |
 | [`02-analysis/master-test-plan.md`](02-analysis/master-test-plan.md) | A20: master test plan |
 | [`02-analysis/sourcing.md`](02-analysis/sourcing.md) | A22: sourcing decision |

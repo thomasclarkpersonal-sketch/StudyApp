@@ -12,7 +12,7 @@ Rather than designing from scratch, the conceptual model adapts three universal 
 
 | Universal pattern | How it is adapted in the Study App & Generation Pipeline | What changed for this domain |
 | :-- | :-- | :-- |
-| **1. Product / Content Hierarchy & Bill-of-Materials pattern** | Models the academic curriculum hierarchy: `Module` (`E01`) → `Lecture` (`E02`) → `Concept` (`E03`) → `Card` (`E05`) and `Question` (`E08`), plus module-scoped `GlossaryEntry` (`E10`), `Deadline` (`E11`), and `Reading` (`E13`). | Replaced commercial SKUs and pricing with deterministic content IDs (`<mod>-L<nn>-C<nn>`), Bloom/importance levels (`core`, `supporting`, `detail`), LaTeX/cloze card templates, and multi-variant question banks. Addedpipeline audit entities (`ReviewRecord` `E25`, `FlaggedItem` `E26`, `ModuleAudit` `E27`, `PipelineRunSummary` `E28`). |
+| **1. Product / Content Hierarchy & Bill-of-Materials pattern** | Models the academic curriculum hierarchy: `Module` (`E01`) → `Lecture` (`E02`) → `Concept` (`E03`) → `Card` (`E05`) and `Question` (`E08`), plus module-scoped `GlossaryEntry` (`E10`), `Deadline` (`E11`), and `Reading` (`E13`). | Replaced commercial SKUs and pricing with deterministic content IDs (`<MODULE>-<WEEK>-K<nn>`), Bloom/importance levels (`core`, `supporting`, `detail`), LaTeX/cloze card templates, and multi-variant question banks. Addedpipeline audit entities (`ReviewRecord` `E25`, `FlaggedItem` `E26`, `ModuleAudit` `E27`, `PipelineRunSummary` `E28`). |
 | **2. Account & Transaction (Mutable State + Append-Only Ledger) pattern** | Models spaced-repetition memory state (`CardState` `E06`, `ConceptState` `E04`) separately from the immutable review/attempt ledger (`CardReviewLog` `E07`, `QuestionAttempt` `E09`), and models API spend accounting via `TutorMessage` (`E18`) and `GradingCallLog` (`E23`). | Replaced monetary balances with FSRS memory variables (`stability`, `difficulty`, `due`, `reps`, `lapses`, `state`) and preserved the ledger invariant (`BR-021`) that re-importing content (`ImportBatch` `E22`) updates `Card`/`Question` while never deleting `CardState`/`ConceptState` or ledger rows. |
 | **3. Work Effort / Order & Line Item pattern** | Models daily study execution (`DailyPlan` `E15` header with `DailyPlanItem` `E16` line items), coursework planning (`Deadline` `E11` with `Milestone` `E12` steps and standalone `Task` `E14`), and conversational threads (`TutorThread` `E17` with `TutorMessage` `E18` and `Proposal` `E19`). | Added formula-derived `est_minutes` per line item (`BR-035`), 9-step priority ordering (`REQ-F-039`), and daily time-budget deferral (`DT-06`). |
 
@@ -26,7 +26,13 @@ classDiagram
     +string id PK
     +string code
     +string name
+    +string colour
+    +string timezone
     +int priority_rank
+    +int new_cards_per_day
+    +int max_reviews_per_day
+    +int quiz_per_day
+    +float desired_retention
     +computeMasteryPct() float
     +isAssessmentModeActive() bool
   }
@@ -34,7 +40,7 @@ classDiagram
   class Lecture {
     +string id PK
     +string module_id FK
-    +int number
+    +int week
     +string title
     +date date
     +string source_file
@@ -44,11 +50,12 @@ classDiagram
     +string id PK
     +string module_id FK
     +string lecture_id FK
-    +string name
     +string summary
     +string importance
     +string[] card_ids
+    +string[] question_ids
     +string[] prerequisites
+    +string[] assessments
     +targetDifficulty() int
   }
 
@@ -75,6 +82,7 @@ classDiagram
     +string extra
     +string source
     +string[] tags
+    +string importance
     +bool flagged
     +bool suspended
     +renderCloze() string
@@ -108,15 +116,17 @@ classDiagram
     +string module_id FK
     +string lecture_id FK
     +string concept_id FK
-    +string variant_group
+    +string[] concept_ids
     +string type
     +int difficulty
     +string stem
     +string[] options
     +string correct_option
+    +string distractor_explanations
     +string model_answer
     +string[] marking_points
     +string source
+    +string[] assessments
     +bool flagged
     +bool suspended
     +gradeMcq(option) bool
@@ -126,8 +136,10 @@ classDiagram
     +string id PK
     +string question_id FK
     +string concept_id FK
+    +string mode
     +string response
     +int[] points_met
+    +string comment
     +int rating
     +string grader
     +bool overridden
@@ -138,10 +150,11 @@ classDiagram
   class GlossaryEntry {
     +string id PK
     +string module_id FK
-    +string symbol_or_abbrev
-    +string full_term
+    +string term
+    +string abbreviation
+    +string canonical
     +string kind
-    +string canonical_form
+    +string where_defined
     +bool confirmed
   }
 
@@ -153,10 +166,15 @@ classDiagram
     +datetime due_at
     +string timezone
     +float weighting
+    +string submission_url
     +string[] covers_lectures
+    +string format
+    +string origin
     +string confidence
+    +bool confirmed
     +bool manually_edited
     +string status
+    +string notes
     +remainingHours(now) float
     +urgencyTier(now) string
   }
@@ -175,9 +193,12 @@ classDiagram
     +string module_id FK
     +string lecture_id FK
     +string citation
+    +string pages
     +int page_count
     +bool required
     +date read_by
+    +string confidence
+    +float est_minutes
     +string status
     +estimatedMinutes(rate) float
   }
@@ -187,6 +208,7 @@ classDiagram
     +string module_id FK
     +string title
     +date due_on
+    +string recurrence
     +float est_minutes
     +string priority
     +bool done
@@ -197,6 +219,7 @@ classDiagram
     +date date
     +int budget_min
     +datetime generated_at
+    +bool over_budget_warning
     +totalEstimatedMinutes() float
     +enforceBudget() void
   }
@@ -209,6 +232,8 @@ classDiagram
     +string ref_id
     +float est_minutes
     +string priority
+    +bool carried_over
+    +bool deferred
     +bool done
     +datetime completed_at
   }
@@ -253,6 +278,7 @@ classDiagram
     +string module_id FK
     +string reason
     +string comment
+    +datetime created_at
     +bool exported
   }
 
@@ -263,8 +289,15 @@ classDiagram
     +int review_cards_per_day
     +int quiz_per_day
     +float desired_retention
+    +int assessment_mode_days
+    +int reading_lookahead_days
+    +float minutes_per_page
     +string timezone
+    +string grading_model
+    +string tutor_model
     +decimal monthly_spend_cap_usd
+    +string fsrs_weights_json
+    +string token_rates_json
     +currentMonthSpendUsd() decimal
   }
 
@@ -294,21 +327,28 @@ classDiagram
   class PipelineConfig {
     +string module_id PK,FK
     +string canvas_course_id
-    +float human_spot_check_rate
-    +string assessment_weights_json
+    +string semester
+    +string assessments_json
+    +string cards_per_lecture
+    +string variants_json
     +int max_revision_rounds
+    +int parallel_lectures
+    +float human_spot_check_rate
   }
 
   class ReviewRecord {
     +string id PK
     +string lecture_id FK
+    +string stage
+    +int round
     +string item_type
     +string item_id
-    +int round
     +string blind_answer
     +bool blind_match
-    +string rubric_scores_json
+    +string[] failed_criteria
     +string verdict
+    +string feedback
+    +string missing_concepts
   }
 
   class FlaggedItem {
@@ -328,6 +368,7 @@ classDiagram
     +string low_variant_concepts_json
     +string duplicate_pairs_json
     +string notation_deviations_json
+    +string proposed_synthesis_json
   }
 
   class PipelineRunSummary {
@@ -375,23 +416,23 @@ classDiagram
 
 ## 3. Entity catalog, candidate keys, and special attributes (`A16`)
 
-All 172 attributes across `E01`–`E28` are defined in [`glossary.md`](glossary.md) (`A18`) and [`data-dictionary.csv`](data-dictionary.csv). The table below records each entity's primary/candidate keys, DFD data store mapping (`G2.7`), and composite, multivalued, or derived attributes:
+All 262 attributes across `E01`–`E28` are defined in [`glossary.md`](glossary.md) (`A18`) and [`data-dictionary.csv`](data-dictionary.csv). The table below records each entity's primary/candidate keys, DFD data store mapping (`G2.7`), and composite, multivalued, or derived attributes:
 
 | ID | Entity | Candidate / primary key(s) | DFD stores (`A12`) | Composite, multivalued & derived attributes (with derivation rules) |
 | :-- | :-- | :-- | :-- | :-- |
 | `E01` | `Module` | PK: `id` (e.g. `"comp4901b"`); AK: `code` | `D1`, `D6`, `D7` | *Derived:* `mastery_pct` = count of module concepts with `ConceptState.stability >= 14` divided by total module concepts (`BR-044`); `assessment_mode_active` = `true` when an unsubmitted exam/midterm `Deadline` is within `Settings.assessment_mode_days` (`BR-043`). |
-| `E02` | `Lecture` | PK: `id` (`"<mod>-L<nn>"`); AK: `(module_id, number)` | `D1`, `D6`, `D7` | — |
-| `E03` | `Concept` | PK: `id` (`"<mod>-L<nn>-C<nn>"`) | `D3`, `D6`, `D7` | *Multivalued:* `card_ids` (linked `Card.id` list), `prerequisites` (prerequisite `Concept.id` list). *Derived:* `target_difficulty` = `1` if `ConceptState.stability < 7`, `2` if `< 30`, `3` if `>= 30` (`BR-029`). |
+| `E02` | `Lecture` | PK: `id` (`"<MODULE>-<WEEK>"`); AK: `(module_id, week)` | `D1`, `D6`, `D7` | — |
+| `E03` | `Concept` | PK: `id` (`"<MODULE>-<WEEK>-K<nn>"`) | `D3`, `D6`, `D7` | *Multivalued:* `card_ids` (linked `Card.id` list), `prerequisites` (prerequisite `Concept.id` list). *Derived:* `target_difficulty` = `1` if `ConceptState.stability < 7`, `2` if `< 30`, `3` if `>= 30` (`BR-029`). |
 | `E04` | `ConceptState` | PK/FK: `concept_id` | `D8` | *Derived on transition:* `due`, `stability`, `difficulty`, `reps`, `lapses`, `state` computed via `ts-fsrs` from `QuestionAttempt.rating` (`BR-026`, `BR-032`). |
-| `E05` | `Card` | PK: `id` (`"<mod>-L<nn>-FC-<nnn>"`) | `D3`, `D6`, `D7` | *Multivalued:* `tags` (hierarchical topic tags). |
+| `E05` | `Card` | PK: `id` (`"<MODULE>-<WEEK>-C<nnn>"`) | `D3`, `D6`, `D7` | *Multivalued:* `tags` (hierarchical topic tags). |
 | `E06` | `CardState` | PK/FK: `card_id` | `D8` | *Derived on transition:* `due`, `stability`, `difficulty`, `elapsed_days`, `scheduled_days`, `reps`, `lapses`, `state` computed via `ts-fsrs` (`BR-026`). |
 | `E07` | `CardReviewLog` | PK: `id` (UUID) | `D8` | Append-only ledger row (`BR-021`). |
-| `E08` | `Question` | PK: `id` (`"<mod>-L<nn>-Q-<nnn>"`) | `D4`, `D6`, `D7` | *Composite/Multivalued:* `options` (4 MCQ options `{label, text}`), `distractor_explanations` (map per wrong option), `marking_points` (2–5 rubric criteria). |
+| `E08` | `Question` | PK: `id` (`"<MODULE>-<WEEK>-Q<nnn>"`) | `D4`, `D6`, `D7` | *Composite/Multivalued:* `options` (4 MCQ options `{label, text}`), `distractor_explanations` (map per wrong option), `marking_points` (2–5 rubric criteria). |
 | `E09` | `QuestionAttempt` | PK: `id` (UUID) | `D8` | *Multivalued:* `points_met` (array of met marking-point indices). *Derived:* `rating` (`1`–`4`) derived via `DT-04` (`BR-031`) unless `overridden = true`. |
-| `E10` | `GlossaryEntry` | PK: `id`; AK: `(module_id, symbol_or_abbrev)` | `D2`, `D6`, `D7` | *Derived:* `canonical_form` = `"<full_term> (<symbol_or_abbrev>)"` for `standard` or `"<full_term> (<symbol_or_abbrev> in this module)"` for `module_specific` (`BR-009`). |
-| `E11` | `Deadline` | PK: `id` (`"<mod>-DL-<nn>"`) | `D2`, `D6`, `D7` | *Multivalued:* `covers_lectures` (`Lecture.id` list). *Derived:* `remaining_ms = due_at - now()`; `urgency_tier` derived via `DT-05` (`BR-033`). |
+| `E10` | `GlossaryEntry` | PK: `id` (`"<MODULE>-G<nnn>"`); AK: `(module_id, abbreviation)` | `D2`, `D6`, `D7` | *Derived:* `canonical` = `"<term> (<abbreviation>)"` for `standard` or `"<term> (<abbreviation> in this module)"` for `module_specific` (`BR-009`). |
+| `E11` | `Deadline` | PK: `id` (`"<MODULE>-D<nnn>"`) | `D2`, `D6`, `D7` | *Multivalued:* `covers_lectures` (`Lecture.id` list). *Derived:* `remaining_ms = due_at - now()`; `urgency_tier` derived via `DT-05` (`BR-033`). |
 | `E12` | `Milestone` | PK: `id` (UUID) | `D7` | — |
-| `E13` | `Reading` | PK: `id` (`"<mod>-RD-<nn>"`) | `D2`, `D6`, `D7` | *Derived:* `est_minutes = page_count * Settings.minutes_per_page` (`BR-035`). |
+| `E13` | `Reading` | PK: `id` (`"<MODULE>-R<nnn>"`) | `D2`, `D6`, `D7` | *Derived:* `est_minutes = page_count * Settings.minutes_per_page` (`BR-035`). |
 | `E14` | `Task` | PK: `id` (UUID) | `D7` | — |
 | `E15` | `DailyPlan` | PK: `id`; AK: `date` | `D7` | *Derived:* `total_est_minutes` = sum of `DailyPlanItem.est_minutes` for items in the plan (`BR-035`). |
 | `E16` | `DailyPlanItem` | PK: `id` (UUID) | `D7` | Associative line-item entity linking `DailyPlan` to due reviews, quizzes, readings, milestones, or tasks. *Derived:* `est_minutes` computed by item `kind` (`BR-035`). |
@@ -402,8 +443,8 @@ All 172 attributes across `E01`–`E28` are defined in [`glossary.md`](glossary.
 | `E21` | `Settings` | PK: `id` (`1`, singleton) | `D7` | *Composite:* `fsrs_weights_json`, `token_rates_json`. *Derived:* `current_month_spend_usd` = sum of `TutorMessage.cost_usd + GradingCallLog.cost_usd` in current UTC/local calendar month (`BR-041`). |
 | `E22` | `ImportBatch` | PK: `id` (UUID) | `D7` | *Multivalued:* `lecture_ids` (`Lecture.id` list). |
 | `E23` | `GradingCallLog` | PK: `id` (UUID) | `D9` | *Derived:* `cost_usd` computed from `input_tokens`, `output_tokens`, and `Settings.token_rates_json` (`BR-041`). |
-| `E24` | `PipelineConfig` | PK/FK: `module_id` | `D1` | *Composite:* `assessment_weights_json`. |
-| `E25` | `ReviewRecord` | PK: `id`; AK: `(item_id, round)` | `D3`, `D4` | *Composite:* `rubric_scores_json` (8 criterion scores + notes). |
+| `E24` | `PipelineConfig` | PK/FK: `module_id` | `D1` | *Composite:* `semester`, `assessments_json`, `cards_per_lecture`, `variants_json`. |
+| `E25` | `ReviewRecord` | PK: `id`; AK: `(item_id, round)` | `D3`, `D4` | *Multivalued/Composite:* `failed_criteria` (`failed[]` array of rubric criterion names), `missing_concepts`. |
 | `E26` | `FlaggedItem` | PK: `id` | `D5` | *Composite:* `draft_payload_json`, `reviewer_notes`. |
 | `E27` | `ModuleAudit` | PK: `id` | `D5` | *Composite/Multivalued:* `uncovered_outcomes_json`, `low_variant_concepts_json`, `duplicate_pairs_json`, `notation_deviations_json`, `proposed_synthesis_json`. |
 | `E28` | `PipelineRunSummary` | PK: `id` | `D6` | *Composite:* `per_lecture_counts_json`. |
@@ -440,7 +481,7 @@ Every relationship specifies its degree and the minimum and maximum cardinality 
 | `REL-22` | `Card` | `CardReviewLog` | Binary | `1..1` | `0..*` | Composition: a flashcard accumulates `0..*` immutable rating log entries over time. |
 | `REL-23` | `Question` | `QuestionAttempt` | Binary | `1..1` | `0..*` | Composition: a question variant accumulates `0..*` student attempt records. |
 | `REL-24` | `Concept` | `QuestionAttempt` | Binary | `1..1` | `0..*` | Association: each `QuestionAttempt` updates one `Concept`'s `ConceptState`. |
-| `REL-25` | `QuestionAttempt` | `GradingCallLog` | Binary | `1..1` | `0..1` | Composition: an attempt graded by Claude (`grader = "claude"`) has one `GradingCallLog`; MCQ and self-marked attempts have `0`. |
+| `REL-25` | `QuestionAttempt` | `GradingCallLog` | Binary | `1..1` | `0..1` | Composition: an attempt marked by Claude (`grader = "claude"`) has one `GradingCallLog`; MCQ and self-marked attempts have `0`. |
 | `REL-26` | `Deadline` | `Milestone` | Binary | `1..1` | `0..*` | Composition: a coursework/exam deadline may be broken into `0..*` milestones. |
 | `REL-27` | `Deadline` | `Lecture` | Binary | `0..*` | `0..*` | Many-to-many association (`covers_lectures`): an assessment covers `0..*` lectures, and a lecture may be covered by `0..*` assessments. |
 | `REL-28` | `DailyPlan` | `DailyPlanItem` | Binary | `1..1` | `0..*` | Composition (associative line items): a daily plan contains `0..*` ordered checklist items. |
@@ -456,7 +497,7 @@ Every relationship specifies its degree and the minimum and maximum cardinality 
 ### 5.1 Associative entities
 - **`DailyPlanItem` (`E16`):** Resolves the many-to-many relationship between a `DailyPlan` (`E15`) and the study targets scheduled on that day (`Module` review queues, `Reading`, `Milestone`, `Task`), carrying `order_index`, `est_minutes`, `priority`, `done`, and `completed_at`.
 - **`QuestionAttempt` (`E09`):** Resolves the many-to-many historical interaction between the Student, a `Question` (`E08`), and a `Concept` (`E03`), carrying `response`, `points_met`, `rating`, `grader`, `overridden`, `attempted_at`, and `duration_ms`.
-- **`ReviewRecord` (`E25`):** Resolves the many-to-many review relationship across rounds (`round = 1..3`) between a Reviewer subagent invocation and a draft `Card` (`E05`) or `Question` (`E08`), carrying `blind_answer`, `blind_match`, `rubric_scores_json`, and `verdict`.
+- **`ReviewRecord` (`E25`):** Resolves the many-to-many review relationship across rounds (`round = 1..3`) between a Reviewer subagent invocation and a draft `Card` (`E05`) or `Question` (`E08`), carrying `blind_answer`, `blind_match`, `failed_criteria`, `verdict`, and `feedback`.
 
 ### 5.2 Supertype and subtype hierarchies
 1. **Study Item (`Card` `E05` vs `Question` `E08`):**

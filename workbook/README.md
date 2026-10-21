@@ -20,15 +20,15 @@ The single source of truth for planning (and possibly building) the Study App, f
 | Stage | Status | Gate | Checkpoint |
 | :-- | :-- | :-- | :-- |
 | 0 Intake & Clarification | Complete (2026-10-21): Q-01 to Q-15 answered (Q-02 and Q-12 in part); Q-16 carried to CP1; Q-17 answered (direct Canvas access); two of the requested documents received and skimmed | none (reviewed at G1) | — |
-| 1 Initiation, Feasibility & Tailoring | In review: A01–A07 updated after G1-r1; Gate G1 (r2) | G1 | CP1 (STRICT) |
+| 1 Initiation, Feasibility & Tailoring | Gate G1 APPROVED (r2, 2026-10-21); waiting for CP1 (STRICT) | G1 (`reviews/G1-r1.md`, `reviews/G1-r2.md`) | CP1 (STRICT) |
 | 2 Requirements Analysis & Sourcing | Not started | G2 | CP2 |
 | 3 Architecture & Design | Not started | G3 | CP3 |
 | 4 Slice loop | Not started | G4 per slice | — |
 | 5 Release Readiness | Not started | G5 | CP4 |
 | 6 Maintenance Setup & Closedown | Not started | G6 | — |
 
-- **Current baseline:** none.
-- **Pending checkpoint:** none. The next is CP1, after G1.
+- **Current baseline:** none (A01–A07 become the first baseline on CP1 approval).
+- **Pending checkpoint:** **CP1 (STRICT)**, posted 2026-10-21 in [`00-governance/checkpoints.md`](00-governance/checkpoints.md).
 - **Carried to CP1:** exact midterm dates, and which module has the first midterm (`ASM-045`); the university's time zone, inferred as Hong Kong (`ASM-022`); the proposed restatements and reading of SM-1, SM-2 and SM-6 (`ASM-036`, [USER Q-06], [USER Q-11]); the release proposal `DEC-010`, including placing Canvas reading (P8) in R1 and the Stats page (A12) in R2; skipping `A65` (Adoption & Change Plan) as a proportionality departure from an R-at-M artifact; reported items reaching the pipeline in the MVP (`ASM-038`); subscription plan and usage limits for pipeline runs, build sessions and the CI critic (`ASM-044`, `ASM-062`, `ASM-064`); Anthropic's terms on subscription pipeline runs (`ASM-058`); the 3 h/day session-time pacing (`ASM-053`), the 15–40 h active build time (`ASM-055`), the 30–90 min manual card-making baseline (`ASM-056`) and the up to 1.5 h/day human-review capacity between `SL-05` and 30 Nov (`ASM-063`); reading slide images as well as text (`ASM-046`); the COMP 4901B final's format (Q-16, `ASM-047`); direct Canvas access, which drops a seed non-goal (`DEC-009`), with the university's terms on automated access (`ASM-048`) and its limits and credential handling (`ASM-049`, `ASM-050`, `ASM-061`).
 - **Branch:** `stage-1/initiation` (branched from `stage-0/intake`).
 

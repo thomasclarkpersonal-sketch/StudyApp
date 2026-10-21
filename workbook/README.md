@@ -21,7 +21,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 | :-- | :-- | :-- | :-- |
 | 0 Intake & Clarification | Complete (2026-10-21): Q-01 to Q-15 answered (Q-02 and Q-12 in part); Q-16 resolved at CP1; Q-17 answered (direct Canvas access); two of the requested documents received and skimmed | none (reviewed at G1) | — |
 | 1 Initiation, Feasibility & Tailoring | Complete (2026-10-21): Gate G1 APPROVED (r2, plus `CR-001` re-review); CP1 Approved | G1 (`reviews/G1-r1.md`, `reviews/G1-r2.md`, `reviews/G1-CR001.md`) | CP1 Approved (`checkpoints.md`) |
-| 2 Requirements Analysis & Sourcing | Not started | G2 | CP2 (STRICT) |
+| 2 Requirements Analysis & Sourcing | In review (`G2 r1`): `A09`–`A20`, `A22` and `traceability-matrix.md` complete | G2 (`reviews/G2-r1.md`) | CP2 (STRICT) |
 | 3 Architecture & Design | Not started | G3 | CP3 |
 | 4 Slice loop | Not started | G4 per slice | — |
 | 5 Release Readiness | Not started | G5 | CP4 |
@@ -57,12 +57,17 @@ No section is Blank.
 
 | Document | Supplied | Status |
 | :-- | :-- | :-- |
-| `study-app-seed-spec.md` | With the repository | Read in full at Stage 0 |
-| `flashcard-pipeline.md` | With the repository | Skimmed at Stage 0; full analysis in A09 (Stage 2) |
-| `study-app-spec.md` | With the repository | Skimmed at Stage 0; full analysis in A09 (Stage 2) |
+| `study-app-seed-spec.md` | With the repository | Read in full at Stage 0; analysed in A09 |
+| `flashcard-pipeline.md` | With the repository | Copied to `02-analysis/sources/flashcard-pipeline.md` and analysed in full in A09 (Stage 2) |
+| `study-app-spec.md` | With the repository | Copied to `02-analysis/sources/study-app-spec.md` and analysed in full in A09 (Stage 2) |
 | Handbook, sample slides, past paper, semester calendar, screenshots | Requested | Two received 2026-10-21 (below). Past paper, calendar and screenshots not supplied yet. Must not be committed to this public repository |
+<<<<<<< HEAD
 | `ug_course_syllabus_template_doc_COMP4901B.docx.pdf` (COMP 4901B Large Language Models syllabus, HKUST, Fall 2026-27, 4 pages) | 2026-10-21; kept in the student's local course-material folder, outside the repository (`DEC-008`) | Skimmed at Stage 0; full analysis in A09 |
 | `COMP4901b_Sept24_RL.pdf` (COMP 4901B lecture on reinforcement learning, Keynote export, 61 pages) | 2026-10-21; same location (`DEC-008`) | Skimmed at Stage 0; full analysis in A09 |
+=======
+| `ug_course_syllabus_template_doc_COMP4901B.docx.pdf` (COMP 4901B Large Language Models syllabus, HKUST, Fall 2026-27, 4 pages) | 2026-10-21; kept outside the repository at `C:\Users\thoma\Documents\AI SLOP\` (`DEC-008`) | Analysed in full in A09 (Stage 2) |
+| `COMP4901b_Sept24_RL.pdf` (COMP 4901B lecture on reinforcement learning, Keynote export, 61 pages) | 2026-10-21; same location (`DEC-008`) | Analysed in full in A09 (Stage 2) |
+>>>>>>> 1bb5911 (Stage 2: requirements analysis and sourcing artifacts (A09-A20, A22, traceability))
 
 **Stage 0 skim findings** (high-impact items only; A09 analyses both documents in full):
 - **COMP 4901B has no midterm.** Its assessments are attendance and in-class quizzes, three individual programming assignments, a group mini-project, and a closed-book final in the HKUST exam period, 7–19 Dec 2026. The first midterm (Q-02) is therefore in another module. → `ASM-045`
@@ -77,7 +82,7 @@ No section is Blank.
 | :-- | :-- |
 | [`00-governance/assumptions-decisions.md`](00-governance/assumptions-decisions.md) | A00: assumption register, decision log, change requests |
 | [`00-governance/questions.md`](00-governance/questions.md) | Clarifying questions and answers |
-| [`00-governance/traceability-matrix.md`](00-governance/traceability-matrix.md) | Requirement traceability (from Stage 2) |
+| [`00-governance/traceability-matrix.md`](00-governance/traceability-matrix.md), [`traceability-matrix.csv`](00-governance/traceability-matrix.csv) | Requirement traceability (`REQ-F-001`–`REQ-F-066`, `REQ-N-001`–`REQ-N-023`) |
 | [`00-governance/checkpoints.md`](00-governance/checkpoints.md) | Checkpoint messages and replies |
 | [`00-governance/dispositions.md`](00-governance/dispositions.md) | Review dispositions |
 | `00-governance/reviews/` | Gate review files |
@@ -88,4 +93,17 @@ No section is Blank.
 | [`01-initiation/wbs.md`](01-initiation/wbs.md), [`wbs.csv`](01-initiation/wbs.csv) | A05: work breakdown structure (the CSV is the single source) |
 | [`01-initiation/schedule.md`](01-initiation/schedule.md), [`schedule_calc.py`](01-initiation/schedule_calc.py) | A06: schedule (regenerate with `python3 workbook/01-initiation/schedule_calc.py`) |
 | [`01-initiation/baseline-project-plan.md`](01-initiation/baseline-project-plan.md) | A07: baseline project plan |
-| `02-analysis/` … `06-maintenance/` | Later stage artifacts, as selected by the Tailoring Record (A04) |
+| [`02-analysis/requirements-sources.md`](02-analysis/requirements-sources.md), `02-analysis/sources/` | A09: requirements sources & document analysis |
+| [`02-analysis/requirements.md`](02-analysis/requirements.md), [`requirements.csv`](02-analysis/requirements.csv) | A10: requirements catalog (`REQ-F-001`–`REQ-F-066`, `REQ-N-001`–`REQ-N-023`) |
+| [`02-analysis/context-diagram.md`](02-analysis/context-diagram.md) | A11: context diagram (`P0`, `E1`–`E6`) |
+| [`02-analysis/dfd.md`](02-analysis/dfd.md) | A12: Level-0 and Level-1 data flow diagrams (`P1`–`P7`, `D1`–`D9`) |
+| [`02-analysis/use-cases.md`](02-analysis/use-cases.md) | A13: use cases (`UC-01`–`UC-21`) |
+| [`02-analysis/workflows.md`](02-analysis/workflows.md) | A14: activity / swimlane workflow diagrams (`WF-01`, `WF-02`) |
+| [`02-analysis/decision-tables.md`](02-analysis/decision-tables.md) | A15: complete and reduced decision tables (`DT-01`–`DT-06`) |
+| [`02-analysis/conceptual-data-model.md`](02-analysis/conceptual-data-model.md) | A16: conceptual data model (`E01`–`E28`, relationships, CRUD matrix) |
+| [`02-analysis/business-rules.md`](02-analysis/business-rules.md) | A17: business rules (`BR-001`–`BR-045`) |
+| [`02-analysis/glossary.md`](02-analysis/glossary.md), [`data-dictionary.csv`](02-analysis/data-dictionary.csv) | A18: glossary & data dictionary (34 terms, 172 attributes) |
+| [`02-analysis/acceptance-scenarios.md`](02-analysis/acceptance-scenarios.md), [`acceptance-scenarios.csv`](02-analysis/acceptance-scenarios.csv) | A19: Given / When / Then acceptance scenarios (`AT-001`–`AT-137`) |
+| [`02-analysis/master-test-plan.md`](02-analysis/master-test-plan.md) | A20: master test plan |
+| [`02-analysis/sourcing.md`](02-analysis/sourcing.md) | A22: sourcing decision |
+| `03-design/` … `06-maintenance/` | Later stage artifacts, as selected by the Tailoring Record (A04) |

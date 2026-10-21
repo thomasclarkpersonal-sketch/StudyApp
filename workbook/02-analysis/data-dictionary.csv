@@ -1,0 +1,173 @@
+entity,attribute,definition,type_class,allowed_values,source
+Module,id,Stable unique module identifier (e.g. `COMP4901B`).,`identifier`,"Non-empty ASCII slug (`1..64` chars), unique",`[DOC study-app-spec.md §2]`
+Module,code,Official university course code.,`text`,`1..32` chars (e.g. `COMP 4901B`),`[DOC study-app-spec.md §2]`
+Module,name,Module title.,`text`,`1..200` chars,`[DOC study-app-spec.md §2]`
+Module,colour,Display accent colour for the module in the UI.,`text`,Hex colour `#RRGGBB` or named token,`[DOC study-app-spec.md §2]`
+Module,timezone,Default IANA timezone for module deadlines and schedule.,`text`,Valid IANA timezone (default `Asia/Hong_Kong`),"`[DOC study-app-spec.md §2]`, `ASM-022`"
+Module,new_cards_per_day,Per-module daily cap on new flashcards introduced.,`number`,Integer `0..500` (default `20`),"`[DOC study-app-spec.md §1.1, §2]`"
+Module,max_reviews_per_day,Per-module daily cap on due flashcard reviews.,`number`,Integer `1..2000` (default `200`),"`[DOC study-app-spec.md §1.1, §2]`"
+Module,quiz_per_day,Per-module daily cap on due concept quiz questions.,`number`,Integer `0..100` (default `10`),"`[DOC study-app-spec.md §1.2, §2]`"
+Module,desired_retention,Target FSRS retention probability for the module.,`number`,Decimal `0.70..0.99` (default `0.90`),"`[DOC study-app-spec.md §1.1, §2]`"
+Lecture,id,Stable unique lecture identifier (e.g. `COMP4901B-W04-RL`).,`identifier`,"Non-empty slug (`1..80` chars), unique",`[DOC study-app-spec.md §2]`
+Lecture,module_id,Owning `Module.id`.,`identifier`,Foreign key → `Module.id`,`[DOC study-app-spec.md §2]`
+Lecture,week,Teaching week number in the semester.,`number`,Integer `1..20`,`[DOC study-app-spec.md §2]`
+Lecture,title,Lecture topic title.,`text`,`1..200` chars,`[DOC study-app-spec.md §2]`
+Lecture,date,Optional calendar date the lecture was delivered.,`date-time`,ISO-8601 date `YYYY-MM-DD` or `null`,`[DOC study-app-spec.md §2]`
+Concept,id,Stable unique concept identifier (`<MODULE>-<WEEK>-K<nn>`).,`identifier`,"Non-empty slug (`1..80` chars), unique","`[DOC flashcard-pipeline.md §6.5]`, `[DOC study-app-spec.md §2]`"
+Concept,module_id,Owning `Module.id`.,`identifier`,Foreign key → `Module.id`,`[DOC study-app-spec.md §2]`
+Concept,lecture_id,Owning `Lecture.id`.,`identifier`,Foreign key → `Lecture.id`,`[DOC study-app-spec.md §2]`
+Concept,summary,One-line summary of the concept.,`text`,`1..500` chars,"`[DOC flashcard-pipeline.md §3.3, §6.5]`"
+Concept,assessments,Multivalued list of assessment `Deadline.id`s whose scope includes this concept.,`identifier` (multivalued),`0..*` `Deadline.id` values,"`[DOC flashcard-pipeline.md §6.5]`, `[DOC study-app-spec.md §2]`"
+ConceptState,concept_id,Identifier of the scheduled `Concept` (1:1).,`identifier`,Primary/foreign key → `Concept.id`,`[DOC study-app-spec.md §2]`
+ConceptState,due,Next scheduled quiz timestamp in UTC.,`date-time`,ISO-8601 UTC timestamp,`[DOC study-app-spec.md §2]`
+ConceptState,stability,FSRS memory stability $S$ in days.,`number`,Real `>= 0.0`,`[DOC study-app-spec.md §2]`
+ConceptState,difficulty,FSRS item difficulty $D$.,`number`,Real `1.0..10.0` (or `0.0` when `New`),`[DOC study-app-spec.md §2]`
+ConceptState,reps,Total number of completed quiz reviews for this concept.,`number`,Integer `>= 0`,`[DOC study-app-spec.md §2]`
+ConceptState,lapses,Number of times the concept was rated `Again` after reaching `Review`.,`number`,Integer `>= 0`,`[DOC study-app-spec.md §2]`
+ConceptState,last_review,UTC timestamp of the most recent quiz attempt for this concept.,`date-time`,ISO-8601 UTC timestamp or `null`,`[DOC study-app-spec.md §2]`
+Card,id,Stable unique flashcard identifier (`<MODULE>-<WEEK>-C<nnn>`).,`identifier`,"Non-empty slug (`1..80` chars), unique","`[DOC flashcard-pipeline.md §4]`, `[DOC study-app-spec.md §2]`"
+Card,module_id,Owning `Module.id`.,`identifier`,Foreign key → `Module.id`,`[DOC study-app-spec.md §2]`
+Card,lecture_id,Owning `Lecture.id` (or `null` for cross-lecture cards).,`identifier`,Foreign key → `Lecture.id` or `null`,`[DOC study-app-spec.md §2]`
+Card,concept_id,Linked `Concept.id`.,`identifier`,Foreign key → `Concept.id`,"`[DOC flashcard-pipeline.md §4]`, `[DOC study-app-spec.md §2]`"
+Card,front,"Prompt text (Markdown + LaTeX, or `{{c1::...}}` cloze template).",`text`,`1..2000` chars,`[DOC flashcard-pipeline.md §4]`
+Card,back,Answer text (empty string permitted for `cloze` cards).,`text`,`0..2000` chars (aim <~15 words for `basic`/`reverse`),`[DOC flashcard-pipeline.md §4 rule 6]`
+Card,extra,Optional post-answer explanation or labelled general-knowledge context.,`text`,`0..4000` chars,"`[DOC flashcard-pipeline.md §4 rules 6, 9]`"
+Card,tags,Multivalued hierarchical tags (e.g. `COMP4901B::Week04::RL`).,`text` (multivalued),`0..20` tag strings,"`[DOC flashcard-pipeline.md §4]`, `[DOC study-app-spec.md §2]`"
+Card,source,"Composite citation `{file, location}` pointing to the course slide/page.",`text` (composite),`file`: relative path; `location`: e.g. `slide 12`,"`[DOC flashcard-pipeline.md §4]`, `[DOC study-app-spec.md §2]`"
+CardState,card_id,Identifier of the scheduled `Card` (1:1).,`identifier`,Primary/foreign key → `Card.id`,`[DOC study-app-spec.md §2]`
+CardState,due,Next scheduled review timestamp in UTC.,`date-time`,ISO-8601 UTC timestamp,`[DOC study-app-spec.md §2]`
+CardState,stability,FSRS memory stability $S$ in days.,`number`,Real `>= 0.0`,`[DOC study-app-spec.md §2]`
+CardState,difficulty,FSRS item difficulty $D$.,`number`,Real `1.0..10.0` (or `0.0` when `New`),`[DOC study-app-spec.md §2]`
+CardState,reps,Total number of reviews completed for this card.,`number`,Integer `>= 0`,`[DOC study-app-spec.md §2]`
+CardState,lapses,Number of `Again` ratings on this card from `Review` state.,`number`,Integer `>= 0`,`[DOC study-app-spec.md §2]`
+CardState,last_review,UTC timestamp of the most recent review of this card.,`date-time`,ISO-8601 UTC timestamp or `null`,`[DOC study-app-spec.md §2]`
+CardReviewLog,id,Unique review log entry identifier.,`identifier`,UUID or integer sequence,`[DOC study-app-spec.md §2]`
+CardReviewLog,card_id,Reviewed `Card.id`.,`identifier`,Foreign key → `Card.id`,`[DOC study-app-spec.md §2]`
+CardReviewLog,reviewed_at,UTC timestamp when the review was recorded.,`date-time`,ISO-8601 UTC timestamp,`[DOC study-app-spec.md §2]`
+CardReviewLog,duration_ms,Elapsed time spent answering the card in milliseconds.,`number`,Integer `>= 0`,`[DOC study-app-spec.md §2]`
+Question,id,Stable unique question identifier (`<MODULE>-<WEEK>-Q<nnn>`).,`identifier`,"Non-empty slug (`1..80` chars), unique","`[DOC flashcard-pipeline.md §6.4]`, `[DOC study-app-spec.md §2]`"
+Question,module_id,Owning `Module.id`.,`identifier`,Foreign key → `Module.id`,`[DOC study-app-spec.md §2]`
+Question,lecture_id,Owning `Lecture.id` (or `null` for cross-lecture questions).,`identifier`,Foreign key → `Lecture.id` or `null`,`[DOC study-app-spec.md §2]`
+Question,variant_of,Primary `Concept.id` for which this question is a scheduled variant.,`identifier`,Foreign key → `Concept.id`,`[DOC flashcard-pipeline.md §6.4]`
+Question,concept_ids,"Multivalued list of `Concept.id`s tested (1 for standard, `2..*` for cross-lecture).",`identifier` (multivalued),`1..*` `Concept.id` values,"`[DOC flashcard-pipeline.md §6.4]`, `[DOC study-app-spec.md §2]`"
+Question,stem,Question prompt text (Markdown + LaTeX).,`text`,`1..4000` chars,"`[DOC flashcard-pipeline.md §6.4]`, `[DOC study-app-spec.md §2]`"
+Question,options,"Multivalued MCQ options `{label, text, is_correct, distractor_explanation}` when `type = mcq`, else `null`.",`text` (composite/multivalued),`2..6` options for `mcq` (exactly 1 `is_correct = true`); `null` otherwise,"`[DOC flashcard-pipeline.md §6.2 rule 6, §6.4]`, `[DOC study-app-spec.md §2]`"
+Question,model_answer,Full reference answer supported by the source material.,`text`,`1..4000` chars,"`[DOC flashcard-pipeline.md §6.4]`, `[DOC study-app-spec.md §2]`"
+Question,marking_points,Multivalued list of 2–5 explicit marking criteria for written/calculation types.,`text` (multivalued),`2..5` non-empty strings (or `0..5` for `mcq`),"`[DOC flashcard-pipeline.md §6.2 rule 6, §6.4]`"
+Question,source,"Composite citation `{file, location}` pointing to the course slide/page.",`text` (composite),"`file`: relative path; `location`: e.g. `slides 14, 18–19`",`[DOC flashcard-pipeline.md §6.4]`
+Question,assessments,Multivalued list of assessment `Deadline.id`s this question prepares for.,`identifier` (multivalued),`0..*` `Deadline.id` values,"`[DOC flashcard-pipeline.md §6.4]`, `[DOC study-app-spec.md §2]`"
+QuestionAttempt,id,Unique attempt identifier.,`identifier`,UUID or integer sequence,`[DOC study-app-spec.md §2]`
+QuestionAttempt,question_id,Answered `Question.id`.,`identifier`,Foreign key → `Question.id`,`[DOC study-app-spec.md §2]`
+QuestionAttempt,concept_id,Scheduled `Concept.id` updated by this attempt.,`identifier`,Foreign key → `Concept.id`,`[DOC study-app-spec.md §2]`
+QuestionAttempt,answered_at,UTC timestamp when the student submitted the response.,`date-time`,ISO-8601 UTC timestamp,`[DOC study-app-spec.md §2]`
+QuestionAttempt,response,Student's selected option or written/calculated answer text.,`text`,`1..10000` chars,`[DOC study-app-spec.md §2]`
+QuestionAttempt,points_met,Multivalued indices of `marking_points` satisfied (`0..k-1`).,`number` (multivalued),Subset of `0..len(marking_points)-1`,"`[DOC study-app-spec.md §2, §3.4]`"
+QuestionAttempt,comment,Grader feedback comment returned by Claude or recorded during marking.,`text`,`0..2000` chars,"`[DOC study-app-spec.md §1.2, §3.4]`"
+QuestionAttempt,duration_ms,Elapsed time spent answering the question in milliseconds.,`number`,Integer `>= 0`,`[DOC study-app-spec.md §2]`
+GlossaryEntry,id,Stable unique glossary entry identifier (`<MODULE>-G<nnn>`).,`identifier`,"Non-empty slug (`1..80` chars), unique",`[DOC study-app-spec.md §2]`
+GlossaryEntry,module_id,Owning `Module.id`.,`identifier`,Foreign key → `Module.id`,`[DOC study-app-spec.md §2]`
+GlossaryEntry,term,Full expanded term in words.,`text`,`1..300` chars,"`[DOC flashcard-pipeline.md §3.2]`, `[DOC study-app-spec.md §2]`"
+GlossaryEntry,abbreviation,Symbol or abbreviation string.,`text`,`1..64` chars,"`[DOC flashcard-pipeline.md §3.2]`, `[DOC study-app-spec.md §2]`"
+GlossaryEntry,canonical,"Exact mandatory format string (`""full term (abbreviation)""` or `""full term (symbol in this module)""`).",`text`,`1..400` chars,"`[DOC flashcard-pipeline.md §3.2]`, `[DOC study-app-spec.md §2]`"
+GlossaryEntry,where_defined,Source file and slide/page where the symbol is first defined.,`text`,`1..300` chars,`[DOC flashcard-pipeline.md §3.2]`
+Deadline,id,Stable unique deadline identifier (`<MODULE>-D<nnn>` or UUID).,`identifier`,"Non-empty slug (`1..80` chars), unique",`[DOC study-app-spec.md §2]`
+Deadline,module_id,Owning `Module.id`.,`identifier`,Foreign key → `Module.id`,`[DOC study-app-spec.md §2]`
+Deadline,title,Deadline or assessment title.,`text`,`1..200` chars,`[DOC study-app-spec.md §2]`
+Deadline,due_at,"Due timestamp in UTC (`null` when unannounced in source, with reason in `notes`).",`date-time`,ISO-8601 UTC timestamp or `null`,"`[DOC flashcard-pipeline.md §8]`, `[DOC study-app-spec.md §2]`"
+Deadline,timezone,Original IANA timezone of the deadline (default `Asia/Hong_Kong`).,`text`,Valid IANA timezone,"`[SEED §7]`, `[DOC study-app-spec.md §2]`, `ASM-022`"
+Deadline,weighting,Percentage weight of the module grade.,`number`,Real `0.0..100.0` or `null`,"`[DOC flashcard-pipeline.md §3.2]`, `[DOC study-app-spec.md §2]`"
+Deadline,submission_url,Submission method or URL (e.g. Canvas assignment URL or exam hall).,`text`,`0..500` chars,"`[DOC flashcard-pipeline.md §3.2]`, `[DOC study-app-spec.md §2]`"
+Deadline,covers_lectures,"Multivalued list of `Lecture.id`s (or `""all""`) covered by an exam/midterm.",`identifier` (multivalued),`0..*` `Lecture.id`s,"`[DOC flashcard-pipeline.md §3.2, §12]`, `[DOC study-app-spec.md §2]`"
+Deadline,format,Optional map of question-type weights summing to `1.0` for exams/midterms.,`number` (composite),"Keys from `Question.type`, values `0.0..1.0`, sum `= 1.0`","`[DOC flashcard-pipeline.md §12]`, `[DOC study-app-spec.md §1.2]`"
+Deadline,notes,Optional notes or source location/reason for an unannounced date.,`text`,`0..2000` chars,`[DOC study-app-spec.md §2]`
+Milestone,id,Unique milestone identifier.,`identifier`,UUID or slug,`[DOC study-app-spec.md §2]`
+Milestone,deadline_id,Parent coursework `Deadline.id`.,`identifier`,Foreign key → `Deadline.id`,`[DOC study-app-spec.md §2]`
+Milestone,title,Milestone step description (e.g. `Draft report`).,`text`,`1..200` chars,"`[DOC study-app-spec.md §1.3, §2]`"
+Milestone,due_on,Local calendar date on which the milestone is due.,`date-time`,ISO-8601 date `YYYY-MM-DD`,`[DOC study-app-spec.md §2]`
+Milestone,est_minutes,Estimated duration in minutes.,`number`,Integer `1..600`,`[DOC study-app-spec.md §2]`
+Reading,id,Stable unique reading identifier (`<MODULE>-R<nnn>`).,`identifier`,"Non-empty slug (`1..80` chars), unique",`[DOC study-app-spec.md §2]`
+Reading,module_id,Owning `Module.id`.,`identifier`,Foreign key → `Module.id`,`[DOC study-app-spec.md §2]`
+Reading,lecture_id,Optional linked `Lecture.id`.,`identifier`,Foreign key → `Lecture.id` or `null`,"`[DOC flashcard-pipeline.md §3.2]`, `[DOC study-app-spec.md §2]`"
+Reading,citation,Title/author citation of the reading.,`text`,`1..500` chars,"`[DOC flashcard-pipeline.md §3.2]`, `[DOC study-app-spec.md §2]`"
+Reading,pages,Chapter or page range string and page count.,`text`,`1..100` chars,"`[DOC flashcard-pipeline.md §3.2]`, `[DOC study-app-spec.md §2]`"
+Reading,page_count,Numeric page count used to compute `est_minutes = page_count × minutes_per_page`.,`number`,Integer `1..1000`,`[DOC study-app-spec.md §1.4]`
+Reading,read_by,Local calendar date by which the reading should be completed (default: lecture date).,`date-time`,ISO-8601 date `YYYY-MM-DD`,"`[DOC flashcard-pipeline.md §3.2]`, `[DOC study-app-spec.md §2]`"
+Reading,est_minutes,Derived/stored estimated reading time in minutes (`page_count × minutes_per_page`).,`number`,Integer `1..1000`,"`[DOC study-app-spec.md §1.4, §2]`"
+Task,id,Unique user task identifier.,`identifier`,UUID or integer sequence,`[DOC study-app-spec.md §2]`
+Task,title,Task description entered by the student.,`text`,`1..300` chars,`[DOC study-app-spec.md §2]`
+Task,module_id,Optional linked `Module.id`.,`identifier`,Foreign key → `Module.id` or `null`,`[DOC study-app-spec.md §2]`
+Task,due_on,Optional local calendar due date.,`date-time`,ISO-8601 date `YYYY-MM-DD` or `null`,`[DOC study-app-spec.md §2]`
+Task,est_minutes,Estimated duration in minutes.,`number`,Integer `1..600`,`[DOC study-app-spec.md §2]`
+DailyPlan,date,Local calendar date of the plan in `Settings.timezone`.,`date-time`,"Primary key, ISO-8601 date `YYYY-MM-DD`",`[DOC study-app-spec.md §2]`
+DailyPlan,generated_at,UTC timestamp when the plan was generated.,`date-time`,ISO-8601 UTC timestamp,`[DOC study-app-spec.md §3.3]`
+DailyPlanItem,id,Unique checklist item identifier within a `DailyPlan`.,`identifier`,UUID or integer sequence,"`[DOC study-app-spec.md §2, §5]`"
+DailyPlanItem,plan_date,Owning `DailyPlan.date`.,`date-time`,Foreign key → `DailyPlan.date`,`[DOC study-app-spec.md §2]`
+DailyPlanItem,ref_id,"Identifier of the referenced `Module`, `Reading`, `Milestone`, or `Task`.",`identifier`,Non-empty ID string,`[DOC study-app-spec.md §2]`
+DailyPlanItem,est_minutes,Estimated study time for this item in minutes.,`number`,Real `>= 0.0`,"`[DOC study-app-spec.md §1.4, §2]`"
+DailyPlanItem,completed_at,"UTC timestamp when `done` was set to `true`, needed to verify same-day completion for `SM-4b` **(Proposal for CP2)**.",`date-time`,ISO-8601 UTC timestamp or `null`,"`A01 §3 SM-4b`, `DEC-012` **(Proposal for CP2)**"
+TutorThread,id,Unique tutor conversation thread identifier.,`identifier`,UUID,`[DOC study-app-spec.md §2]`
+TutorThread,module_id,Owning `Module.id`.,`identifier`,Foreign key → `Module.id`,`[DOC study-app-spec.md §2]`
+TutorThread,title,Thread title for browsing and searching.,`text`,`1..200` chars,`[DOC study-app-spec.md §2]`
+TutorThread,created_at,UTC timestamp when the thread was created.,`date-time`,ISO-8601 UTC timestamp,`[DOC study-app-spec.md §2]`
+TutorMessage,id,Unique message identifier within a `TutorThread`.,`identifier`,UUID,`[DOC study-app-spec.md §2]`
+TutorMessage,thread_id,Owning `TutorThread.id`.,`identifier`,Foreign key → `TutorThread.id`,`[DOC study-app-spec.md §2]`
+TutorMessage,content,Message text (Markdown + LaTeX + slide citations).,`text`,`1..20000` chars,`[DOC study-app-spec.md §2]`
+TutorMessage,created_at,UTC timestamp when the message was sent.,`date-time`,ISO-8601 UTC timestamp,`[DOC study-app-spec.md §2]`
+TutorMessage,tokens_in,Uncached + cached input token count billed for this call (`0` for `user` role).,`number`,Integer `>= 0`,"`[DOC study-app-spec.md §2, §5]`"
+TutorMessage,tokens_out,Output token count billed for this call (`0` for `user` role).,`number`,Integer `>= 0`,"`[DOC study-app-spec.md §2, §5]`"
+TutorMessage,cost_usd,Computed USD cost of this message at the configured token rates (`SM-6`).,`money`,Exact decimal `>= 0.0000` (USD),"`A01 §3 SM-6`, `[DOC study-app-spec.md §5]`"
+Proposal,id,Unique tutor proposal identifier.,`identifier`,UUID,`[DOC study-app-spec.md §2]`
+Proposal,payload,Draft card or question JSON structure (matching `Card` or `Question` fields).,`text` (composite),Valid JSON object,`[DOC study-app-spec.md §2]`
+Proposal,origin_thread_id,`TutorThread.id` in which the proposal was generated.,`identifier`,Foreign key → `TutorThread.id`,`[DOC study-app-spec.md §2]`
+FeedbackItem,id,Unique feedback queue entry identifier.,`identifier`,UUID,`[DOC study-app-spec.md §2]`
+FeedbackItem,ref_id,"Identifier of the reported `Card`/`Question`, top-up `Concept`, or accepted `Proposal`.",`identifier`,Non-empty ID string,`[DOC study-app-spec.md §2]`
+FeedbackItem,comment,Student's explanation of what is wrong/unclear or top-up note.,`text`,`0..2000` chars,"`[DOC flashcard-pipeline.md §10]`, `[DOC study-app-spec.md §2]`"
+FeedbackItem,created_at,UTC timestamp when the feedback item was queued.,`date-time`,ISO-8601 UTC timestamp,`[DOC study-app-spec.md §2]`
+Settings,id,"Singleton settings row identifier (`""default""`).",`identifier`,"Constant `""default""`",`[DOC study-app-spec.md §2]`
+Settings,daily_budget_min,Global daily study time budget in minutes.,`number`,Integer `15..720` (default `120`),"`[DOC study-app-spec.md §1.4, §2]`"
+Settings,new_cards_per_day,Default daily new-card limit per module.,`number`,Integer `0..500` (default `20`),"`[DOC study-app-spec.md §1.1, §2]`"
+Settings,quiz_per_day,Default daily concept quiz count per module.,`number`,Integer `0..100` (default `10`),"`[DOC study-app-spec.md §1.2, §2]`"
+Settings,desired_retention,Default FSRS target retention probability.,`number`,Decimal `0.70..0.99` (default `0.90`),"`[DOC study-app-spec.md §1.1, §2]`"
+Settings,assessment_mode_days,Look-ahead window in days before an exam/midterm that activates assessment mode.,`number`,Integer `1..90` (default `21`),"`[DOC study-app-spec.md §1.2, §2]`"
+Settings,reading_lookahead_days,Days before `read_by` that a required reading joins the Today checklist.,`number`,Integer `0..30` (default `3`),"`[DOC study-app-spec.md §1.4, §2]`"
+Settings,minutes_per_page,Reading speed factor in minutes per page.,`number`,Real `0.5..15.0` (default `2.5`),"`[DOC study-app-spec.md §1.4, §2]`"
+Settings,timezone,Student's current IANA timezone for generating the Today checklist.,`text`,Valid IANA timezone (default `Asia/Hong_Kong`),"`[SEED §7]`, `[DOC study-app-spec.md §2]`, `ASM-022`"
+Settings,grading_model,Claude model ID used for marking written answers.,`text`,Model identifier string,"`[DOC study-app-spec.md §4, §5]`"
+Settings,tutor_model,Claude model ID used for the tutor chat.,`text`,Model identifier string,"`[DOC study-app-spec.md §4, §5]`"
+Settings,monthly_spend_cap_usd,"Optional monthly Claude API spend cap in USD (`null` = no cap, `[USER Q-06]`).",`money`,Exact decimal `> 0.00` (USD) or `null`,"`[SEED §7 Misuse]`, `[USER Q-06]`, `[DOC study-app-spec.md §5]`"
+Settings,token_rates_json,Per-million-token input/output/cache prices per model for computing `SM-6` **(Proposal for CP2)**.,`money` (composite),JSON map of exact decimal USD rates per 1M tokens,"`A01 §3 SM-6`, `DEC-012` **(Proposal for CP2)**"
+ImportBatch,id,"Unique import log record identifier, needed to verify `SM-1` **(Proposal for CP2)**.",`identifier`,UUID,"`A01 §3 SM-1`, `DEC-012` **(Proposal for CP2)**"
+ImportBatch,module_id,Imported `Module.id`.,`identifier`,Foreign key → `Module.id`,`A01 §3 SM-1` **(Proposal for CP2)**
+ImportBatch,lecture_ids,Multivalued list of `Lecture.id`s whose items were imported in this batch.,`identifier` (multivalued),`0..*` `Lecture.id` values,`A01 §3 SM-1` **(Proposal for CP2)**
+ImportBatch,imported_at,UTC timestamp when the import was applied.,`date-time`,ISO-8601 UTC timestamp,`A01 §3 SM-1` **(Proposal for CP2)**
+ImportBatch,counts,"Composite summary `{added, updated, suspended}` of items in the import.",`number` (composite),Non-negative integers,"`[SEED §3 story 6]`, `[DOC study-app-spec.md §4, §6]` **(Proposal for CP2)**"
+GradingCallLog,id,"Unique Claude grading API call log identifier, needed for `SM-6` **(Proposal for CP2)**.",`identifier`,UUID,"`A01 §3 SM-6`, `[DOC study-app-spec.md §5]` **(Proposal for CP2)**"
+GradingCallLog,attempt_id,Linked `QuestionAttempt.id`.,`identifier`,Foreign key → `QuestionAttempt.id`,`A01 §3 SM-6` **(Proposal for CP2)**
+GradingCallLog,model,Claude model ID used for the grading call.,`text`,Non-empty string,`A01 §3 SM-6` **(Proposal for CP2)**
+GradingCallLog,called_at,UTC timestamp of the grading API call.,`date-time`,ISO-8601 UTC timestamp,`A01 §3 SM-6` **(Proposal for CP2)**
+GradingCallLog,tokens_in,Input token count (cached + uncached) for the grading call.,`number`,Integer `>= 0`,"`A01 §3 SM-6`, `[DOC study-app-spec.md §5]` **(Proposal for CP2)**"
+GradingCallLog,tokens_out,Output token count for the grading call.,`number`,Integer `>= 0`,"`A01 §3 SM-6`, `[DOC study-app-spec.md §5]` **(Proposal for CP2)**"
+GradingCallLog,cost_usd,Computed USD cost of the grading call at `Settings.token_rates_json`.,`money`,Exact decimal `>= 0.0000` (USD),`A01 §3 SM-6` **(Proposal for CP2)**
+PipelineConfig,module_code,Module code configured in `pipeline.config.json`.,`identifier`,Non-empty string,`[DOC flashcard-pipeline.md §12]`
+PipelineConfig,semester,"Composite `{week1_start, reading_weeks[], exam_period[], timezone}`.",`text` (composite),Valid dates and IANA timezone,`[DOC flashcard-pipeline.md §12]`
+PipelineConfig,assessments,"Multivalued list of `{id, date, covers_lectures, format}` entries.",`text` (composite/multivalued),`0..*` assessment config objects,`[DOC flashcard-pipeline.md §12]`
+PipelineConfig,cards_per_lecture,"Composite `{min, max}` target card count per lecture (default `15..40`).",`number` (composite),"`min = 15`, `max = 40`","`[DOC flashcard-pipeline.md §4 rule 10, §12]`"
+PipelineConfig,variants,"Composite `{core: [3,5], supporting: [2,3], detail: [0,1]}` variant ranges (`DEC-006`).",`number` (composite),Integer ranges per importance tier,"`[DOC flashcard-pipeline.md §6.2, §12]`, `DEC-006`"
+PipelineConfig,max_review_rounds,Maximum Creator revision rounds per stage (default `2`).,`number`,Integer `1..2` (default `2`),"`[DOC flashcard-pipeline.md §7, §12]`"
+PipelineConfig,parallel_lectures,Maximum lectures processed in one parallel batch (default `6`).,`number`,Integer `1..10` (default `6`),`[DOC flashcard-pipeline.md §12]`
+PipelineConfig,human_spot_check_rate,Fraction of accepted items sampled for human spot-check (default `0.10`).,`number`,Decimal `0.05..1.00` (default `0.10`),"`[DOC flashcard-pipeline.md §9, §12]`"
+ReviewRecord,id,"Composite identifier `(lecture, stage, round)` of a Reviewer output file.",`identifier`,"Unique per `(lecture, stage, round)`",`[DOC flashcard-pipeline.md §5.2]`
+ReviewRecord,round,"Review round number (`1` initial, `2` after revision 1, `3` after revision 2).",`number`,Integer `1..3`,"`[DOC flashcard-pipeline.md §5.2, §7]`"
+ReviewRecord,missing_concepts,"Multivalued `{summary, source}` gaps found in the concept map.",`text` (composite/multivalued),`0..*` gap objects,`[DOC flashcard-pipeline.md §5.2]`
+FlaggedItem,id,Unique flagged item identifier in `flagged.json`.,`identifier`,Non-empty string,"`[DOC flashcard-pipeline.md §2, §7, §9]`"
+FlaggedItem,lecture_id,Lecture in which the item was flagged.,`identifier`,`Lecture.id`,"`[DOC flashcard-pipeline.md §2, §9]`"
+FlaggedItem,reason,Explanation and Reviewer feedback history for the human review step.,`text`,`1..2000` chars,"`[DOC flashcard-pipeline.md §7, §9]`"
+ModuleAudit,module_id,Audited `Module.id` (`module-audit.json`).,`identifier`,`Module.id`,"`[DOC flashcard-pipeline.md §3.7, §8]`"
+ModuleAudit,outcome_coverage,Mapping of module learning outcomes to covering cards/questions and any gaps.,`text` (composite),JSON object,`[DOC flashcard-pipeline.md §8]`
+ModuleAudit,assessment_coverage,Check of variant counts per concept in each assessment's scope.,`text` (composite),JSON object,`[DOC flashcard-pipeline.md §8]`
+ModuleAudit,duplicates,Cross-lecture duplicate or near-duplicate card/question pairs detected.,`text` (composite/multivalued),`0..*` duplicate pairs,"`[DOC flashcard-pipeline.md §3.7, §8]`"
+ModuleAudit,notation_issues,Items whose text deviates from `GlossaryEntry.canonical`.,`text` (composite/multivalued),`0..*` notation findings,"`[DOC flashcard-pipeline.md §3.7, §8]`"
+ModuleAudit,proposed_items,Cross-lecture synthesis cards and questions proposed by the Auditor.,`text` (composite/multivalued),`0..N` draft items,"`[DOC flashcard-pipeline.md §3.7, §8]`"
+PipelineRunSummary,run_id,Unique pipeline run identifier.,`identifier`,Timestamp/UUID slug,"`[SEED §3 Reports & outputs]`, `[DOC flashcard-pipeline.md §3.1]`"
+PipelineRunSummary,module_id,Processed `Module.id`.,`identifier`,`Module.id`,`[DOC flashcard-pipeline.md §3.1]`
+PipelineRunSummary,lecture_counts,"Per-lecture counts `{accepted, rejected, flagged}` for cards and questions.",`number` (composite/multivalued),Non-negative integers per lecture,"`[SEED §3 Reports & outputs]`, `[DOC flashcard-pipeline.md §3.1]`"

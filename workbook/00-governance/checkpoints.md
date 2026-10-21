@@ -55,3 +55,48 @@ Full detail: workbook/README.md
 ```text
 Approve
 ```
+
+---
+
+## CP2 — Requirements Baseline and Sourcing Decision (2026-10-21, STRICT)
+
+Status: **Pending user reply (STRICT)** (2026-10-21).
+
+```text
+HUMAN CHECKPOINT CP2 — Requirements Baseline and Sourcing Decision
+Decision needed: Approve | Approve with changes | Reject
+
+Summary
+- Produced and reviewed all Stage 2 requirements and sourcing artifacts (A09–A20, A22, plus A00 updates and the populated traceability-matrix.md/.csv) on branch stage-2/requirements; Gate G2 passed at r2 (58 PASS / 0 FAIL / 1 N/A, workbook/00-governance/reviews/G2-r2.md) after resolving all 11 G2-r1 findings and 2 observations (workbook/00-governance/dispositions.md).
+- Requirements Sources & Document Analysis (A09, workbook/02-analysis/requirements-sources.md): analysed all 7 sources (SRC-01–SRC-07), including a full structural analysis of your COMP 4901B syllabus (SRC-05) and 61-page RL lecture PDF (SRC-06: 25/60 content slides image-led, 17 slides with embedded LaTeXiT equations, garbled text ligatures) with zero copyrighted prose or staff PII committed (DEC-008), and resolved all 9 cross-document contradictions (C-01–C-09).
+- Requirements Catalog (A10, workbook/02-analysis/requirements.md & requirements.csv): 89 atomic, testable requirements — 66 functional (REQ-F-001–REQ-F-066: 40 Must in R1, 16 Should in R2, 10 Could in R3) and 23 non-functional with numerical targets (REQ-N-001–REQ-N-023: 18 Must, 4 Should, 1 Could) — plus 4 user decision points (UDP-01–UDP-04 from seed §10) and 9 out-of-scope items (X1–X9).
+- 14 Requirements marked **(Proposal for CP2)** (listed in A10 §2–§3, workbook/02-analysis/requirements.md): 8 functional proposals (REQ-F-001 LaTeXiT equation recovery, REQ-F-023 first-lapse/retrievability fields for SM-2, REQ-F-026 daily new-card cap default 20, REQ-F-040 7-day checklist count for SM-4b, REQ-F-042 structured wrong/unclear report reason for SM-3, REQ-F-048 Stats dashboard for SM-2/3/5/6 in R2, REQ-F-052 tutor thread deletion) and 7 non-functional proposals (REQ-N-001–REQ-N-006 latency/throughput targets from seed §7, and REQ-N-017 on-demand cleanup of intermediate pipeline round files).
+- System boundary & data flow models (A11, A12, workbook/02-analysis/context-diagram.md & dfd.md): Context Diagram (P0 with 6 external entities E1–E6 and 25 boundary flows CF-01–CF-25) balanced 1-for-1 against the Level-0 DFD (processes P1–P7, data stores D1–D9) and all 7 Level-1 DFDs (22 primitive processes).
+- Behavioural models (A13, A14, A15, workbook/02-analysis/use-cases.md, workflows.md & decision-tables.md): 21 use cases (UC-01–UC-21: 11 Must, 6 Should, 4 Could) with 45 failure/fallback/cancel extensions; 2 end-to-end multi-lane workflow diagrams (WF-01 pipeline generation/review/audit/import, WF-02 daily study loop) with finite exit conditions on all 7 loops; and 6 complete (2^3 = 8 columns each, 48 rules) and reduced (31 rules) decision tables (DT-01–DT-06), including pass/fail 8-criterion rubric routing with round 1–2 immediate removal on reject (DT-01) and lossless re-import diffing (DT-02).
+- Conceptual Data Model, Business Rules & Glossary (A16, A17, A18, workbook/02-analysis/conceptual-data-model.md, business-rules.md, glossary.md & data-dictionary.csv): 28 conceptual entities (E01–E28), 32 relationships (REL-01–REL-32), and CRUD matrix; 45 atomic business rules (BR-001–BR-045, preserving your exact <~15-word card answer limit, pass/fail 8-criterion rubrics, and <MODULE>-<WEEK>-K<nn>/-C<nnn>/-Q<nnn> IDs); and 34 domain glossary terms plus 262 attributes synchronised 1-for-1 between A16 and A18.
+- Acceptance Scenarios & Master Test Plan (A19, A20, workbook/02-analysis/acceptance-scenarios.md, acceptance-scenarios.csv & master-test-plan.md): 137 observable Given/When/Then scenarios (AT-001–AT-137) covering every requirement, use case main flow, extension, and decision-table column; and a 4-level test plan (Unit, Integration/Contract, System/NFR, and single-student UAT) with concrete verification methods for all 23 REQ-Ns and SM-1–SM-6.
+- Sourcing Decision (A22, workbook/02-analysis/sourcing.md, DEC-013): evaluated 4 options against your user-stated Must requirements (and separately against CP2 proposals and seed §10 guardrails) over the 36-month horizon — Opt 1 Custom Build (Pipeline + Integrated Study App, $72–$1,800 base TCO / $72–$5,400 with subscription upgrade contingency, 15–40 h active student time, 49/49 user-stated Musts met natively), Opt 2 Anki Hybrid ($96.99–$1,824.99 base / $96.99–$5,424.99 with contingency on iOS, 12–30 h active time, 29 native / 15 custom-companion / 5 unmet Musts), Opt 3 RemNote Pro SaaS ($288–$720, ruled out by third-party cloud upload of copyrighted HKUST slides and missing concept-level FSRS), and Opt 4 Obsidian + Plugins ($0–$1,728, ruled out by lack of concept-level FSRS, multi-variant quiz rotation, and fragile re-imports). Recommends Opt 1 (Custom Build).
+
+Assumptions that need your confirmation (high impact, low or medium confidence, or marked for this checkpoint)
+- ASM-037 (M/M, CP2): The performance targets in seed §7 (REQ-N-001–REQ-N-006: <=100 ms card flip/rate p95, <=300 ms page load p95, <=8 s Claude short-answer marking p90, <=3 s tutor first token p90, <=10 s module import p90, <=15 min/lecture pipeline run p90) are adopted as baseline targets — if wrong: we adjust the numerical thresholds in A10 §3 and A20 §5.
+- ASM-058 (H/M, verified 2026-10-21 in A22 §1 & A00): Running your personal generation pipeline interactively in Claude Code on your individual subscription is permitted by Anthropic's Consumer Terms, while unattended cron runs and embedded web-app calls (R2 marking/tutor) are kept off the subscription (BR-006, BR-043) — if wrong: pipeline runs move to API billing with your prior approval (UDP-01, RSK-021).
+- ASM-059 (M/M, verified 2026-10-21 in A22 §3 & A00): Official Anthropic API token rates (Haiku 4.5 $1/$5 per MTok, Sonnet 4.6 $3/$15 per MTok, prompt cache read 0.1x / 5-min write 1.25x) give $2–$40/month ($72–$1,440 over 36 months) for R2 marking and tutor — if wrong: we update the default cost table in REQ-F-048 and TCO figures in A02/A22.
+- ASM-062 (M/M, verified 2026-10-21 in A22 §3 & A00): Official Claude subscription tiers are Pro ($20/mo), Max 5x ($100/mo, +$80/mo step), and Max 20x ($200/mo, +$100/mo step) — if wrong: we update the $0–$100/mo upgrade contingency in A02/A22.
+- ASM-023 (L/M, CP2): Tutor threads are kept for the current semester with a one-click Delete Thread action (REQ-F-052, BR-040) — if wrong: we can keep threads indefinitely or auto-purge after N days.
+- ASM-024 (L/M, CP2): Pipeline intermediate files (cards.round*.json, review.round*.json) are kept until module sign-off and cleaned up on demand while preserving *.final.json, flagged.json, and run-summary.json (REQ-N-017) — if wrong: we retain all intermediate round files indefinitely.
+- ASM-027 (L/M, CP2): When R3 adds phone access (REQ-F-059–REQ-F-061), target mobile browsers are current iOS Safari and Android Chrome down to a 375 px viewport width (REQ-N-019) — if wrong: we narrow mobile testing to your specific phone browser/OS.
+- ASM-044 (H/L, carried from CP1): Your Claude subscription's rolling and weekly limits sustain the CS lecture-processing pace between SL-05 and 30 Nov — if wrong: batch across windows, upgrade one plan step (+$80–$100/mo), or switch to API billing with your approval (tested first in SL-01).
+
+Questions and observations raised since the last checkpoint
+- Sourcing choice (A22 §4, DEC-013, protocol §6 Stage 2 step 6): Do you approve Option 1 (Custom Build — Pipeline + Integrated Study App, reusing ts-fsrs, KaTeX, SQLite, Ajv, and @anthropic-ai/sdk) or prefer Option 2 (Anki Hybrid + smaller companion app)? — default if you reply Approve: adopt Option 1 (Custom Build) for Stage 3 architecture and design.
+- 14 Proposed requirements (A10 §2–§3): Do you approve the 14 requirements marked **(Proposal for CP2)** (REQ-F-001 LaTeXiT recovery, REQ-F-023/026/040/042/048 metric & cap fields, REQ-F-052 tutor thread delete, REQ-N-001–006 latency/runtime targets, REQ-N-017 intermediate file cleanup)? — default if you reply Approve: adopt all 14 into the A10 baseline.
+
+Changes to baselined artifacts since the last checkpoint
+- None (zero edits to A01–A07 or study-app-seed-spec.md).
+
+Risks you are being asked to accept
+- None as unmitigated residual risks at CP2; all 22 risks in A03 remain mitigated, with RSK-002 (image-led & LaTeXiT slides), RSK-004 (subscription rate limits), and RSK-018 (fresh Reviewer context isolation) scheduled for empirical validation in SL-01 immediately after Stage 3.
+
+On approval, these artifacts become the baseline: A09 (with 02-analysis/sources/), A10 (with requirements.csv), A11, A12, A13, A14, A15, A16, A17, A18 (with data-dictionary.csv), A19 (with acceptance-scenarios.csv), A20, A22, and traceability-matrix.md (with traceability-matrix.csv)
+Full detail: workbook/README.md
+```

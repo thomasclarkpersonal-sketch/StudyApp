@@ -132,6 +132,16 @@ Each question gives the options, why it matters, and the default the agent assum
 - **Status:** answered 2026-10-20
 - **Answer** (verbatim, given 2026-10-20 through the question form): (a) "My Claude subscription (Pro or Max)"
 
+## Questions from the Stage 0 document skim (raised 2026-10-21)
+
+### Q-16 · The COMP 4901B final's question format
+- **Question:** The COMP 4901B syllabus says the final is closed-book and assesses "cumulative conceptual understanding and technical reasoning", marked on "correctness of concepts and derivations" and "completeness of reasoning". It gives no mix of question types. Do you know the mix (for example MCQ, short answer, derivations, essay), or do you have a past paper?
+- **Options:** (a) I know the mix and will give it · (b) I have a past paper and will add it to my material folder · (c) Neither; decide from the syllabus wording
+- **Why it matters:** question rule 3 weights question types "by how the relevant assessment is actually set" [DOC flashcard-pipeline.md §6.2]. Without the mix, the question bank may not fit the format (success metric: concepts quizzed before assessments [SEED §1]). [DOC ug_course_syllabus_template_doc_COMP4901B.docx.pdf p.2]
+- **Default if unanswered:** carried to CP1. The student enters the mix in `pipeline.config.json` before the first question-bank run for this module, and the agent invents no weighting. → `ASM-047`
+- **Status:** open (carried to CP1)
+- **Answer:** —
+
 ## Documents requested (Stage 0 step 6)
 
 The agent cannot interview you or watch you study, so existing documents stand in for that (catalog A09). Useful ones, in order:
@@ -141,6 +151,8 @@ The agent cannot interview you or watch you study, so existing documents stand i
 3. A past paper or sample questions, if available.
 4. The semester calendar (week 1 start, reading weeks, exam period).
 5. Screenshots of anything you use today: Anki statistics, your calendar, your to-do list.
+
+**Received 2026-10-21:** item 1, the COMP 4901B syllabus, and item 2, a COMP 4901B lecture with maths and diagrams. Both are referenced where the student keeps them, outside the repository (`DEC-008`); see the README's source documents table. Items 3–5 are still welcome.
 
 > [!CAUTION]
 > Course material is copyrighted and this repository is public. Do not put course files inside the repository. Keep them in a folder outside it (for example `~/StudyApp-material/`), or ask the agent to add a git-ignored folder first. [SEED §7] [AGENTS.md §3]

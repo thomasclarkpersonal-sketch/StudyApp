@@ -19,7 +19,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 
 | Stage | Status | Gate | Checkpoint |
 | :-- | :-- | :-- | :-- |
-| 0 Intake & Clarification | Complete (2026-10-20): Q-01 to Q-15 answered; Q-02 and Q-12 only in part (dates and time zone carried to CP1); documents requested | none (reviewed at G1) | — |
+| 0 Intake & Clarification | Complete (2026-10-21): Q-01 to Q-15 answered (Q-02 and Q-12 in part); Q-16 carried to CP1; two of the requested documents received and skimmed | none (reviewed at G1) | — |
 | 1 Initiation, Feasibility & Tailoring | Not started | G1 | CP1 |
 | 2 Requirements Analysis & Sourcing | Not started | G2 | CP2 |
 | 3 Architecture & Design | Not started | G3 | CP3 |
@@ -29,7 +29,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 
 - **Current baseline:** none.
 - **Pending checkpoint:** none. The next is CP1, after G1.
-- **Carried to CP1:** exact midterm and exam dates (`ASM-045`); the university's time zone (`ASM-022`); the first success metric, since the MVP may arrive after the first midterm (`ASM-036`, [USER Q-11]); reported items reaching the pipeline in the MVP (`ASM-038`); subscription usage limits for pipeline runs (`ASM-044`); whether text extraction captures maths- and diagram-heavy slides (`ASM-016`).
+- **Carried to CP1:** exact midterm dates, and which module has the first midterm (`ASM-045`); the university's time zone, inferred as Hong Kong (`ASM-022`); the first success metric, since the MVP may arrive after the first midterm (`ASM-036`, [USER Q-11]); reported items reaching the pipeline in the MVP (`ASM-038`); subscription usage limits for pipeline runs (`ASM-044`); reading slide images as well as text (`ASM-046`); the COMP 4901B final's format (Q-16, `ASM-047`).
 - **Branch:** `stage-0/intake`.
 
 ## Seed intake (Stage 0 step 1)
@@ -60,7 +60,16 @@ No section is Blank.
 | `study-app-seed-spec.md` | With the repository | Read in full at Stage 0 |
 | `flashcard-pipeline.md` | With the repository | Skimmed at Stage 0; full analysis in A09 (Stage 2) |
 | `study-app-spec.md` | With the repository | Skimmed at Stage 0; full analysis in A09 (Stage 2) |
-| Handbook, sample slides, past paper, semester calendar, screenshots | Requested | Not supplied yet. Must not be committed to this public repository |
+| Handbook, sample slides, past paper, semester calendar, screenshots | Requested | Two received 2026-10-21 (below). Past paper, calendar and screenshots not supplied yet. Must not be committed to this public repository |
+| `ug_course_syllabus_template_doc_COMP4901B.docx.pdf` (COMP 4901B Large Language Models syllabus, HKUST, Fall 2026-27, 4 pages) | 2026-10-21; kept outside the repository at `C:\Users\thoma\Documents\AI SLOP\` (`DEC-008`) | Skimmed at Stage 0; full analysis in A09 |
+| `COMP4901b_Sept24_RL.pdf` (COMP 4901B lecture on reinforcement learning, Keynote export, 61 pages) | 2026-10-21; same location (`DEC-008`) | Skimmed at Stage 0; full analysis in A09 |
+
+**Stage 0 skim findings** (high-impact items only; A09 analyses both documents in full):
+- **COMP 4901B has no midterm.** Its assessments are attendance and in-class quizzes, three individual programming assignments, a group mini-project, and a closed-book final in the HKUST exam period, 7–19 Dec 2026. The first midterm (Q-02) is therefore in another module. → `ASM-045`
+- **The syllabus gives little for the Extractor to find.** Coursework dates are "to be announced on Canvas", and there is no weekly schedule, no reading list and no question-type mix for the final. → `ASM-047`, Q-16
+- **The university is HKUST,** so deadlines default to Hong Kong time. → `ASM-022`
+- **The course AI policy** allows generative AI for help with coding and debugging, but not copying AI-generated text into submitted writing. This fits the tutor guardrail [SEED §7] [SEED §11] and goes into A09 and A10.
+- **Plain text extraction is not enough for the slides.** 25 of the 60 content slides carry their content mainly in images. Equations are embedded LaTeXiT objects, whose LaTeX source can be recovered. Extracted text has garbled ligatures. → `ASM-016` (refuted), `ASM-046`. This is the main new technical risk for A02 and A03.
 
 ## Workbook index
 

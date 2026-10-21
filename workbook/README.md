@@ -21,15 +21,15 @@ The single source of truth for planning (and possibly building) the Study App, f
 | :-- | :-- | :-- | :-- |
 | 0 Intake & Clarification | Complete (2026-10-21): Q-01 to Q-15 answered (Q-02 and Q-12 in part); Q-16 resolved at CP1; Q-17 answered (direct Canvas access); two of the requested documents received and skimmed | none (reviewed at G1) | — |
 | 1 Initiation, Feasibility & Tailoring | Complete (2026-10-21): Gate G1 APPROVED (r2, plus `CR-001` re-review); CP1 Approved | G1 (`reviews/G1-r1.md`, `reviews/G1-r2.md`, `reviews/G1-CR001.md`) | CP1 Approved (`checkpoints.md`) |
-| 2 Requirements Analysis & Sourcing | Gate G2 APPROVED (`r2`); awaiting CP2 (STRICT) | G2 (`reviews/G2-r1.md`, `reviews/G2-r2.md`) | CP2 Pending (`checkpoints.md`) |
-| 3 Architecture & Design | Not started | G3 | CP3 |
+| 2 Requirements Analysis & Sourcing | Complete (2026-10-21): Gate G2 APPROVED (`r2`); CP2 Approved | G2 (`reviews/G2-r1.md`, `reviews/G2-r2.md`) | CP2 Approved (`checkpoints.md`) |
+| 3 Architecture & Design | Not started | G3 | CP3 (ADVISORY) |
 | 4 Slice loop | Not started | G4 per slice | — |
 | 5 Release Readiness | Not started | G5 | CP4 |
 | 6 Maintenance Setup & Closedown | Not started | G6 | — |
 
-- **Current baseline:** `A01`, `A02`, `A03`, `A04`, `A05` (with `wbs.csv`), `A06` (with `schedule_calc.py`), `A07` (approved at CP1, 2026-10-21; updated via `CR-001`).
-- **Pending checkpoint:** CP2 — Requirements Baseline and Sourcing Decision (STRICT, [`00-governance/checkpoints.md`](00-governance/checkpoints.md)).
-- **Carried to CP2:** change request `CR-001` (post-CP1 baseline alignment across `A01`–`A07`, protocol §7 "Changes to baselined artifacts"); the proposed performance targets in seed §7 (`ASM-037`); verification in `A22` of Anthropic's terms on subscription pipeline runs (`ASM-058`), plan pricing (`ASM-062`), API token pricing (`ASM-059`), and subscription usage limits (`ASM-044`, plus `ASM-048` on HKUST Canvas API terms); confirmation of tutor thread and pipeline intermediate file retention (`ASM-023`, `ASM-024`) and phone browser targets (`ASM-027`); and the user's sourcing choice (`A22`, protocol §6 Stage 2 step 6).
+- **Current baseline:** `A01`, `A02`, `A03`, `A04`, `A05` (with `wbs.csv`), `A06` (with `schedule_calc.py`), `A07` (approved at CP1, 2026-10-21; updated via `CR-001`); `A09` (with `02-analysis/sources/`), `A10` (with `requirements.csv`), `A11`, `A12`, `A13`, `A14`, `A15`, `A16`, `A17`, `A18` (with `data-dictionary.csv`), `A19` (with `acceptance-scenarios.csv`), `A20`, `A22`, and `traceability-matrix.md` (with `traceability-matrix.csv`) (approved at CP2, 2026-10-21).
+- **Pending checkpoint:** none. The next is CP3 (ADVISORY), after Gate G3.
+- **Carried to CP3:** the architecture (`A31`), key ADRs (`A30`, including stack adoption, SQLite data store, Claude Code pipeline runtime, Canvas access method, and `R3` hosting provider resolving `ASM-028` and `ASM-060`), the slice order (`A40`, updating `A05`/`A06` through a CR if needed), and the review scope (`A39`) with any accepted risks in `A03`.
 - **Branch:** `stage-2/requirements` (branched from `main`).
 
 ## Seed intake (Stage 0 step 1)

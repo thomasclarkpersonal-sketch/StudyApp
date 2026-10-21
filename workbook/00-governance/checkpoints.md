@@ -60,7 +60,7 @@ Approve
 
 ## CP2 — Requirements Baseline and Sourcing Decision (2026-10-21, STRICT)
 
-Status: **Pending user reply (STRICT)** (2026-10-21).
+Status: **Approved** (2026-10-21). Baseline set: `A09` (with `02-analysis/sources/`), `A10` (with `requirements.csv`), `A11`, `A12`, `A13`, `A14`, `A15`, `A16`, `A17`, `A18` (with `data-dictionary.csv`), `A19` (with `acceptance-scenarios.csv`), `A20`, `A22`, and `traceability-matrix.md` (with `traceability-matrix.csv`), joining `A01`–`A07`.
 
 ```text
 HUMAN CHECKPOINT CP2 — Requirements Baseline and Sourcing Decision
@@ -99,4 +99,10 @@ Risks you are being asked to accept
 
 On approval, these artifacts become the baseline: A09 (with 02-analysis/sources/), A10 (with requirements.csv), A11, A12, A13, A14, A15, A16, A17, A18 (with data-dictionary.csv), A19 (with acceptance-scenarios.csv), A20, A22, and traceability-matrix.md (with traceability-matrix.csv)
 Full detail: workbook/README.md
+```
+
+### User reply (verbatim, 2026-10-21)
+
+```text
+Approve
 ```

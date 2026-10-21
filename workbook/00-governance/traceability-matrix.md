@@ -5,4 +5,4 @@ Protocol §5.4. One row per requirement, filled in from Stage 2 when the Require
 | REQ | Source | Priority | UC | BR | Entities / tables | Interface ops | Screens / reports | AT / TC | Slice | Status |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 
-_No requirements yet (Stage 0)._
+_No requirements yet (Stage 1; requirements start in A10 at Stage 2)._

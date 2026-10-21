@@ -75,7 +75,7 @@ The two model sets cover **different parts** of the system, so this is not "both
 | A31 | Architecture Overview | Produce | R | Required |
 | A32 | Logical Data Model | Produce | R | Persistent data |
 | A33 | Physical Data Design | Produce | R | Persistent data; backup that survives a crash mid-write (review history must never be lost [SEED §10]) |
-| A34 | Interface Contracts | Produce | R | Required at M and by INT: the app's HTTP API (OpenAPI), JSON Schemas for the six pipeline files and `feedback.json`, and the Claude API and Canvas contracts |
+| A34 | Interface Contracts | Produce | R | Required at M and by INT: the app's HTTP API (OpenAPI), JSON Schemas for the six pipeline files and `feedback.json`, the Claude API and Canvas contracts, the `.ics` calendar feed, and the Anki TSV export format |
 | A35 | UI & Dialogue Design | Produce | R | The app has a UI. No usability plan, since NTU is not set |
 | A36 | Security Design | Produce | R | Required at M and by PD and AI: prompt injection, secrets (API key, Canvas token), the R3 password |
 | A37 | Privacy Data Map | Produce | R | Required by PD |
@@ -93,7 +93,7 @@ The two model sets cover **different parts** of the system, so this is not "both
 | A62 | Data Migration & Conversion Plan | Skip | — | MIG not set: nothing is imported from Anki [USER Q-14] |
 | A63 | Documentation Set | Produce | R | Required at M: user guide, runbook (including running the pipeline each semester), developer README |
 | A64 | Training & Support Plan | Skip | — | Optional at M; NTU not set. The only user commissioned the system and reviews every pull request; the user guide (A63) covers learning it |
-| A65 | Adoption & Change Plan | Skip | — | The matrix sets R at M, but the conditions behind it don't hold here. Only the student is affected, and they initiated the project and are keen [SEED §6]. The system changes no one else's work, and NTU is not set. Success measurement is in A01 (methods and timing for each metric), with the post-launch review in A72 |
+| A65 | Adoption & Change Plan | Skip | — | Catalog §3 sets R at tier M unconditionally, so skipping it is a deliberate proportionality departure (R3) presented for the student's confirmation at CP1. Only the student is affected, and they initiated the project and are keen [SEED §6]. The system changes no one else's work, and NTU is not set. Success measurement is in A01 (methods and timing for each metric), with the post-launch review in A72 |
 | A70 | Configuration & Change Management | Produce | R | Required at M |
 | A71 | Operational Health & Maintenance Pipeline | Produce | Reduced: maintenance pipeline (intake, B8 classes, triage) and the health metrics that have a data source; continuity section N/A until hosting (R3) | The student maintains the system and re-runs the pipeline each semester. Zero-downtime updates have no meaning for a local single-user app |
 | A72 | Closedown Review | Produce | R | Required at M |

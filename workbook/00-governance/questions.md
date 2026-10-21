@@ -142,6 +142,15 @@ Each question gives the options, why it matters, and the default the agent assum
 - **Status:** open (carried to CP1)
 - **Answer:** —
 
+### Q-17 · Reading Canvas directly
+- **Context:** in chat on 2026-10-21, the student wrote (verbatim): "When I get claude to do the cycle of adding study materials, I'll just give them the canvas link so I don't think there's much to worry avbout here"
+- **Question:** the seed's non-goals say: "No direct integration with the university's learning platform, and no scraping of university portals. Course material is downloaded manually" [SEED §11] [SEED §5]. Giving Claude a Canvas link would mean Claude reads Canvas itself. HKUST Canvas pages normally need the student's login, so that needs the student's browser session or a Canvas API token (a secret to protect), plus a check of the university's terms on automated access. Which does the student want?
+- **Options:** (a) Keep the seed as written: download files from Canvas into a folder, and Claude reads only that folder · (b) Save the Canvas pages Claude needs as files in the folder; no automated Canvas access · (c) Change the scope: Claude reads Canvas directly, with the student's login session or a Canvas API token, and the non-goal is dropped
+- **Why it matters:** it reverses a seed non-goal, adds an integration that needs a credential, and brings in content written by other people (announcements, discussions). That affects scope (A01), security (A36), privacy (A37) and the interface contracts (A34).
+- **Default if unanswered:** (a)
+- **Status:** answered 2026-10-21
+- **Answer** (verbatim, given 2026-10-21 through the question form): (c) "Change the scope: Claude reads Canvas directly (with my login session or a Canvas API token), and the non-goal is dropped" → `DEC-009`, `ASM-047`, `ASM-048`, `ASM-049`, `ASM-050`
+
 ## Documents requested (Stage 0 step 6)
 
 The agent cannot interview you or watch you study, so existing documents stand in for that (catalog A09). Useful ones, in order:

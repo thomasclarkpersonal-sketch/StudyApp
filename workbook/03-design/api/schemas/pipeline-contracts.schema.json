@@ -1,0 +1,323 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://studyapp.local/schemas/pipeline-contracts.schema.json",
+  "title": "Study App & Generation Pipeline File Contracts (A34)",
+  "description": "JSON Schema Draft 2020-12 definitions for the 6 pipeline export files (concepts.json, deck.json, question-bank.json, deadlines.json, readings.json, glossary.json), feedback.json, and pipeline staging/audit files (REQ-N-020).",
+  "$defs": {
+    "ModuleMeta": {
+      "type": "object",
+      "required": ["id", "code", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "code": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "priority_rank": { "type": "integer", "minimum": 1, "default": 1 },
+        "is_cs": { "type": "boolean", "default": false },
+        "exam_type": {
+          "type": "string",
+          "enum": ["closed_book", "open_book", "take_home", "no_final", "unknown"],
+          "default": "unknown"
+        }
+      }
+    },
+    "LectureItem": {
+      "type": "object",
+      "required": ["id", "module_id", "week", "number", "title", "source_file"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Z0-9_]+-W[0-9]{2,3}$" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "week": { "type": "string", "pattern": "^W[0-9]{2,3}$" },
+        "number": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "source_file": { "type": "string", "minLength": 1 },
+        "processed_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ConceptItem": {
+      "type": "object",
+      "required": ["id", "module_id", "lecture_id", "name", "summary", "importance", "prerequisites", "card_ids", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Z0-9_]+-W[0-9]{2,3}-K[0-9]{2,3}$" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "lecture_id": { "type": "string", "pattern": "^[A-Z0-9_]+-W[0-9]{2,3}$" },
+        "name": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "importance": { "type": "string", "enum": ["core", "supporting", "detail"] },
+        "prerequisites": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z0-9_]+-W[0-9]{2,3}-K[0-9]{2,3}$" }
+        },
+        "card_ids": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z0-9_]+-W[0-9]{2,3}-C[0-9]{3,}$" }
+        },
+        "source": { "type": "string", "minLength": 3 }
+      }
+    },
+    "ConceptsFile": {
+      "type": "object",
+      "required": ["version", "module", "lectures", "concepts"],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string", "const": "1.0" },
+        "module": { "$ref": "#/$defs/ModuleMeta" },
+        "lectures": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/LectureItem" } },
+        "concepts": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/ConceptItem" } }
+      }
+    },
+    "CardExportItem": {
+      "type": "object",
+      "required": ["id", "module_id", "lecture_id", "concept_id", "type", "front", "back", "extra", "tags", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Z0-9_]+-W[0-9]{2,3}-C[0-9]{3,}$" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "lecture_id": { "type": "string", "pattern": "^[A-Z0-9_]+-W[0-9]{2,3}$" },
+        "concept_id": { "type": "string", "pattern": "^[A-Z0-9_]+-W[0-9]{2,3}-K[0-9]{2,3}$" },
+        "type": { "type": "string", "enum": ["basic", "cloze", "reverse"] },
+        "front": { "type": "string", "minLength": 1 },
+        "back": { "type": "string", "minLength": 1 },
+        "extra": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "source": { "type": "string", "minLength": 3 }
+      }
+    },
+    "DeckFile": {
+      "type": "object",
+      "required": ["version", "module_id", "cards"],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string", "const": "1.0" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "cards": { "type": "array", "items": { "$ref": "#/$defs/CardExportItem" } }
+      }
+    },
+    "QuestionExportItem": {
+      "type": "object",
+      "required": ["id", "module_id", "lecture_id", "concept_id", "variant_group", "type", "difficulty", "stem", "model_answer", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Z0-9_]+-W[0-9]{2,3}-Q[0-9]{3,}$" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "lecture_id": { "type": "string", "pattern": "^[A-Z0-9_]+-W[0-9]{2,3}$" },
+        "concept_id": { "type": "string", "pattern": "^[A-Z0-9_]+-W[0-9]{2,3}-K[0-9]{2,3}$" },
+        "variant_group": { "type": "string", "minLength": 1 },
+        "type": {
+          "type": "string",
+          "enum": ["mcq", "short_answer", "calculation", "explain", "scenario", "compare", "essay_plan"]
+        },
+        "difficulty": { "type": "integer", "enum": [1, 2, 3] },
+        "stem": { "type": "string", "minLength": 1 },
+        "options": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "correct_option": { "type": ["string", "null"], "enum": ["A", "B", "C", "D", null] },
+        "distractor_explanations": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        },
+        "model_answer": { "type": "string", "minLength": 1 },
+        "marking_points": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 5,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "source": { "type": "string", "minLength": 3 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "mcq" } } },
+          "then": { "required": ["options", "correct_option", "distractor_explanations"] },
+          "else": { "required": ["marking_points"] }
+        }
+      ]
+    },
+    "QuestionBankFile": {
+      "type": "object",
+      "required": ["version", "module_id", "questions"],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string", "const": "1.0" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "questions": { "type": "array", "items": { "$ref": "#/$defs/QuestionExportItem" } }
+      }
+    },
+    "DeadlineExportItem": {
+      "type": "object",
+      "required": ["id", "module_id", "title", "type", "due_at", "timezone", "status", "confidence", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Z0-9_]+-D[0-9]{3,}$" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "enum": ["exam", "midterm", "quiz", "homework", "project", "coursework", "other"] },
+        "due_at": { "type": ["string", "null"], "format": "date-time" },
+        "timezone": { "type": "string", "default": "Asia/Hong_Kong" },
+        "weighting": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+        "covers_lectures": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["upcoming", "submitted", "overdue", "unannounced"] },
+        "confidence": { "type": "string", "enum": ["confirmed", "inferred"] },
+        "source": { "type": "string", "minLength": 3 },
+        "notes": { "type": "string", "default": "" }
+      }
+    },
+    "DeadlinesFile": {
+      "type": "object",
+      "required": ["version", "module_id", "deadlines"],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string", "const": "1.0" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "deadlines": { "type": "array", "items": { "$ref": "#/$defs/DeadlineExportItem" } }
+      }
+    },
+    "ReadingExportItem": {
+      "type": "object",
+      "required": ["id", "module_id", "title", "citation", "kind", "page_count", "due_on", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Z0-9_]+-R[0-9]{3,}$" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "lecture_id": { "type": ["string", "null"] },
+        "title": { "type": "string", "minLength": 1 },
+        "citation": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "enum": ["required", "recommended", "optional"] },
+        "page_count": { "type": "integer", "minimum": 1, "maximum": 2000 },
+        "est_minutes": { "type": "number", "exclusiveMinimum": 0 },
+        "due_on": { "type": "string", "format": "date" },
+        "source": { "type": "string", "minLength": 3 }
+      }
+    },
+    "ReadingsFile": {
+      "type": "object",
+      "required": ["version", "module_id", "readings"],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string", "const": "1.0" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "readings": { "type": "array", "items": { "$ref": "#/$defs/ReadingExportItem" } }
+      }
+    },
+    "GlossaryExportItem": {
+      "type": "object",
+      "required": ["id", "module_id", "term", "abbreviation", "kind", "canonical", "definition", "where_defined"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Z0-9_]+-G[0-9]{3,}$" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "term": { "type": "string", "minLength": 1 },
+        "abbreviation": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "enum": ["standard", "module_specific"] },
+        "canonical": { "type": "string", "minLength": 1 },
+        "definition": { "type": "string", "minLength": 1 },
+        "where_defined": { "type": "string", "minLength": 1 },
+        "first_lecture_id": { "type": ["string", "null"] }
+      }
+    },
+    "GlossaryFile": {
+      "type": "object",
+      "required": ["version", "module_id", "entries"],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string", "const": "1.0" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "entries": { "type": "array", "items": { "$ref": "#/$defs/GlossaryExportItem" } }
+      }
+    },
+    "FeedbackFile": {
+      "type": "object",
+      "required": ["version", "exported_at", "reported", "topup", "proposed"],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string", "const": "1.0" },
+        "exported_at": { "type": "string", "format": "date-time" },
+        "reported": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "module_id", "item_type", "item_id", "reason", "comment", "created_at"],
+            "properties": {
+              "id": { "type": "string" },
+              "module_id": { "type": "string" },
+              "item_type": { "type": "string", "enum": ["card", "question"] },
+              "item_id": { "type": "string" },
+              "reason": { "type": "string", "enum": ["wrong", "unclear"] },
+              "comment": { "type": "string" },
+              "created_at": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "topup": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "module_id", "concept_id", "created_at"],
+            "properties": {
+              "id": { "type": "string" },
+              "module_id": { "type": "string" },
+              "concept_id": { "type": "string" },
+              "created_at": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "proposed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "module_id", "kind", "payload", "created_at"],
+            "properties": {
+              "id": { "type": "string" },
+              "module_id": { "type": "string" },
+              "kind": { "type": "string", "enum": ["card", "question"] },
+              "payload": { "type": "object" },
+              "created_at": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      }
+    },
+    "ReviewRoundFile": {
+      "type": "object",
+      "required": ["round", "stage", "lecture_id", "reviews", "missing_concepts"],
+      "additionalProperties": false,
+      "properties": {
+        "round": { "type": "integer", "enum": [1, 2, 3] },
+        "stage": { "type": "string", "enum": ["card", "question"] },
+        "lecture_id": { "type": "string" },
+        "reviews": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["item_id", "blind_answer", "blind_matches", "failed_criteria", "verdict", "feedback"],
+            "additionalProperties": false,
+            "properties": {
+              "item_id": { "type": "string" },
+              "blind_answer": { "type": "string", "minLength": 1 },
+              "blind_matches": { "type": "boolean" },
+              "failed_criteria": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "atomic", "context_free", "unambiguous", "concise", "accurate", "grounded", "card_type", "value",
+                    "distinct", "format_fit", "distractors", "marking_scheme", "difficulty_spread"
+                  ]
+                }
+              },
+              "verdict": { "type": "string", "enum": ["accept", "revise", "reject"] },
+              "feedback": { "type": "string" }
+            }
+          }
+        },
+        "missing_concepts": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

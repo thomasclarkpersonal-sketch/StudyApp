@@ -1,0 +1,68 @@
+# ADR-007 · Third Normal Form (`3NF`) Relational Schema and Controlled JSON Columns for Immutable Snapshots & Audit Logs
+
+- **Artifact ID:** `A30` (`ADR-007`)
+- **Stage:** Stage 3 — Architecture & Design
+- **Date:** `2026-10-21`
+- **Status:** Accepted
+- **Deciders:** System Architect
+- **Drivers:** `G3.2`, `A32`, `A33`, `REQ-F-021`–`022`, `REQ-F-048`, `REQ-F-049`, `REQ-F-063`, `REQ-N-001`–`003`, `REQ-N-007`
+
+---
+
+## 1. Context and Forces
+
+Gate check `G3.2` and catalog entry `A32` require that **every relation in the logical data model is in Third Normal Form (`3NF`)**, or that any denormalization / non-atomic attribute is explicitly justified by an ADR.
+In our conceptual data model (`A16`, `A18`), several entities have multivalued attributes or M:N relationships that come from the JSON export files (`flashcard-pipeline.md`), plus a small number of opaque configuration/audit payload attributes:
+1. **Queryable domain collections & relationships:**
+   - `Concept.card_ids` (M:N between `Concept` and `Card`, used when a wrong quiz answer offers linked flashcards in `REQ-F-034`, `BR-032`).
+   - `Concept.prerequisites` (unary M:N on `Concept`, `REL-05`).
+   - `Card.tags` (multivalued tags on `Card`, used for filtering and Anki export `REQ-F-066`).
+   - `Question.options` (ordered MCQ choices `A`–`D` on `Question`, `REQ-F-032`) and `Question.marking_points` / `QuestionAttempt.points_met` (rubric marking points on `Question` and which points were met on `QuestionAttempt`, `REQ-F-033`, `REQ-F-043`).
+   - `TutorMessage.citations` (slide citations on `TutorMessage`, `REQ-F-046`).
+2. **Opaque configuration blobs and immutable audit/staging payloads:**
+   - `Settings.fsrs_weights_json` (21-element numerical weight vector passed as a unit to `ts-fsrs`) and `Settings.token_rates_json` (rate table snapshot).
+   - `Proposal.payload_json` (unreviewed candidate card or question draft waiting in the tutor proposal queue before export to `feedback.json`, `REQ-F-049`).
+   - `FeedbackItem.payload_json` (snapshot exported to `feedback.json`, `REQ-F-063`).
+   - `CardState.retrievability` (derived in real time from `stability` and elapsed time since `last_review`, `A16 §3 E05`).
+
+---
+
+## 2. Decision
+
+1. **Strict `3NF` Normalization for All Domain Entities and Relationships (`A32`):**
+   - Every multivalued attribute and M:N relationship on core domain entities (`Module`, `Lecture`, `Concept`, `Card`, `CardState`, `CardReviewLog`, `ConceptState`, `Question`, `QuestionAttempt`, `GlossaryEntry`, `Deadline`, `Milestone`, `Task`, `Reading`, `DailyPlan`, `DailyPlanItem`, `TutorThread`, `TutorMessage`) is decomposed into dedicated `3NF` relations with composite primary keys and foreign keys (`A32 §2`):
+     - `concept_card (concept_id, card_id)` resolves `REL-06` (`Concept` ↔ `Card`).
+     - `concept_prerequisite (concept_id, prerequisite_concept_id)` resolves `REL-05` (`Concept` ↔ `Concept`).
+     - `card_tag (card_id, tag)` resolves `Card.tags` into `1NF`/`3NF`.
+     - `question_option (question_id, option_index, option_text, distractor_explanation)` resolves `Question.options` and `Question.distractor_explanations` into `1NF`/`3NF`.
+     - `question_marking_point (question_id, point_index, point_text)` and `question_attempt_point (attempt_id, point_index, met)` resolve `Question.marking_points` and `QuestionAttempt.points_met` into `1NF`/`3NF`.
+     - `tutor_message_citation (message_id, citation_index, source_ref)` resolves `TutorMessage.citations` into `1NF`/`3NF`.
+   - Derived attributes (`CardState.retrievability`, `ConceptState.mastery_level`, `DailyPlan.total_est_minutes`, `DailyPlan.required_minutes`) are **not stored as mutable columns** on base tables (which would create transitive/update anomalies); they are computed in the domain service / SQL view from their base `3NF` attributes (`A32 §4`).
+
+2. **Justified JSON Columns for Four Opaque / Staging / Snapshot Attributes (`G3.2`):**
+   We permit `TEXT` columns validated by `CHECK (json_valid(...))` and `Ajv` schemas in **four specific places** where the value is an atomic opaque vector or an immutable staging/audit snapshot that is never partially updated or joined in SQL:
+   - `settings.fsrs_weights_json` and `settings.token_rates_json`: passed as a single configuration object to `ts-fsrs` and `StatsService`.
+   - `proposal.payload_json`: holds an unapproved candidate card or question draft (`Proposal` queue, `E17`) until it is exported into `feedback.json → proposed` (`REQ-F-049`).
+   - `feedback_item.payload_json`: immutable export snapshot written when a `FeedbackItem` (`E18`) is queued for `feedback.json`.
+
+---
+
+## 3. Alternatives Considered
+
+### Alternative A: Storing `tags`, `card_ids`, `prerequisites`, `options`, and `marking_points` as JSON Arrays in SQLite
+- **Pros:** Fewer SQLite tables (`22` instead of `29`).
+- **Why rejected:** Violates `1NF`/`3NF` (`G3.2`, Appendix `B3`) and prevents SQLite foreign-key enforcement (`ON DELETE CASCADE`) when linking `Concept` to `Card` (`concept_card`) or `QuestionAttempt` to `question_marking_point`.
+
+### Alternative B: Splitting `Settings.fsrs_weights_json` into 21 Separate Columns (`w0`..`w20`) and `Proposal.payload_json` into Polymorphic Draft Tables
+- **Pros:** Eliminates all JSON columns from SQLite.
+- **Why rejected:** `ts-fsrs` v4 (`17` weights) and v5 (`19`–`21` weights) pass weights as an opaque float array, and `Proposal` items are transient staging drafts exported directly to `feedback.json` (`REQ-F-049`), so polymorphic draft tables add schema complexity with zero query benefit.
+
+---
+
+## 4. Consequences
+
+- **Positive:**
+  - Every relation in `A32` and `A33` satisfies `1NF`, `2NF`, and `3NF` with foreign-key referential integrity on all concept-card links, prerequisites, options, marking points, and citations.
+  - Zero update, insertion, or deletion anomalies on derived attributes (`retrievability`, `mastery_level`, `total_est_minutes`).
+- **Negative / Trade-offs:**
+  - `CardRepo` and `QuizRepo` join or batch-load child rows (`card_tag`, `question_option`, `question_marking_point`), which takes `< 1 ms` in local SQLite (`better-sqlite3`).

@@ -37,7 +37,7 @@ Study App
 
 Selected artifacts produced inside other work packages, rather than as leaves:
 - **A50:** one slice record per slice, inside each slice leaf.
-- **A60 and A63 updates in R2 and R3:** created as standalone leaves in R1 (`5.2` and `5.4`), then updated inside each R2 and R3 slice leaf as new user workflows (R2 marking, tutor, mock exams, `.ics`; R3 hosted access, offline study, notifications) and new environment/secret variables (`SL-12`, `SL-18`) are built, with `5.6` also updating the A63 runbook entries to match its hosted A61 deployment and rollback procedures before R3's Gate G5.
+- **A60 and A63 updates in R2 and R3:** created as standalone leaves in R1 (`5.2` and `5.4`), then updated inside each R2 and R3 slice leaf as new user workflows (R2 marking, tutor, mock exams, `.ics`; R3 hosted access, offline study, notifications) and new environment/secret variables (`SL-12`, `SL-18`, including the hosted runbook and user-guide entries in `A63`) are built.
 
 Selected artifacts not tied to one stage:
 - **A52:** a level-of-effort leaf, 4.0.

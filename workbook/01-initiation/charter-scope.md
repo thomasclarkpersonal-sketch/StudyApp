@@ -58,38 +58,38 @@ Releases follow the seed's priorities: **R1 = the Must stories (the MVP)**, **R2
 
 | # | Item | Release | Source |
 | :-- | :-- | :-- | :-- |
-| P1 | An Extractor that builds the notation glossary and pulls deadlines and readings from the handbook, the slides and Canvas | R1 | [SEED §3 story 3] [DEC-009] |
-| P2 | A Card Creator and an independent Card Reviewer for each lecture, with the blind-answer test and at most 2 revision rounds | R1 | [SEED §3 story 1] [DOC flashcard-pipeline.md §3.3–3.4, §7] |
-| P3 | A Question Creator and an independent Question Reviewer, writing several genuinely different variants per concept that match the assessment formats; `core` concepts get 3–5 variants | R1 | [SEED §3 story 2] [DEC-006] |
-| P4 | A Module Auditor checking coverage, duplicates and notation, and proposing cross-lecture items | R1 | [SEED §5] [SEED §3 Reports & outputs] [DOC flashcard-pipeline.md §3.7] |
-| P5 | Processing order: Computer Science modules first (Theory of Computation, Machine Learning, LLMs), then the other in-scope modules by nearest assessment; lectures covered by the nearest assessment first within a module | R1 | [SEED §3 story 4] [USER Q-12] |
-| P6 | A human review step before export: flagged items, inferred dates, module-specific notation and a spot-check sample | R1 | [SEED §3 story 5] [DOC flashcard-pipeline.md §9] |
-| P7 | Export of the six app files with stable ids, plus a pipeline run summary and module audit per run | R1 | [SEED §5] [SEED §3 Reports & outputs] |
-| P8 | Reading course material from Canvas directly, or from local files, including maths- and diagram-heavy slides (placed in R1 under `DEC-010` [USER CP1]) | R1 | [DEC-009] [DEC-010] [USER Q-08] [USER CP1] |
-| P9 | Taking reported items (story 11) back into the next run | R1 | [SEED §3 story 11] [ASM-038] |
-| P10 | Reviewing tutor proposals before they join the bank | R2 | [SEED §3 story 14] |
-| P11 | Top-up runs for concepts running low on unseen variants, from the full `feedback.json` | R3 | [SEED §3 story 18] [DOC flashcard-pipeline.md §10] |
+| SC-P01 | An Extractor that builds the notation glossary and pulls deadlines and readings from the handbook, the slides and Canvas | R1 | [SEED §3 story 3] [DEC-009] |
+| SC-P02 | A Card Creator and an independent Card Reviewer for each lecture, with the blind-answer test and at most 2 revision rounds | R1 | [SEED §3 story 1] [DOC flashcard-pipeline.md §3.3–3.4, §7] |
+| SC-P03 | A Question Creator and an independent Question Reviewer, writing several genuinely different variants per concept that match the assessment formats; `core` concepts get 3–5 variants | R1 | [SEED §3 story 2] [DEC-006] |
+| SC-P04 | A Module Auditor checking coverage, duplicates and notation, and proposing cross-lecture items | R1 | [SEED §5] [SEED §3 Reports & outputs] [DOC flashcard-pipeline.md §3.7] |
+| SC-P05 | Processing order: Computer Science modules first (Theory of Computation, Machine Learning, LLMs), then the other in-scope modules by nearest assessment; lectures covered by the nearest assessment first within a module | R1 | [SEED §3 story 4] [USER Q-12] |
+| SC-P06 | A human review step before export: flagged items, inferred dates, module-specific notation and a spot-check sample | R1 | [SEED §3 story 5] [DOC flashcard-pipeline.md §9] |
+| SC-P07 | Export of the six app files with stable ids, plus a pipeline run summary and module audit per run | R1 | [SEED §5] [SEED §3 Reports & outputs] |
+| SC-P08 | Reading course material from Canvas directly, or from local files, including maths- and diagram-heavy slides (placed in R1 under `DEC-010` [USER CP1]) | R1 | [DEC-009] [DEC-010] [USER Q-08] [USER CP1] |
+| SC-P09 | Taking reported items (story 11) back into the next run | R1 | [SEED §3 story 11] [ASM-038] |
+| SC-P10 | Reviewing tutor proposals before they join the bank | R2 | [SEED §3 story 14] |
+| SC-P11 | Top-up runs for concepts running low on unseen variants, from the full `feedback.json` | R3 | [SEED §3 story 18] [DOC flashcard-pipeline.md §10] |
 
 **Study app** (a mobile-first web app, laptop only until story 17 [USER Q-04]):
 
 | # | Item | Release | Source |
 | :-- | :-- | :-- | :-- |
-| A1 | Import of the pipeline files with a preview of what is new, changed or removed; stable ids keep review history; removed items are suspended, not deleted | R1 | [SEED §3 story 6] [SEED §4 Retention] |
-| A2 | Flashcard review with FSRS, keyboard shortcuts and LaTeX rendering | R1 | [SEED §3 story 7] |
-| A3 | A daily quiz of due concepts, each shown as an unseen variant; MCQs marked automatically, written answers self-marked | R1 | [SEED §3 story 8] |
-| A4 | Deadlines with live countdowns; adding and editing them by hand; confirming extracted ones | R1 | [SEED §3 story 9] |
-| A5 | A "Today" checklist of reviews, quizzes, new cards, required readings and carried-over items | R1 | [SEED §3 story 10] |
-| A6 | Reporting a wrong or unclear card or question, with the reports exported for the next pipeline run | R1 | [SEED §3 story 11] [ASM-038] |
-| A7 | Claude marking of written answers, with override | R2 | [SEED §3 story 12] |
-| A8 | A Claude tutor (Explain, Socratic, Quiz me) opened from any card, question or result, with context loaded | R2 | [SEED §3 story 13] |
-| A9 | Accepting, editing or discarding tutor proposals | R2 | [SEED §3 story 14] |
-| A10 | Assessment mode and timed mock exams, with mock exam results | R2 | [SEED §3 story 15] [SEED §3 Reports & outputs] |
-| A11 | A daily time budget with deferral, coursework milestones and `.ics` export of deadlines | R2 | [SEED §3 story 16] [SEED §3 Reports & outputs] |
-| A12 | A Stats page: reviews per day, retention, concept mastery per assessment's scope, Claude API spend this month (placed in R2 under `DEC-010` [USER CP1], so SM-3 and SM-6 are visible in R2; the review-load forecast comes with A15 in R3) | R2 | [SEED §3 Reports & outputs] [DEC-010] [USER CP1] |
-| A13 | Hosted access behind a password, offline study, and notifications | R3 | [SEED §3 story 17] [SEED §3 Reports & outputs] |
-| A14 | Full `feedback.json` export (reports, top-up requests, tutor proposals) | R3 | [SEED §3 story 18] |
-| A15 | FSRS parameters fitted to the student's history, and review-load forecasts | R3 | [SEED §3 story 19] |
-| A16 | Flashcard export to Anki (TSV) | R3 | [SEED §3 story 20] |
+| SC-A01 | Import of the pipeline files with a preview of what is new, changed or removed; stable ids keep review history; removed items are suspended, not deleted | R1 | [SEED §3 story 6] [SEED §4 Retention] |
+| SC-A02 | Flashcard review with FSRS, keyboard shortcuts and LaTeX rendering | R1 | [SEED §3 story 7] |
+| SC-A03 | A daily quiz of due concepts, each shown as an unseen variant; MCQs marked automatically, written answers self-marked | R1 | [SEED §3 story 8] |
+| SC-A04 | Deadlines with live countdowns; adding and editing them by hand; confirming extracted ones | R1 | [SEED §3 story 9] |
+| SC-A05 | A "Today" checklist of reviews, quizzes, new cards, required readings and carried-over items | R1 | [SEED §3 story 10] |
+| SC-A06 | Reporting a wrong or unclear card or question, with the reports exported for the next pipeline run | R1 | [SEED §3 story 11] [ASM-038] |
+| SC-A07 | Claude marking of written answers, with override | R2 | [SEED §3 story 12] |
+| SC-A08 | A Claude tutor (Explain, Socratic, Quiz me) opened from any card, question or result, with context loaded | R2 | [SEED §3 story 13] |
+| SC-A09 | Accepting, editing or discarding tutor proposals | R2 | [SEED §3 story 14] |
+| SC-A10 | Assessment mode and timed mock exams, with mock exam results | R2 | [SEED §3 story 15] [SEED §3 Reports & outputs] |
+| SC-A11 | A daily time budget with deferral, coursework milestones and `.ics` export of deadlines | R2 | [SEED §3 story 16] [SEED §3 Reports & outputs] |
+| SC-A12 | A Stats page: reviews per day, retention, concept mastery per assessment's scope, Claude API spend this month (placed in R2 under `DEC-010` [USER CP1], so SM-3 and SM-6 are visible in R2; the review-load forecast comes with `SC-A15` in R3) | R2 | [SEED §3 Reports & outputs] [DEC-010] [USER CP1] |
+| SC-A13 | Hosted access behind a password, offline study, and notifications | R3 | [SEED §3 story 17] [SEED §3 Reports & outputs] |
+| SC-A14 | Full `feedback.json` export (reports, top-up requests, tutor proposals) | R3 | [SEED §3 story 18] |
+| SC-A15 | FSRS parameters fitted to the student's history, and review-load forecasts | R3 | [SEED §3 story 19] |
+| SC-A16 | Flashcard export to Anki (TSV) | R3 | [SEED §3 story 20] |
 
 The quality requirements in seed §7 (performance, offline behaviour, security, accessibility, time zones) apply to these items and are catalogued in A10 at Stage 2.
 
@@ -113,15 +113,15 @@ The things the system tracks, modelled in A16 at Stage 2 [SEED §4 Main things t
 
 | # | Item | Source |
 | :-- | :-- | :-- |
-| X1 | Multiple users, accounts, sharing of decks, collaboration with course-mates | [SEED §11] |
-| X2 | Native iOS or Android apps; the PWA only | [SEED §11] |
-| X3 | ~~Direct integration with the university's learning platform~~: **dropped by the student**; reading Canvas is in scope (P8). Still out: scraping university portals other than Canvas, writing to Canvas, submitting work through it, and reading Canvas discussions, class rosters or other students' data | [SEED §11] [DEC-009] [ASM-049] [ASM-061] |
-| X4 | Two-way sync with Anki; one-way TSV export only (A16) | [SEED §11] |
-| X5 | Generating cards or questions from general knowledge; everything comes from the student's course material | [SEED §11] |
-| X6 | The tutor writing or rewriting assessed coursework | [SEED §11] |
-| X7 | A pipeline-free "generate a fresh question every day"; quizzes draw only from the reviewed question bank | [SEED §11] |
-| X8 | The Mandarin module | [DEC-007] [USER Q-13] |
-| X9 | Importing existing Anki cards or review history | [USER Q-14] |
+| SC-X01 | Multiple users, accounts, sharing of decks, collaboration with course-mates | [SEED §11] |
+| SC-X02 | Native iOS or Android apps; the PWA only | [SEED §11] |
+| SC-X03 | ~~Direct integration with the university's learning platform~~: **dropped by the student**; reading Canvas is in scope (`SC-P08`). Still out: scraping university portals other than Canvas, writing to Canvas, submitting work through it, and reading Canvas discussions, class rosters or other students' data | [SEED §11] [DEC-009] [ASM-049] [ASM-061] |
+| SC-X04 | Two-way sync with Anki; one-way TSV export only (`SC-A16`) | [SEED §11] |
+| SC-X05 | Generating cards or questions from general knowledge; everything comes from the student's course material | [SEED §11] |
+| SC-X06 | The tutor writing or rewriting assessed coursework | [SEED §11] |
+| SC-X07 | A pipeline-free "generate a fresh question every day"; quizzes draw only from the reviewed question bank | [SEED §11] |
+| SC-X08 | The Mandarin module | [DEC-007] [USER Q-13] |
+| SC-X09 | Importing existing Anki cards or review history | [USER Q-14] |
 
 ## 6. Deliverables
 

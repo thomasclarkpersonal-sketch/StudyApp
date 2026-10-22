@@ -1,11 +1,11 @@
 # A10 · Requirements Catalog
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A10. Approved and baselined at CP2 (2026-10-21; `DEC-015`, `DEC-016`).
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A10. Baselined at CP2 (2026-10-21; `DEC-015`, `DEC-016` pending CP2 corrective addendum confirmation).
 
 Every requirement is an atomic, testable statement using the preferred terms from [`glossary.md`](glossary.md) (`A18`). The full table of all 89 requirements (`REQ-F-001`–`REQ-F-066` and `REQ-N-001`–`REQ-N-023`) is also stored in [`requirements.csv`](requirements.csv) beside this file (protocol §5.3).
 
 - **Priorities (MoSCoW):** `Must` (`R1` MVP), `Should` (`R2`), `Could` (`R3`), matching `A01 §5.1` and `DEC-010`.
-- **Proposals for CP2 (`G2.13`, `DEC-016`):** Any requirement not explicitly expressed by the user in the seed, source documents, or `Q-01`–`Q-17` / `CP1` answers—or marked *(proposed)* in the seed (`ASM-037`)—is labelled `**(Proposal for CP2)**`. All 14 `**(Proposal for CP2)**` items were approved by the student at `CP2` (`DEC-016`); the `**(Proposal for CP2)**` tags are retained below as permanent provenance markers (`G2.13`). In `A22` (`Sourcing Decision`), options are judged only against user-stated requirements; `**(Proposal for CP2)**` items are shown separately (`G2.16`).
+- **Proposals for CP2 (`G2.13`, `DEC-016`):** Any requirement not explicitly expressed by the user in the seed, source documents, or `Q-01`–`Q-17` / `CP1` answers—or marked *(proposed)* in the seed (`ASM-037`)—is labelled `**(Proposal for CP2)**`. All 14 `**(Proposal for CP2)**` items are presented for confirmation in the `CP2` corrective addendum (`DEC-016`); the `**(Proposal for CP2)**` tags are retained below as permanent provenance markers (`G2.13`). In `A22` (`Sourcing Decision`), options are judged only against user-stated requirements; `**(Proposal for CP2)**` items are shown separately (`G2.16`).
 - **Approval-style items (`G2.16`):** Seed §10 items phrased as "Always ask the user first before…" are recorded in §4 as governance decision points under protocol R6, never as `REQ`s.
 
 ---

@@ -21,7 +21,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 | :-- | :-- | :-- | :-- |
 | 0 Intake & Clarification | Complete (2026-10-21): Q-01 to Q-15 answered (Q-02 and Q-12 in part); Q-16 resolved at CP1; Q-17 answered (direct Canvas access); two of the requested documents received and skimmed | none (reviewed at G1) | — |
 | 1 Initiation, Feasibility & Tailoring | Complete (2026-10-21): Gate G1 APPROVED (r2, plus `CR-001` re-review); CP1 Approved | G1 (`reviews/G1-r1.md`, `reviews/G1-r2.md`, `reviews/G1-CR001.md`) | CP1 Approved (`checkpoints.md`) |
-| 2 Requirements Analysis & Sourcing | Complete (2026-10-21): Gate G2 APPROVED (`r2`); CP2 Approved | G2 (`reviews/G2-r1.md`, `reviews/G2-r2.md`) | CP2 Approved (`checkpoints.md`) |
+| 2 Requirements Analysis & Sourcing | Complete (2026-10-21): Gate G2 APPROVED (`r2`, plus `r3` post-rebase & `CR-002` review); CP2 Approved | G2 (`reviews/G2-r1.md`, `reviews/G2-r2.md`, `reviews/G2-r3.md`) | CP2 Approved (`checkpoints.md`) |
 | 3 Architecture & Design | Not started | G3 | CP3 (ADVISORY) |
 | 4 Slice loop | Not started | G4 per slice | — |
 | 5 Release Readiness | Not started | G5 | CP4 |

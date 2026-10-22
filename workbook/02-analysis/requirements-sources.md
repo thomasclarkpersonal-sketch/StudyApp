@@ -1,6 +1,6 @@
 # A09 · Requirements Sources & Document Analysis
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A09.
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A09. Approved and baselined at CP2 (2026-10-21).
 
 ## 1. Purpose and handling of copyrighted course files
 
@@ -12,7 +12,7 @@ Because the agent cannot interview the student live or observe study sessions in
 5. The HKUST COMP 4901B course syllabus PDF (`ug_course_syllabus_template_doc_COMP4901B.docx.pdf`, 4 pages, supplied 2026-10-21).
 6. A HKUST COMP 4901B lecture slide deck PDF (`COMP4901b_Sept24_RL.pdf`, 61 pages, supplied 2026-10-21).
 
-**Copyright and privacy guardrail (`DEC-008`, [SEED §7], [AGENTS.md §3]).** Copies of the two non-copyrighted specification documents (`flashcard-pipeline.md` and `study-app-spec.md`) are stored in `workbook/02-analysis/sources/`. The two HKUST COMP 4901B PDFs are copyrighted course material and remain outside the repository at the student's local path (`C:\Users\thoma\Documents\AI SLOP\`). This document records only structural and analytical findings from them—no slide prose and no personal details of teaching staff.
+**Copyright and privacy guardrail (`DEC-008`, [SEED §7], [AGENTS.md §3]).** Copies of the two non-copyrighted specification documents (`flashcard-pipeline.md` and `study-app-spec.md`) are stored in `workbook/02-analysis/sources/`. The two HKUST COMP 4901B PDFs are copyrighted course material and remain outside the repository in the student's local course-material folder (`DEC-008`). This document records only structural and analytical findings from them—no slide prose and no personal details of teaching staff.
 
 ---
 

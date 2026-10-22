@@ -1,6 +1,6 @@
 # A17 · Business Rules
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A17.
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A17. Approved and baselined at CP2 (2026-10-21).
 
 This document records the 45 atomic, testable business rules (`BR-001`–`BR-045`) of the **Study App & Generation Pipeline**.
 - **Rule types (`A17`):** `domain constraint`, `derivation`, `triggering operation`, `authorization`.

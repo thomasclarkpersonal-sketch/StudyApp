@@ -1,11 +1,11 @@
 # A10 · Requirements Catalog
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A10.
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A10. Approved and baselined at CP2 (2026-10-21; `DEC-015`, `DEC-016`).
 
 Every requirement is an atomic, testable statement using the preferred terms from [`glossary.md`](glossary.md) (`A18`). The full table of all 89 requirements (`REQ-F-001`–`REQ-F-066` and `REQ-N-001`–`REQ-N-023`) is also stored in [`requirements.csv`](requirements.csv) beside this file (protocol §5.3).
 
 - **Priorities (MoSCoW):** `Must` (`R1` MVP), `Should` (`R2`), `Could` (`R3`), matching `A01 §5.1` and `DEC-010`.
-- **Proposals for CP2 (`G2.13`):** Any requirement not explicitly expressed by the user in the seed, source documents, or `Q-01`–`Q-17` / `CP1` answers—or marked *(proposed)* in the seed (`ASM-037`)—is labelled `**(Proposal for CP2)**`. In `A22` (`Sourcing Decision`), options are judged only against user-stated requirements; `**(Proposal for CP2)**` items are shown separately (`G2.16`).
+- **Proposals for CP2 (`G2.13`, `DEC-016`):** Any requirement not explicitly expressed by the user in the seed, source documents, or `Q-01`–`Q-17` / `CP1` answers—or marked *(proposed)* in the seed (`ASM-037`)—is labelled `**(Proposal for CP2)**`. All 14 `**(Proposal for CP2)**` items were approved by the student at `CP2` (`DEC-016`); the `**(Proposal for CP2)**` tags are retained below as permanent provenance markers (`G2.13`). In `A22` (`Sourcing Decision`), options are judged only against user-stated requirements; `**(Proposal for CP2)**` items are shown separately (`G2.16`).
 - **Approval-style items (`G2.16`):** Seed §10 items phrased as "Always ask the user first before…" are recorded in §4 as governance decision points under protocol R6, never as `REQ`s.
 
 ---
@@ -16,8 +16,8 @@ Every requirement is an atomic, testable statement using the preferred terms fro
 | :-- | --: | --: | --: | --: |
 | Functional — Generation Pipeline (`REQ-F-001`–`REQ-F-020`, `050`, `064`, `066`) | 20 | 1 | 2 | 23 |
 | Functional — Study App (`REQ-F-021`–`REQ-F-049`, `051`–`063`, `065`) | 22 | 15 | 6 | 43 |
-| Non-Functional (`REQ-N-001`–`REQ-N-023`) | 16 | 4 | 3 | 23 |
-| **Total** | **58** | **20** | **11** | **89** |
+| Non-Functional (`REQ-N-001`–`REQ-N-023`) | 17 | 4 | 2 | 23 |
+| **Total** | **59** | **20** | **10** | **89** |
 
 ---
 
@@ -38,7 +38,7 @@ Every requirement is an atomic, testable statement using the preferred terms fro
 | `REQ-F-009` | The system shall evaluate each lecture's draft flashcards in a fresh, independent Card Reviewer subagent instance that never receives the Card Creator's reasoning, executing Pass 1 (the blind-answer test on card fronts only) followed by Pass 2 (evaluating the 8 pass/fail card rubric criteria, recording `failed[]` criteria, and checking concept-map coverage to assign `accept`, `revise`, or `reject` verdicts in `cards.review.r<n>.json`). | Must | `UC-01` | `SL-01`, `SL-02` | `[SEED §3 story 1]`, `[DOC flashcard-pipeline.md §3.1, §3.4, §5.1, §5.2]` |
 | `REQ-F-010` | The system shall cap the Card Creator–Card Reviewer loop at 2 revision rounds (up to 3 review rounds total), freezing `accept` cards, removing `reject` cards, revising only `revise` cards and `missing_concepts`, and routing any item still failing after round 3 into `flagged.json`. | Must | `UC-01` | `SL-02` | `[SEED §3 story 1]`, `[DOC flashcard-pipeline.md §3.1, §7]` |
 | `REQ-F-011` | The system shall run a Question Creator agent per lecture—starting only after Stage A produces a reviewed concept map—to draft question variants per concept (`3–5` for `core`, `2–3` for `supporting`, `0–1` for `detail`, using the upper bound when in the next assessment's scope) that differ in scenario, numbers, angle, or reasoning direction. | Must | `UC-02` | `SL-04` | `[SEED §3 story 2]`, `[USER Q-07]`, `DEC-006`, `[DOC flashcard-pipeline.md §3.1, §3.5, §6.2]` |
-| `REQ-F-012` | The system shall weight each lecture's generated question types (`mcq`, `short_answer`, `calculation`, `explain`, `compare`, `scenario`, `essay_plan`) according to the target assessment's format in `pipeline.config.json` (or a balanced default mix of MCQ and short-written types when the format is unannounced, per `Q-16` / `ASM-047`), including 2–5 `marking_points` for written questions, distractor explanations for MCQs, a difficulty rating (`1`–`3`), and a source citation. | Must | `UC-02` | `SL-04` | `[SEED §3 story 2]`, `[USER CP1]`, `ASM-047`, `[DOC flashcard-pipeline.md §6.2, §6.4]` |
+| `REQ-F-012` | The system shall weight each lecture's generated question types (`mcq`, `short_answer`, `calculation`, `explain`, `compare`, `scenario`, `essay_plan`) according to the target assessment's format in `pipeline.config.json` (or a balanced default mix of MCQ and short-written types when the format is unannounced, per `Q-16` / `DEC-014` / `ASM-047`), including 2–5 `marking_points` for written questions, distractor explanations for MCQs, a difficulty rating (`1`–`3`), and a source citation. | Must | `UC-02` | `SL-04` | `[SEED §3 story 2]`, `[USER CP1]`, `DEC-014`, `ASM-047`, `[DOC flashcard-pipeline.md §6.2, §6.4]` |
 | `REQ-F-013` | The system shall evaluate each lecture's draft questions in a fresh, independent Question Reviewer subagent instance that never receives the Question Creator's reasoning, executing Pass 1 (the blind-answer test on question stems and MCQ options only) followed by Pass 2 (evaluating the 8 pass/fail question rubric criteria, recording `failed[]` criteria, and checking `core` variant counts to assign `accept`, `revise`, or `reject` verdicts in `questions.review.r<n>.json`). | Must | `UC-02` | `SL-04` | `[SEED §3 story 2]`, `[DOC flashcard-pipeline.md §3.1, §3.6, §6.3]` |
 | `REQ-F-014` | The system shall cap the Question Creator–Question Reviewer loop at 2 revision rounds (up to 3 review rounds total), freezing `accept` questions, removing `reject` questions, revising only `revise` questions, and routing any question still failing after round 3 into `flagged.json`. | Must | `UC-02` | `SL-04` | `[SEED §3 story 2]`, `[DOC flashcard-pipeline.md §3.1, §7]` |
 | `REQ-F-015` | The system shall run the Module Auditor agent after all lectures in a module complete Stages A and B to write `module-audit.json`, recording learning-outcome coverage gaps, assessment-scope variant sufficiency, cross-lecture duplicate items, and glossary notation deviations. | Must | `UC-02` | `SL-04` | `[SEED §3 Reports & outputs]`, `[SEED §5]`, `[DOC flashcard-pipeline.md §3.7, §8]` |
@@ -157,13 +157,13 @@ Per catalog entry `A10` and check `G2.16`, the approval-style rules in `[SEED §
 
 ## 5. Explicitly out-of-scope items (`A01 §5.2`)
 
-Every seed non-goal (`[SEED §11]`) and user exclusion (`[USER Q-13]`, `[USER Q-14]`, `[USER Q-17]`) is excluded from `REQ-F` and `REQ-N`:
-- **`X1`:** Multiple users, accounts, deck sharing, or collaboration (`[SEED §11]`).
-- **`X2`:** Native iOS or Android applications (`[SEED §11]`).
-- **`X3`:** Scraping university portals other than HKUST Canvas, writing or submitting work to Canvas, or reading Canvas discussions, rosters, or other students' data (`[SEED §11]`, `DEC-009`, `ASM-049`, `ASM-061`). *(Note: read-only Canvas access for the student's own course files, pages, assignments, announcements, and syllabi is in scope as `REQ-F-002` per `DEC-009`.)*
-- **`X4`:** Two-way synchronisation with Anki; only one-way TSV export (`REQ-F-066`) is in scope (`[SEED §11]`).
-- **`X5`:** Generating flashcards or quiz questions from general knowledge rather than the student's course material (`[SEED §11]`).
-- **`X6`:** Having the tutor write or rewrite assessed coursework (`[SEED §11]`, enforced by `REQ-F-051` and `REQ-N-023`).
-- **`X7`:** Pipeline-free on-the-fly daily quiz question generation (`[SEED §11]`).
-- **`X8`:** The Mandarin module (`[USER Q-13]`, `DEC-007`).
-- **`X9`:** Importing existing flashcards or review history from Anki or other tools (`[USER Q-14]`, `ASM-014`).
+Every seed non-goal (`[SEED §11]`) and user exclusion (`[USER Q-13]`, `[USER Q-14]`, `[USER Q-17]`) is excluded from `REQ-F` and `REQ-N` (matching `SC-X01`–`SC-X09` in `A01 §5.2`, written `X1`–`X9` in the CP1/CP2 messages):
+- **`SC-X01` (`X1`):** Multiple users, accounts, deck sharing, or collaboration (`[SEED §11]`).
+- **`SC-X02` (`X2`):** Native iOS or Android applications (`[SEED §11]`).
+- **`SC-X03` (`X3`):** Scraping university portals other than HKUST Canvas, writing or submitting work to Canvas, or reading Canvas discussions, rosters, or other students' data (`[SEED §11]`, `DEC-009`, `ASM-049`, `ASM-061`). *(Note: read-only Canvas access for the student's own course files, pages, assignments, announcements, and syllabi is in scope as `REQ-F-002` per `DEC-009`.)*
+- **`SC-X04` (`X4`):** Two-way synchronisation with Anki; only one-way TSV export (`REQ-F-066`) is in scope (`[SEED §11]`).
+- **`SC-X05` (`X5`):** Generating flashcards or quiz questions from general knowledge rather than the student's course material (`[SEED §11]`).
+- **`SC-X06` (`X6`):** Having the tutor write or rewrite assessed coursework (`[SEED §11]`, enforced by `REQ-F-051` and `REQ-N-023`).
+- **`SC-X07` (`X7`):** Pipeline-free on-the-fly daily quiz question generation (`[SEED §11]`).
+- **`SC-X08` (`X8`):** The Mandarin module (`[USER Q-13]`, `DEC-007`).
+- **`SC-X09` (`X9`):** Importing existing flashcards or review history from Anki or other tools (`[USER Q-14]`, `ASM-014`).

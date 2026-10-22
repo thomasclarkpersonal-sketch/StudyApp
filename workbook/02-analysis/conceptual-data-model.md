@@ -1,6 +1,6 @@
 # A16 · Conceptual Data Model
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A16.
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A16. Approved and baselined at CP2 (2026-10-21).
 
 This document specifies the conceptual data model of the **Study App & Generation Pipeline** across all 28 domain classes (`E01`–`E28`), matching the attribute definitions in [`glossary.md`](glossary.md) (`A18`) and the DFD data stores `D1`–`D9` in [`dfd.md`](dfd.md) (`A12`, `G2.7`).
 

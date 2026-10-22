@@ -1,6 +1,6 @@
 # A07 · Baseline Project Plan
 
-Owner: Strategic Planner. Stage 1, written 2026-10-21. A summary of A01–A06 and the procedures that govern the project. Approved and baselined at CP1 (2026-10-21; updated via `CR-001`).
+Owner: Strategic Planner. Stage 1, written 2026-10-21. A summary of A01–A06 and the procedures that govern the project. Approved and baselined at CP1 (2026-10-21; updated via `CR-001`, `CR-002`).
 
 ## 1. Summary of the initiation artifacts
 
@@ -42,15 +42,18 @@ Owner: Strategic Planner. Stage 1, written 2026-10-21. A summary of A01–A06 an
 
 ## 4. Test strategy summary
 
-This summary follows the protocol's pillars (P1, P2). The Master Test Plan (A20, Stage 2) details it, and its summary is added here then through a CR.
-- **Test-first everywhere in BUILD mode.**
-  - **Acceptance scenarios** come from the use cases (Stage 2).
-  - **System and integration test cases** come from the design (Stage 3).
-  - **Unit test cases** are written per slice before the code (Stage 4). Each test is seen failing for the expected reason before the code is written. A test that cannot fail first is proved by a recorded mutation.
-- **Coverage by design:** normal paths, boundaries, invalid input, error and recovery paths (including a crash mid-write for the database), and a verification method for every measurable non-functional requirement.
-- **Generated content:** cards and questions are checked against an evaluation set with numeric thresholds (A42), and the results are recorded in A53.
-- **Contract tests** for every integration: Claude API, Canvas, and the pipeline files.
-- **Regression:** the full suite runs after every batch of fixes.
+This summary follows the protocol's pillars (P1, P2) and the Stage 2 [A20 Master Test Plan](../02-analysis/master-test-plan.md) (added here via `CR-002`).
+- **Four test levels and objective entry/exit criteria (`A20 §1`):**
+  1. **Unit testing (`TC-U-*`):** pure domain functions (`ts-fsrs` scheduling wrappers, `DT-01`–`DT-06` decision logic across all 48 complete rules, deterministic IDs `BR-020`, `DailyPlan` 9-step ordering `BR-035`, deadline urgency/timezone math `BR-033`, LaTeXiT metadata parser, Anki TSV / `.ics` formatters); exit requires `100%` pass (`0` skipped) and ≥ `90%` line/branch coverage on scheduling and decision tables.
+  2. **Integration & contract testing (`TC-I-*`):** SQLite persistence (`A33`), atomic import & backup/rollback (`REQ-N-011`), JSON Schema contract validation on all 6 export files + `feedback.json` (`REQ-N-020`), REST API endpoints (`A34`), read-only Canvas client with local fallback (`REQ-F-002`), Reviewer subagent context-isolation payload check (`REQ-N-012`), and mocked/live Anthropic Claude API client with prompt caching (`REQ-F-047`); exit requires `100%` pass and ≥ 1 valid + ≥ 1 invalid (`400`/`422`) test per operation/schema.
+  3. **System & NFR testing (`TC-S-*`):** end-to-end workflows (`WF-01`, `WF-02`), keyboard-only operability (`REQ-N-019`), WCAG 2.2 AA accessibility (`axe-core`, `REQ-N-018`), performance/volume benchmarks (`REQ-N-001`–`REQ-N-007` on `3,000`-card / `100,000`-log and `12,000`-card / `500,000`-log seeded databases), offline/network-isolated operation (`REQ-N-008`, `REQ-N-009`), `SIGKILL` crash recovery (`REQ-N-011`), and adversarial security/privacy suites (`REQ-N-013`–`REQ-N-016`, `REQ-N-023`); exit requires `100%` pass on all `23` `REQ-N` targets in `A53` and `0` open `S1`/`S2` defects in `A52`.
+  4. **Acceptance testing (Alpha & Beta UAT, `A19`):** student validation on actual coursework against `AT-001`–`AT-137` and `SM-1`–`SM-6` (`A01 §3`), plus the `A42` evaluation benchmark (≥ `95%` notation compliance, ≥ `95%` citation accuracy, `0` unflagged context-dependent cards).
+- **Test-first everywhere in BUILD mode (`A20 §7`):**
+  - **Acceptance scenarios (`AT-001`–`AT-137`)** come from the use cases and decision tables (`A19`, Stage 2).
+  - **System and integration test cases (`TC-S-*`, `TC-I-*`)** come from the design (`A39`, Stage 3).
+  - **Unit test cases (`TC-U-*`)** are written per slice in a dedicated Red-phase commit before the implementation commit (`A50`, Stage 4). Each test is seen failing for the expected reason before the code is written; any test that cannot fail first is proved by a recorded mutation.
+- **Environment & PD/copyright-safe test data (`A20 §2–§3`):** automated CI uses synthetic public-domain fixtures (including synthetic embedded `LaTeXiT` streams, prompt-injection payloads, and canary credentials) with `0` real copyrighted course files or personal tokens committed (`DEC-008`, `REQ-N-013`, `REQ-N-016`).
+- **Regression (`A20 §7`):** the full unit, integration, contract, and system suite runs after every slice and every batch of fixes.
 
 ## 5. Baseline on approval at CP1
 

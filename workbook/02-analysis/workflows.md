@@ -1,10 +1,10 @@
 # A14 · Activity / BPMN Workflow Diagrams
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A14.
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A14. Approved and baselined at CP2 (2026-10-21).
 
 This document models the two cross-actor workflows with hand-offs, waiting states, and parallel execution (`A04`):
 1. **`WF-01` · Module Generation Pipeline & Independent Reviewer Loop** (`UC-01`–`UC-05`, `REQ-F-001`–`REQ-F-019`)
-2. **`WF-02` · Daily Study, Written-Answer Grading, Feedback Export & Re-Import Cycle** (`UC-06`–`UC-14`, `UC-19`, `REQ-F-020`–`REQ-F-050`, `REQ-F-063`, `REQ-F-064`)
+2. **`WF-02` · Daily Study, Written-Answer Marking, Feedback Export & Re-Import Cycle** (`UC-06`–`UC-14`, `UC-19`, `REQ-F-020`–`REQ-F-050`, `REQ-F-063`, `REQ-F-064`)
 
 Every diagram satisfies `A14` acceptance checks:
 - **Swimlanes:** Each participant has a dedicated `subgraph` swimlane.
@@ -107,7 +107,7 @@ flowchart TD
 
 ---
 
-## 2. `WF-02` · Daily Study, Grading, Feedback Export & Re-Import Cycle (`UC-06`–`UC-14`, `UC-19`)
+## 2. `WF-02` · Daily Study, Marking, Feedback Export & Re-Import Cycle (`UC-06`–`UC-14`, `UC-19`)
 
 ```mermaid
 flowchart TD
@@ -132,15 +132,15 @@ flowchart TD
     ACT_FSRS_CARD["Update CardState via ts-fsrs & Append CardReviewLog"]
     GW_ITEM_REPORTED{"XOR: Item Reported as Wrong/Unclear?"}
     ACT_LOG_REPORT["Write FeedbackItem (kind = reported) & Flag Item"]
-    GW_Q_TYPE{"XOR: Quiz Grading Mode?"}
-    ACT_AUTO_MCQ["Auto-Grade MCQ & Show Model Answer + Distractor Explanations"]
+    GW_Q_TYPE{"XOR: Quiz Marking Mode?"}
+    ACT_AUTO_MCQ["Auto-Mark MCQ & Show Model Answer + Distractor Explanations"]
     ACT_FSRS_CONCEPT["Map Outcome to Rating, Update ConceptState & Check Variant Pool"]
     JOIN_STUDY["AND Join: Daily Flashcard & Quiz Queue Completed"]
     GW_HAS_FB{"XOR: Unexported Feedback Items Exist?"}
   end
 
   subgraph Lane_ClaudeAPI ["Swimlane 3 · Anthropic Claude API (E3)"]
-    ACT_CLAUDE_GRADE["Grade Written Answer with Cached Module Glossary & Slides Prefix"]
+    ACT_CLAUDE_GRADE["Mark Written Answer with Cached Module Glossary & Slides Prefix"]
     GW_API_OK{"XOR: API Response Within 10s & Spend Under Cap?"}
   end
 
@@ -166,7 +166,7 @@ flowchart TD
   ACT_ANS_QUIZ --> GW_ITEM_REPORTED
   GW_ITEM_REPORTED -->|Reported wrong or unclear| ACT_LOG_REPORT
   ACT_LOG_REPORT --> JOIN_STUDY
-  GW_ITEM_REPORTED -->|Answer submitted for grading| GW_Q_TYPE
+  GW_ITEM_REPORTED -->|Answer submitted for marking| GW_Q_TYPE
 
   GW_Q_TYPE -->|MCQ question| ACT_AUTO_MCQ
   GW_Q_TYPE -->|Written self-marking (R1)| ACT_SELF_MARK

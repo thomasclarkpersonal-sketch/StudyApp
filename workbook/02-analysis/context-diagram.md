@@ -1,6 +1,6 @@
 # A11 · Context Diagram
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A11.
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A11. Approved and baselined at CP2 (2026-10-21).
 
 This diagram shows the **Study App & Generation Pipeline** as a single process (`P0`) together with every external entity (`E1`–`E6`) and every data flow crossing the system boundary. No data stores appear at context level (`A11`). Every boundary flow on this diagram balances one-for-one with the net external inputs and outputs of the Level-0 Data Flow Diagram in [`dfd.md`](dfd.md) (`A12`, `G2.5`, `G2.6`).
 

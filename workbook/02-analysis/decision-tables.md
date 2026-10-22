@@ -1,6 +1,6 @@
 # A15 · Decision Tables
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A15.
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A15. Approved and baselined at CP2 (2026-10-21).
 
 This document specifies the 6 decision tables (`DT-01`–`DT-06`) governing multi-condition business logic across the generation pipeline and study app.
 - Each table has 3 binary conditions ($2^3 = 8$ complete rules before reduction, 48 complete rules across `DT-01`–`DT-06`).

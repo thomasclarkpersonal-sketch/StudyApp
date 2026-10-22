@@ -27,7 +27,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 | 5 Release Readiness | Not started | G5 | CP4 |
 | 6 Maintenance Setup & Closedown | Not started | G6 | — |
 
-- **Current baseline:** `A01`, `A02`, `A03`, `A04`, `A05` (with `wbs.csv`), `A06` (with `schedule_calc.py`), `A07` (approved at CP1, 2026-10-21; updated via `CR-001`); `A09` (with `02-analysis/sources/`), `A10` (with `requirements.csv`), `A11`, `A12`, `A13`, `A14`, `A15`, `A16`, `A17`, `A18` (with `data-dictionary.csv`), `A19` (with `acceptance-scenarios.csv`), `A20`, `A22`, and `traceability-matrix.md` (with `traceability-matrix.csv`) (approved at CP2, 2026-10-21).
+- **Current baseline:** `A01`, `A02`, `A03`, `A04`, `A05` (with `wbs.csv`), `A06` (with `schedule_calc.py`), `A07` (approved at CP1, 2026-10-21; updated via `CR-001`, `CR-002`); `A09` (with `02-analysis/sources/`), `A10` (with `requirements.csv`), `A11`, `A12`, `A13`, `A14`, `A15`, `A16`, `A17`, `A18` (with `data-dictionary.csv`), `A19` (with `acceptance-scenarios.csv`), `A20`, `A22`, and `traceability-matrix.md` (with `traceability-matrix.csv`) (approved at CP2, 2026-10-21).
 - **Pending checkpoint:** none. The next is CP3 (ADVISORY), after Gate G3.
 - **Carried to CP3:** the architecture (`A31`), key ADRs (`A30`, including stack adoption, SQLite data store, Claude Code pipeline runtime, Canvas access method, and `R3` hosting provider resolving `ASM-028` and `ASM-060`), the slice order (`A40`, updating `A05`/`A06` through a CR if needed), and the review scope (`A39`) with any accepted risks in `A03`.
 - **Branch:** `stage-2/requirements` (branched from `main`).
@@ -61,13 +61,8 @@ No section is Blank.
 | `flashcard-pipeline.md` | With the repository | Copied to `02-analysis/sources/flashcard-pipeline.md` and analysed in full in A09 (Stage 2) |
 | `study-app-spec.md` | With the repository | Copied to `02-analysis/sources/study-app-spec.md` and analysed in full in A09 (Stage 2) |
 | Handbook, sample slides, past paper, semester calendar, screenshots | Requested | Two received 2026-10-21 (below). Past paper, calendar and screenshots not supplied yet. Must not be committed to this public repository |
-<<<<<<< HEAD
-| `ug_course_syllabus_template_doc_COMP4901B.docx.pdf` (COMP 4901B Large Language Models syllabus, HKUST, Fall 2026-27, 4 pages) | 2026-10-21; kept in the student's local course-material folder, outside the repository (`DEC-008`) | Skimmed at Stage 0; full analysis in A09 |
-| `COMP4901b_Sept24_RL.pdf` (COMP 4901B lecture on reinforcement learning, Keynote export, 61 pages) | 2026-10-21; same location (`DEC-008`) | Skimmed at Stage 0; full analysis in A09 |
-=======
-| `ug_course_syllabus_template_doc_COMP4901B.docx.pdf` (COMP 4901B Large Language Models syllabus, HKUST, Fall 2026-27, 4 pages) | 2026-10-21; kept outside the repository at `C:\Users\thoma\Documents\AI SLOP\` (`DEC-008`) | Analysed in full in A09 (Stage 2) |
+| `ug_course_syllabus_template_doc_COMP4901B.docx.pdf` (COMP 4901B Large Language Models syllabus, HKUST, Fall 2026-27, 4 pages) | 2026-10-21; kept in the student's local course-material folder, outside the repository (`DEC-008`) | Analysed in full in A09 (Stage 2) |
 | `COMP4901b_Sept24_RL.pdf` (COMP 4901B lecture on reinforcement learning, Keynote export, 61 pages) | 2026-10-21; same location (`DEC-008`) | Analysed in full in A09 (Stage 2) |
->>>>>>> 1bb5911 (Stage 2: requirements analysis and sourcing artifacts (A09-A20, A22, traceability))
 
 **Stage 0 skim findings** (high-impact items only; A09 analyses both documents in full):
 - **COMP 4901B has no midterm.** Its assessments are attendance and in-class quizzes, three individual programming assignments, a group mini-project, and a closed-book final in the HKUST exam period, 7–19 Dec 2026. The first midterm (Q-02) is therefore in another module. → `ASM-045`

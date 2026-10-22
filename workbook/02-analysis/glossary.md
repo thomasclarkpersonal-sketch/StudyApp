@@ -1,6 +1,6 @@
 # A18 · Glossary & Data Dictionary
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A18.
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A18. Approved and baselined at CP2 (2026-10-21; `DEC-016`).
 
 The complete attribute dictionary is also stored in [`data-dictionary.csv`](data-dictionary.csv) beside this file (protocol §5.3). Preferred terms defined in §1–§3 are used consistently across `A10`–`A17`.
 

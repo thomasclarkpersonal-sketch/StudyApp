@@ -1,6 +1,6 @@
 # A19 · Acceptance Scenarios
 
-Owner: QA & Test Engineer / Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A19.
+Owner: QA & Test Engineer / Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A19. Approved and baselined at CP2 (2026-10-21).
 
 This document specifies the **137 Given / When / Then acceptance scenarios (`AT-001`–`AT-137`)** verifying the **Study App & Generation Pipeline**.
 - **Complete UC coverage (`G2.3`, `A19.1`):** Every Use Case main success scenario (`UC-01`–`UC-21`, `AT-001`–`AT-021`) and every Use Case extension (45 extensions across `UC-01`–`UC-21`, `AT-022`–`AT-050` and `AT-099`–`AT-114`) has a dedicated scenario.

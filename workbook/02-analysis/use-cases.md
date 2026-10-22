@@ -1,6 +1,6 @@
 # A13 · Use Cases
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A13.
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A13. Approved and baselined at CP2 (2026-10-21).
 
 This document specifies the 21 use cases (`UC-01`–`UC-21`) of the **Study App & Generation Pipeline**.
 - **Must (`R1`) use cases (`UC-01`–`UC-11`):** Fully dressed Cockburn format (`A13`).

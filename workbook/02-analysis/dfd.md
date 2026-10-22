@@ -1,8 +1,8 @@
 # A12 · Data Flow Diagrams (Level-0 and Level-1)
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A12.
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A12. Approved and baselined at CP2 (2026-10-21).
 
-This document decomposes `P0("0 Study App & Generation Pipeline")` from [`context-diagram.md`](context-diagram.md) (`A11`) into a **Level-0 Data Flow Diagram** (`P1`–`P7`, data stores `D1`–`D9`) and **Level-1 Data Flow Diagrams** for every Level-0 process (`P1`–`P7`).
+This document decomposes `P0("0 Study App & Generation Pipeline")` from [`context-diagram.md`](context-diagram.md) (`A11`) into a **Level-0 Data Flow Diagram** (`P1`–`P7`, data stores `D1`–`D9`) and **Level-1 Data Flow Diagrams** for every Level-0 process (`P1`–`P7`). *(Note: `P1`–`P7` here denote Level-0 DFD processes per catalog entry `A12`; `A01` scope items use `SC-P01`–`SC-P11`.)*
 
 Every rule of catalog entry `A12` and gate checks `G2.6` and `G2.7` holds across the diagram set:
 1. No flow connects two external entities, two data stores, or an external entity and a data store directly.
@@ -405,7 +405,7 @@ flowchart TB
 | `P7.2` | Schedule & Review Flashcards | Serves due and new flashcards per module up to daily limits (`REQ-F-027`), renders Markdown/KaTeX, processes ratings (`1`–`4`), updates `CardState` via `ts-fsrs`, and appends `CardReviewLog`. | `REQ-F-024`–`REQ-F-027`, `REQ-N-001`, `REQ-N-010` |
 | `P7.3` | Select & Mark Concept Quizzes | Selects due concepts (`ConceptState`) and unseen/least-recently-seen variants near target difficulty (`REQ-F-029`–`REQ-F-031`), auto-marks MCQs (`REQ-F-032`), supports self-marking (`REQ-F-033`), overrides (`REQ-F-044`), and timed mock exams (`REQ-F-054`), and updates `ConceptState`. | `REQ-F-029`–`REQ-F-034`, `REQ-F-044`, `REQ-F-053`, `REQ-F-054` |
 | `P7.4` | Manage Deadlines, Readings & Daily Plan | Computes live deadline countdowns and urgency badges (`REQ-F-035`–`REQ-F-038`), manages milestones, readings, and tasks (`REQ-F-041`, `REQ-F-056`), builds and budgets the 9-step `DailyPlan` (`REQ-F-039`, `REQ-F-040`, `REQ-F-055`), and exports `.ics` (`REQ-F-057`). | `REQ-F-035`–`REQ-F-041`, `REQ-F-055`–`REQ-F-057`, `REQ-N-003` |
-| `P7.5` | Run Course Tutor & Compute Stats | Calls the Anthropic Claude API (`E3`) with cached module prefixes (`REQ-F-047`) for written-answer grading (`REQ-F-043`) and course-grounded tutoring (`REQ-F-045`, `REQ-F-046`), enforces coursework integrity (`REQ-F-051`) and spend caps (`REQ-F-048`), manages tutor `Proposal` items (`REQ-F-049`), and computes `SM-1`–`SM-6` statistics and FSRS forecasts (`REQ-F-058`, `REQ-F-065`). | `REQ-F-043`, `REQ-F-045`–`REQ-F-049`, `REQ-F-051`, `REQ-F-052`, `REQ-F-058`, `REQ-F-065` |
+| `P7.5` | Run Course Tutor & Compute Stats | Calls the Anthropic Claude API (`E3`) with cached module prefixes (`REQ-F-047`) for written-answer marking (`REQ-F-043`) and course-grounded tutoring (`REQ-F-045`, `REQ-F-046`), enforces coursework integrity (`REQ-F-051`) and spend caps (`REQ-F-048`), manages tutor `Proposal` items (`REQ-F-049`), and computes `SM-1`–`SM-6` statistics and FSRS forecasts (`REQ-F-058`, `REQ-F-065`). | `REQ-F-043`, `REQ-F-045`–`REQ-F-049`, `REQ-F-051`, `REQ-F-052`, `REQ-F-058`, `REQ-F-065` |
 
 ---
 

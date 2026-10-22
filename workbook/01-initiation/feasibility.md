@@ -17,7 +17,7 @@ Horizon: 36 months from R1, the catalog's tier-M horizon (`ASM-054`).
 
 | Cost item | Kind | Per month | 36 months | Basis |
 | :-- | :-- | :-- | :-- | :-- |
-| Building the system: the agent's sessions and the CI critic's reviews | One-time | — | Not known to the agent; excluded, for the student to add | The agent cannot see what its own sessions cost the student [ASM-030]. The CI critic runs on the student's Claude subscription token when it is set, otherwise on an API key billed per token, for each pull request it reviews [DOC .github/workflows/critic.yml L212–214] [ASM-064] |
+| Building the system: the agent's sessions and the CI critic's reviews | One-time | — | Not known to the agent; excluded, for the student to add | The agent cannot see what its own sessions cost the student [ASM-030]. The CI critic runs on the student's Claude subscription token when it is set, otherwise on an API key billed per token, for each pull request it reviews [ASM-064] |
 | Building the system: the student's time (checkpoints, pull-request reviews, setup) | One-time | — | 15–40 hours of student time | [ASM-055] |
 | Claude subscription for the pipeline | Recurring | $0 extra: the student already holds Pro or Max | $0 | [USER Q-15]; marginal cost only if the limits run out (`ASM-044`) |
 | Contingency: upgrading one plan step if the pipeline exhausts the limits | Recurring, if needed | $0–$100 | $0–$3,600 | Pro $20 → Max 5x $100 (+$80), or Max 5x $100 → Max 20x $200 (+$100), depending on the student's current plan, which is not known [ASM-062]. Needed only if `ASM-044` fails. Raising spend needs the student's approval [SEED §10] |

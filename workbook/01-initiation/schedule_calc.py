@@ -69,11 +69,21 @@ def load():
 
 
 def cpm(rows):
+    all_by_id = {r["id"]: r for r in rows}
     net = [r for r in rows if r["kind"] != "loe"]
     by_id = {r["id"]: r for r in net}
+    seen = set()
     for r in net:  # rows are listed in dependency order
+        for p in r["preds"]:
+            if p not in all_by_id:
+                raise ValueError(f"Task {r['id']} references unknown predecessor {p!r}")
+            if all_by_id[p]["kind"] == "loe":
+                raise ValueError(f"Task {r['id']} cannot depend on level-of-effort row {p!r}")
+            if p not in seen:
+                raise ValueError(f"Task {r['id']} lists predecessor {p!r} out of topological order")
         r["es"] = max((by_id[p]["ef"] for p in r["preds"]), default=0.0)
         r["ef"] = r["es"] + r["et"]
+        seen.add(r["id"])
     end = max(r["ef"] for r in net)
     succ = {r["id"]: [] for r in net}
     for r in net:
@@ -307,15 +317,36 @@ def bpp_block(rows, net, end):
     ])
 
 
-def replace_block(path, name, content):
-    with open(path, encoding="utf-8") as fh:
-        text = fh.read()
-    pat = re.compile(r"(<!-- BEGIN GENERATED:" + re.escape(name) + r" [^>]*-->).*?(<!-- END GENERATED:" + re.escape(name) + r" -->)", re.S)
-    if not pat.search(text):
-        raise SystemExit(f"No GENERATED:{name} markers in {path}")
-    text = pat.sub(lambda m: m.group(1) + "\n" + content + "\n" + m.group(2), text)
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write(text)
+def apply_updates(updates):
+    texts = {}
+    for path, name, content in updates:
+        if path not in texts:
+            with open(path, encoding="utf-8") as fh:
+                texts[path] = fh.read()
+        pat = re.compile(
+            r"(<!-- BEGIN GENERATED:" + re.escape(name) + r" [^>]*-->).*?(<!-- END GENERATED:" + re.escape(name) + r" -->)",
+            re.S,
+        )
+        if not pat.search(texts[path]):
+            raise SystemExit(f"No GENERATED:{name} markers in {path}")
+        texts[path] = pat.sub(lambda m: m.group(1) + "\n" + content + "\n" + m.group(2), texts[path])
+
+    tmp_pairs = []
+    try:
+        for path, new_text in texts.items():
+            tmp_path = f"{path}.tmp.{os.getpid()}"
+            with open(tmp_path, "w", encoding="utf-8") as fh:
+                fh.write(new_text)
+            tmp_pairs.append((tmp_path, path))
+        for tmp_path, path in tmp_pairs:
+            os.replace(tmp_path, path)
+    finally:
+        for tmp_path, _ in tmp_pairs:
+            if os.path.exists(tmp_path):
+                try:
+                    os.remove(tmp_path)
+                except OSError:
+                    pass
 
 
 if __name__ == "__main__":
@@ -329,6 +360,5 @@ if __name__ == "__main__":
         (os.path.join(HERE, "feasibility.md"), "targets", targets_block(net)),
         (os.path.join(HERE, "baseline-project-plan.md"), "bpp", bpp_block(rows, net, end)),
     ]
-    for path, name, content in updates:
-        replace_block(path, name, content)
+    apply_updates(updates)
     print("wbs.md, schedule.md, charter-scope.md (§9), feasibility.md (§4) and baseline-project-plan.md (§1) regenerated")

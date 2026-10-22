@@ -130,7 +130,7 @@ The things the system tracks, modelled in A16 at Stage 2 [SEED §4 Main things t
 | D1 | The study app: a local web app with its database, built test-first in this repository | R1–R3 |
 | D2 | The generation pipeline as a Claude Code project: agent definitions, commands, prompts, and scripts that validate and export the pipeline files | R1–R3 |
 | D3 | The Workbook artifacts selected in the Tailoring Record (A04) | All stages |
-| D4 | The documentation set (A63): user guide, runbook, developer README | R1, updated per release |
+| D4 | The documentation set (A63): user guide, runbook, developer README | R1 (work package `5.4`), updated inside each R2 and R3 slice leaf (`A05` §"Structure and rules") |
 
 ## 7. Constraints
 

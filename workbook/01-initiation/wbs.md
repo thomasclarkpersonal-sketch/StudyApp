@@ -8,7 +8,7 @@ Owner: Strategic Planner. Stage 1, written 2026-10-21.
 - **Numbering scheme:** Top-level prefixes match protocol stages: `0` Governance (`0.1`), `1` Initiation (`1.1`–`1.7`), `2` Requirements (`2.1`–`2.13`), `3` Design (`3.1`–`3.13`), `4` Construction Slices (`4-R1 Slices R1`, `4-R2 Slices R2`, `4-R3 Slices R3`; slice leaves use `SL-01`–`SL-21` plus level-of-effort `4.0`), `5` Release Readiness (`5-R1 Release R1` leaves `5.1`–`5.4`, `5-R2 Release R2` leaf `5.5`, `5-R3 Release R3` leaf `5.6`), and `6` Closedown (`6.1`–`6.3`). Release groups use the non-numeric `-R1`/`-R2`/`-R3` suffix so group IDs never collide with numeric leaf IDs (`5.1`–`5.6`).
 - **Leaves:** each work package (leaf) has exactly one deliverable: an artifact ID from the Tailoring Record (A04) or a slice. A deliverable may appear in more than one leaf when it is updated for a later release (A53 and A61).
 - **Gates and checkpoints** (G1–G6, CP1–CP4) are schedule milestones in A06, not work packages, because they produce review records rather than artifacts. Their time includes the revision cycles.
-- **What a slice leaf covers:** the whole slice loop. That is detailed design (4a), unit test cases (4b), red–green–refactor build with static analysis and inspection (4c), NFR checks (4d), the slice record (A50), Gate G4 and the post-slice report.
+- **What a slice leaf covers:** the whole slice loop. That is detailed design (4a), unit test cases (4b), red–green–refactor build with static analysis and inspection (4c), NFR checks (4d), the slice record (A50), Gate G4, the post-slice report, and—for R2 and R3 slices after the initial R1 release-readiness leaves (`5.2` A60, `5.4` A63)—the incremental updates to A63 (user guide, runbook and developer README entries for the slice's new workflows) and A60 (environment and secret configuration when the slice adds new integrations or hosted settings).
 - **Slices are provisional.** They are derived from the seed's story cards in priority order, with the pipeline first because it holds the riskiest component (`RSK-002`). The Slice Plan (A40) in Stage 3 replaces them; once A05 is baselined at CP1, that replacement is a CR.
 - **Single source:** [`wbs.csv`](wbs.csv). The tables below and the schedule (A06) are generated from it by [`schedule_calc.py`](schedule_calc.py).
 
@@ -37,6 +37,7 @@ Study App
 
 Selected artifacts produced inside other work packages, rather than as leaves:
 - **A50:** one slice record per slice, inside each slice leaf.
+- **A60 and A63 updates in R2 and R3:** created as standalone leaves in R1 (`5.2` and `5.4`), then updated inside each R2 and R3 slice leaf as new user workflows (R2 marking, tutor, mock exams, `.ics`; R3 hosted access, offline study, notifications) and new environment/secret variables (`SL-12`, `SL-18`) are built, with `5.6` also updating the A63 runbook entries to match its hosted A61 deployment and rollback procedures before R3's Gate G5.
 
 Selected artifacts not tied to one stage:
 - **A52:** a level-of-effort leaf, 4.0.

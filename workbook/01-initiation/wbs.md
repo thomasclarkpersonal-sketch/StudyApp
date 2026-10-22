@@ -1,0 +1,156 @@
+# A05 · Work Breakdown Structure
+
+Owner: Strategic Planner. Stage 1, written 2026-10-21.
+
+## Structure and rules
+
+- **Hierarchy:** by stage (`0`–`6`), and in Stage 4 (`4-R1`–`4-R3`) and Stage 5 (`5-R1`–`5-R3`) grouped into the three releases approved in `DEC-010` (R1 = Must, R2 = Should, R3 = Could).
+- **Numbering scheme:** Top-level prefixes match protocol stages: `0` Governance (`0.1`), `1` Initiation (`1.1`–`1.7`), `2` Requirements (`2.1`–`2.13`), `3` Design (`3.1`–`3.13`), `4` Construction Slices (`4-R1 Slices R1`, `4-R2 Slices R2`, `4-R3 Slices R3`; slice leaves use `SL-01`–`SL-21` plus level-of-effort `4.0`), `5` Release Readiness (`5-R1 Release R1` leaves `5.1`–`5.4`, `5-R2 Release R2` leaf `5.5`, `5-R3 Release R3` leaf `5.6`), and `6` Closedown (`6.1`–`6.3`). Release groups use the non-numeric `-R1`/`-R2`/`-R3` suffix so group IDs never collide with numeric leaf IDs (`5.1`–`5.6`).
+- **Leaves:** each work package (leaf) has exactly one deliverable: an artifact ID from the Tailoring Record (A04) or a slice. A deliverable may appear in more than one leaf when it is updated for a later release (A53 and A61).
+- **Gates and checkpoints** (G1–G6, CP1–CP4) are schedule milestones in A06, not work packages, because they produce review records rather than artifacts. Their time includes the revision cycles.
+- **What a slice leaf covers:** the whole slice loop. That is detailed design (4a), unit test cases (4b), red–green–refactor build with static analysis and inspection (4c), NFR checks (4d), the slice record (A50), Gate G4, the post-slice report, and—for R2 and R3 slices after the initial R1 release-readiness leaves (`5.2` A60, `5.4` A63)—the incremental updates to A63 (user guide, runbook and developer README entries for the slice's new workflows) and A60 (environment and secret configuration when the slice adds new integrations or hosted settings).
+- **Slices are provisional.** They are derived from the seed's story cards in priority order, with the pipeline first because it holds the riskiest component (`RSK-002`). The Slice Plan (A40) in Stage 3 replaces them; once A05 is baselined at CP1, that replacement is a CR.
+- **Single source:** [`wbs.csv`](wbs.csv). The tables below and the schedule (A06) are generated from it by [`schedule_calc.py`](schedule_calc.py).
+
+## Estimates
+
+- **Unit:** hours of **agent session time** (`ASM-052`), meaning the elapsed time of the agent's working sessions, including revision cycles. The student opens the sessions and stays reachable to answer, while the student's active work on the build (answering checkpoints, reviewing pull requests, setting up Canvas access and `pipeline.config.json`) is estimated separately at 15–40 hours (`ASM-055`; see A02 "Two kinds of time").
+- **Values:** each leaf has optimistic (o), most likely (r) and pessimistic (p) estimates. They are the agent's judgement from the size of the seed and source documents, with no historical data: `ASM-052`, which covers every estimate column.
+- **Calendar time:** converted at the session-time pacing assumption `ASM-053` in A06.
+
+## Hierarchy (summary)
+
+```text
+Study App
+├── 0 Governance ........... A00 (level of effort, 0.1)
+├── 1 Initiation ........... A01–A07 (1.1–1.7)
+├── 2 Requirements ......... A09–A20, A22 (2.1–2.13)
+├── 3 Design ............... A30–A42 (3.1–3.13)
+├── 4-R1 Slices R1 (Must) .. SL-01–SL-11, A52 (level of effort, 4.0)
+├── 5-R1 Release R1 ........ A53, A60, A61, A63 (5.1–5.4)
+├── 4-R2 Slices R2 (Should)  SL-12–SL-17
+├── 5-R2 Release R2 ........ A53 update (5.5)
+├── 4-R3 Slices R3 (Could) . SL-18–SL-21
+├── 5-R3 Release R3 ........ A61 update for hosting (5.6)
+└── 6 Closedown ............ A70–A72 (6.1–6.3)
+```
+
+Selected artifacts produced inside other work packages, rather than as leaves:
+- **A50:** one slice record per slice, inside each slice leaf.
+- **A60 and A63 updates in R2 and R3:** created as standalone leaves in R1 (`5.2` and `5.4`), then updated inside each R2 and R3 slice leaf as new user workflows (R2 marking, tutor, mock exams, `.ics`; R3 hosted access, offline study, notifications) and new environment/secret variables (`SL-12`, `SL-18`, including the hosted runbook and user-guide entries in `A63`) are built.
+
+Selected artifacts not tied to one stage:
+- **A52:** a level-of-effort leaf, 4.0.
+
+## Mapping of slices to stories
+
+| Slice | Stories / items | Release |
+| :-- | :-- | :-- |
+| SL-01 | Walking skeleton: one lecture through the pipeline (slide images and text → Card Creator → independent Card Reviewer) into `deck.json`, then import and review of one card in the app. Retires `RSK-002`, `RSK-004` and `RSK-018` first | R1 |
+| SL-02 | Story 1 (full card stage and review loop); story 5 (human review step) | R1 |
+| SL-03 | Story 3 (Extractor); Canvas reading (`DEC-009`) | R1 |
+| SL-04 | Story 2 (question bank); Module Auditor | R1 |
+| SL-05 | Story 4 (processing order); run summary; the six exports | R1 |
+| SL-06 | Story 6 (import with preview) | R1 |
+| SL-07 | Story 7 (flashcard review) | R1 |
+| SL-08 | Story 8 (daily quiz) | R1 |
+| SL-09 | Story 9 (deadlines and countdowns) | R1 |
+| SL-10 | Story 10 (Today checklist) | R1 |
+| SL-11 | Story 11 (report a problem; reports exported for the next run, `ASM-038`) | R1 |
+| SL-12 | Story 12 (Claude marking) | R2 |
+| SL-13 | Story 13 (tutor) | R2 |
+| SL-14 | Story 14 (tutor proposals) | R2 |
+| SL-15 | Story 15 (assessment mode, mock exams) | R2 |
+| SL-16 | Story 16 (time budget, milestones, `.ics`) | R2 |
+| SL-17 | Stats page [SEED §3 Reports & outputs] | R2 |
+| SL-18 | Story 17 (hosted, offline); notifications [SEED §3 Reports & outputs] | R3 |
+| SL-19 | Story 18 (full `feedback.json`) | R3 |
+| SL-20 | Story 19 (FSRS optimiser, forecasts) | R3 |
+| SL-21 | Story 20 (Anki export) | R3 |
+
+Every story card in seed §3 maps to a slice.
+
+## Work packages
+
+<!-- BEGIN GENERATED:wbs by schedule_calc.py -->
+| WBS | Work package | Deliverable | Owner role | Predecessors | o (h) | r (h) | p (h) | Source |
+| :-- | :-- | :-- | :-- | :-- | --: | --: | --: | :-- |
+| **0 Governance** | | | | | | | | |
+| 0.1 | Assumption register and decision log kept current (level of effort) | A00 | Orchestrator | — | 1 | 2 | 4 | [ASM-052] |
+| **1 Initiation** | | | | | | | | |
+| 1.1 | Charter and scope statement | A01 | Strategic Planner | — | 0.5 | 1 | 2 | [ASM-052] |
+| 1.2 | Feasibility assessment | A02 | Strategic Planner | 1.1 | 0.5 | 1 | 2 | [ASM-052] |
+| 1.3 | Risk register | A03 | Strategic Planner | 1.2 | 0.3 | 0.5 | 1 | [ASM-052] |
+| 1.4 | Tailoring record | A04 | Strategic Planner | 1.3 | 0.3 | 0.5 | 1 | [ASM-052] |
+| 1.5 | Work breakdown structure | A05 | Strategic Planner | 1.4 | 0.3 | 0.5 | 1 | [ASM-052] |
+| 1.6 | Schedule | A06 | Strategic Planner | 1.5 | 0.3 | 0.5 | 1 | [ASM-052] |
+| 1.7 | Baseline project plan | A07 | Strategic Planner | 1.6 | 0.2 | 0.3 | 0.5 | [ASM-052] |
+| **2 Requirements** | | | | | | | | |
+| 2.1 | Requirements sources and document analysis | A09 | Systems Analyst | M1 | 0.5 | 1 | 2 | [ASM-052] |
+| 2.2 | Requirements catalog | A10 | Systems Analyst | 2.1 | 1 | 2 | 4 | [ASM-052] |
+| 2.3 | Context diagram | A11 | Systems Analyst | 2.2 | 0.2 | 0.4 | 1 | [ASM-052] |
+| 2.4 | Data flow diagrams (pipeline) | A12 | Systems Analyst | 2.3 | 0.5 | 1 | 2 | [ASM-052] |
+| 2.5 | Use cases | A13 | Systems Analyst | 2.4 | 1 | 2 | 4 | [ASM-052] |
+| 2.6 | Activity diagram (pipeline run) | A14 | Systems Analyst | 2.5 | 0.3 | 0.5 | 1 | [ASM-052] |
+| 2.7 | Decision tables | A15 | Systems Analyst | 2.6 | 0.5 | 1 | 2 | [ASM-052] |
+| 2.8 | Conceptual data model | A16 | Systems Analyst | 2.7 | 0.5 | 1 | 2 | [ASM-052] |
+| 2.9 | Business rules | A17 | Systems Analyst | 2.8 | 0.5 | 1 | 2 | [ASM-052] |
+| 2.10 | Glossary and data dictionary | A18 | Systems Analyst | 2.9 | 0.3 | 0.5 | 1 | [ASM-052] |
+| 2.11 | Acceptance scenarios | A19 | QA & Test Engineer | 2.10 | 1 | 1.5 | 3 | [ASM-052] |
+| 2.12 | Master test plan | A20 | QA & Test Engineer | 2.11 | 0.3 | 0.6 | 1.2 | [ASM-052] |
+| 2.13 | Sourcing decision | A22 | System Architect | 2.12 | 0.5 | 1 | 2 | [ASM-052] |
+| **3 Design** | | | | | | | | |
+| 3.1 | Architecture decision records | A30 | System Architect | M2 | 0.5 | 1 | 2 | [ASM-052] |
+| 3.2 | Architecture overview | A31 | System Architect | 3.1 | 0.5 | 1 | 2 | [ASM-052] |
+| 3.3 | Logical data model | A32 | System Architect | 3.2 | 0.3 | 0.6 | 1.2 | [ASM-052] |
+| 3.4 | Physical data design | A33 | System Architect | 3.3 | 0.3 | 0.6 | 1.2 | [ASM-052] |
+| 3.5 | Interface contracts | A34 | System Architect | 3.4 | 1 | 1.5 | 3 | [ASM-052] |
+| 3.6 | UI and dialogue design | A35 | System Architect | 3.5 | 0.5 | 1 | 2 | [ASM-052] |
+| 3.7 | Report and output design | A41 | System Architect | 3.6 | 0.3 | 0.6 | 1.2 | [ASM-052] |
+| 3.8 | Security design | A36 | System Architect | 3.7 | 0.5 | 1 | 2 | [ASM-052] |
+| 3.9 | Privacy data map | A37 | System Architect | 3.8 | 0.2 | 0.4 | 0.8 | [ASM-052] |
+| 3.10 | Observability and SLOs | A38 | System Architect | 3.9 | 0.2 | 0.4 | 0.8 | [ASM-052] |
+| 3.11 | Data and model quality plan | A42 | System Architect | 3.10 | 0.5 | 1 | 2.5 | [ASM-052] |
+| 3.12 | Test design and review scope | A39 | QA & Test Engineer | 3.11 | 1 | 2 | 4 | [ASM-052] |
+| 3.13 | Slice plan | A40 | System Architect | 3.12 | 0.2 | 0.4 | 1 | [ASM-052] |
+| **4-R1 Slices R1** | | | | | | | | |
+| 4.0 | Defect log kept current (level of effort) | A52 | QA & Test Engineer | M3 | 0.2 | 0.5 | 1 | [ASM-052] |
+| SL-01 | Walking skeleton: one lecture through the pipeline into the app | SL-01 | System Architect | M3 | 3 | 5 | 10 | [ASM-052] |
+| SL-02 | Card stage review loop and human review step (stories 1 and 5) | SL-02 | System Architect | SL-01 | 2 | 3 | 6 | [ASM-052] |
+| SL-03 | Extractor and Canvas reading (story 3) | SL-03 | System Architect | SL-02 | 2 | 3 | 7 | [ASM-052] |
+| SL-04 | Question bank stage and module audit (story 2) | SL-04 | System Architect | SL-03 | 2 | 3 | 6 | [ASM-052] |
+| SL-05 | Run order and run summary and exports (story 4) | SL-05 | System Architect | SL-04 | 1 | 2 | 4 | [ASM-052] |
+| SL-06 | Import with preview (story 6) | SL-06 | System Architect | SL-05 | 1.5 | 2.5 | 5 | [ASM-052] |
+| SL-07 | Flashcard review (story 7) | SL-07 | System Architect | SL-06 | 1 | 2 | 4 | [ASM-052] |
+| SL-08 | Daily quiz (story 8) | SL-08 | System Architect | SL-07 | 1.5 | 3 | 6 | [ASM-052] |
+| SL-09 | Deadlines and countdowns (story 9) | SL-09 | System Architect | SL-08 | 1 | 2 | 4 | [ASM-052] |
+| SL-10 | Today checklist (story 10) | SL-10 | System Architect | SL-09 | 1.5 | 2.5 | 5 | [ASM-052] |
+| SL-11 | Report a problem and export reports (story 11) | SL-11 | System Architect | SL-10 | 0.5 | 1 | 2 | [ASM-052] |
+| **5-R1 Release R1** | | | | | | | | |
+| 5.1 | NFR verification at system level | A53 | QA & Test Engineer | SL-11 | 1 | 2 | 4 | [ASM-052] |
+| 5.2 | Delivery pipeline and environments | A60 | System Architect | 5.1 | 0.5 | 1 | 2 | [ASM-052] |
+| 5.3 | Deployment and rollback plan | A61 | System Architect | 5.2 | 0.5 | 1 | 2 | [ASM-052] |
+| 5.4 | Documentation set | A63 | Strategic Planner | 5.3 | 0.5 | 1 | 2 | [ASM-052] |
+| **4-R2 Slices R2** | | | | | | | | |
+| SL-12 | Claude marking of written answers (story 12) | SL-12 | System Architect | M4 | 1 | 2 | 4 | [ASM-052] |
+| SL-13 | Claude tutor (story 13) | SL-13 | System Architect | SL-12 | 2 | 3.5 | 7 | [ASM-052] |
+| SL-14 | Tutor proposals (story 14) | SL-14 | System Architect | SL-13 | 1 | 1.5 | 3 | [ASM-052] |
+| SL-15 | Assessment mode and mock exams (story 15) | SL-15 | System Architect | SL-14 | 1.5 | 2.5 | 5 | [ASM-052] |
+| SL-16 | Time budget and milestones and calendar export (story 16) | SL-16 | System Architect | SL-15 | 1.5 | 2.5 | 5 | [ASM-052] |
+| SL-17 | Stats page | SL-17 | System Architect | SL-16 | 1 | 2 | 4 | [ASM-052] |
+| **5-R2 Release R2** | | | | | | | | |
+| 5.5 | NFR verification update for R2 | A53 | QA & Test Engineer | SL-17 | 1 | 1.5 | 3 | [ASM-052] |
+| **4-R3 Slices R3** | | | | | | | | |
+| SL-18 | Hosted access with password and offline study and notifications (story 17) | SL-18 | System Architect | M5 | 3 | 5 | 10 | [ASM-052] |
+| SL-19 | Full feedback export (story 18) | SL-19 | System Architect | SL-18 | 0.5 | 1 | 2 | [ASM-052] |
+| SL-20 | FSRS optimiser and load forecasts (story 19) | SL-20 | System Architect | SL-19 | 1 | 2 | 4 | [ASM-052] |
+| SL-21 | Anki export (story 20) | SL-21 | System Architect | SL-20 | 0.5 | 0.8 | 1.5 | [ASM-052] |
+| **5-R3 Release R3** | | | | | | | | |
+| 5.6 | Deployment and rollback update for hosting | A61 | System Architect | SL-21 | 1 | 2 | 4 | [ASM-052] |
+| **6 Closedown** | | | | | | | | |
+| 6.1 | Configuration and change management | A70 | System Architect | M6 | 0.3 | 0.6 | 1.2 | [ASM-052] |
+| 6.2 | Operational health and maintenance pipeline | A71 | System Architect | 6.1 | 0.5 | 1 | 2 | [ASM-052] |
+| 6.3 | Closedown review | A72 | Strategic Planner | 6.2 | 0.3 | 0.6 | 1.2 | [ASM-052] |
+
+Work packages: 65, with a total expected time (ET) of 103.30 h. Gates and checkpoints (milestones in A06) add 15.67 h, so all planned session time is 118.97 h.
+<!-- END GENERATED:wbs -->

@@ -1,6 +1,6 @@
 # A01 · Project Charter & Scope Statement
 
-Owner: Strategic Planner. Stage 1, written 2026-10-21. Tier M (`DEC-001`). Status: draft for Gate G1 and checkpoint CP1.
+Owner: Strategic Planner. Stage 1, written 2026-10-21. Tier M (`DEC-001`). Status: baselined at CP1 (2026-10-21; updated via `CR-001`).
 
 ## 1. Problem and opportunity
 
@@ -12,17 +12,17 @@ Every day, the student gets one checklist containing spaced-repetition flashcard
 
 ## 3. Objectives and success metrics
 
-The seed marks its metrics as proposals (`ASM-036`). Three (SM-3, SM-4, SM-5) are kept as the seed states them. SM-2 makes the seed's target and measurement formula concrete, and SM-1 and SM-6 need restating because of the student's later answers; all three are **proposals for the student to accept or change at CP1**, and they become objectives only once a DEC records that agreement (G1.8).
+The seed marks its metrics as proposals (`ASM-036`). Three (SM-3, SM-4, SM-5) are kept as the seed states them. SM-2 makes the seed's target and measurement formula concrete, and SM-1 and SM-6 are restated to match the student's answers; all six were approved by the student at CP1 and adopted as project objectives in `DEC-012` [USER CP1] (G1.8).
 
 | ID | Metric (target) | Source | Baseline | Measurement method | When measured |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| SM-1 | **Proposed restatement.** Seed: "All lectures covered by the first midterm are processed (cards and question bank reviewed and imported) at least 7 days before the midterm." The first midterm is under 2 weeks away and the student chose the full MVP even if it arrives after it, so the proposal is: *for each assessment after R1 is in use, all lectures it covers in the in-scope modules are processed at least 7 days before it. First target: the final exams of the Computer Science modules, in the exam period 7–19 Dec 2026, so processed by 30 Nov 2026.* | [SEED §1] [USER Q-02] [USER Q-11] [USER Q-12] [DOC ug_course_syllabus_template_doc_COMP4901B.docx.pdf p.2] | 0 lectures processed (the system is new) | For each assessment: the lectures it covers (from `pipeline.config.json` or Canvas), compared with the dates on which their cards and questions were imported (the import log); a lecture counts when both its deck and its question bank are imported | 7 days before each assessment |
-| SM-2 | **Proposed reading.** Flashcard retention at least 85% (the seed says "85–90% or higher, measured by FSRS"; this reading sets the lower bound as the pass target and defines the formula over the review log). The FSRS desired retention is set to 0.90. | [SEED §1] [DOC study-app-spec.md §1.1] | None: the student starts fresh, with no imported history [USER Q-14] | True retention = reviews of cards already in the FSRS review state that are rated Hard, Good or Easy, divided by all such reviews, over the trailing 30 days, from the card review log | Weekly, from 30 days after R1 is in use |
-| SM-3 | Fewer than 2% of accepted cards and questions are later reported as wrong. | [SEED §1] | None (new system) | Distinct items reported with the reason "wrong" (story 11), divided by all accepted items imported, per module per semester. Reports with the reason "unclear" are counted separately and not in this metric | End of each semester; running figure on the Stats page from R2 |
-| SM-4a | No missed deadlines. | [SEED §1] | Unknown: not recorded today | Deadlines whose due time has passed without being marked submitted or done, counted from the deadline records | Continuously; reviewed weekly |
-| SM-4b | The daily checklist is completed on at least 5 days a week. | [SEED §1] | None (new system) | A day counts as completed when every required (non-optional) item on that day's checklist is marked done by the end of that day, in the student's time zone; counted per calendar week from the daily plan records | Weekly |
-| SM-5 | Every concept in an assessment's scope has been quizzed at least twice before that assessment. | [SEED §1] | None (new system) | For each assessment: the concepts whose assessment list includes it, each with its count of quiz attempts before the assessment's due time; target 100% of those concepts with 2 or more | Before each assessment |
-| SM-6 | **Proposed restatement.** Seed: "Claude API spend stays within the monthly budget (budget Unknown)". The student set no fixed limit and asked to see the spend, so the proposal is: *each month's Claude API spend by the app is visible to the student.* The pipeline runs on the student's Claude subscription, so it makes no API spend; the R1 app makes no Claude calls (`ASM-043`), so this applies from R2. | [SEED §1] [USER Q-06] [USER Q-15] | None | Token counts logged per Claude call, priced at the configured per-token rates and summed per calendar month; the student confirms the Stats page shows the month's total | Monthly, from R2 |
+| SM-1 | **Restated objective (`DEC-012`).** Seed: "All lectures covered by the first midterm are processed (cards and question bank reviewed and imported) at least 7 days before the midterm." The first midterm is under 2 weeks away and the student chose the full MVP even if it arrives after it, so the approved target is: *for each assessment after R1 is in use, all lectures it covers in the in-scope modules are processed at least 7 days before it. First target: the final exams of the Computer Science modules, in the exam period 7–19 Dec 2026, so processed by 30 Nov 2026.* | [SEED §1] [USER Q-02] [USER Q-11] [USER Q-12] [USER CP1] [DEC-012] [DOC ug_course_syllabus_template_doc_COMP4901B.docx.pdf p.2] | 0 lectures processed (the system is new) | For each assessment: the lectures it covers (from `pipeline.config.json` or Canvas), compared with the dates on which their cards and questions were imported (the import log); a lecture counts when both its deck and its question bank are imported | 7 days before each assessment |
+| SM-2 | **Approved reading (`DEC-012`).** Flashcard retention at least 85% (the seed says "85–90% or higher, measured by FSRS"; this reading sets the lower bound as the pass target and defines the formula over the review log). The FSRS desired retention is set to 0.90. | [SEED §1] [USER CP1] [DEC-012] [DOC study-app-spec.md §1.1] | None: the student starts fresh, with no imported history [USER Q-14] | True retention = reviews of cards already in the FSRS review state that are rated Hard, Good or Easy, divided by all such reviews, over the trailing 30 days, from the card review log | Weekly, from 30 days after R1 is in use |
+| SM-3 | Fewer than 2% of accepted cards and questions are later reported as wrong. | [SEED §1] [DEC-012] | None (new system) | Distinct items reported with the reason "wrong" (story 11), divided by all accepted items imported, per module per semester. Reports with the reason "unclear" are counted separately and not in this metric | End of each semester; running figure on the Stats page from R2 |
+| SM-4a | No missed deadlines. | [SEED §1] [DEC-012] | Unknown: not recorded today | Deadlines whose due time has passed without being marked submitted or done, counted from the deadline records | Continuously; reviewed weekly |
+| SM-4b | The daily checklist is completed on at least 5 days a week. | [SEED §1] [DEC-012] | None (new system) | A day counts as completed when every required (non-optional) item on that day's checklist is marked done by the end of that day, in the student's time zone; counted per calendar week from the daily plan records | Weekly |
+| SM-5 | Every concept in an assessment's scope has been quizzed at least twice before that assessment. | [SEED §1] [DEC-012] | None (new system) | For each assessment: the concepts whose assessment list includes it, each with its count of quiz attempts before the assessment's due time; target 100% of those concepts with 2 or more | Before each assessment |
+| SM-6 | **Restated objective (`DEC-012`).** Seed: "Claude API spend stays within the monthly budget (budget Unknown)". The student set no fixed limit and asked to see the spend, so the approved target is: *each month's Claude API spend by the app is visible to the student.* The pipeline runs on the student's Claude subscription, so it makes no API spend; the R1 app makes no Claude calls (`ASM-043`), so this applies from R2. | [SEED §1] [USER Q-06] [USER Q-15] [USER CP1] [DEC-012] | None | Token counts logged per Claude call, priced at the configured per-token rates and summed per calendar month; the student confirms the Stats page shows the month's total | Monthly, from R2 |
 
 ### QA & Test Engineer confirmation (Stage 1 step 2)
 
@@ -52,7 +52,7 @@ Every metric therefore has a stated method; none relies on a judgement that can'
 
 ### 5.1 In scope
 
-Releases follow the seed's priorities: **R1 = the Must stories (the MVP)**, **R2 = the Should stories**, **R3 = the Could stories**. The release structure itself is an agent proposal for CP1 (`DEC-010`).
+Releases follow the seed's priorities: **R1 = the Must stories (the MVP)**, **R2 = the Should stories**, **R3 = the Could stories**, as approved at CP1 (`DEC-010`) [USER CP1].
 
 **Generation pipeline** (runs in Claude Code on the student's Claude subscription [USER Q-05] [USER Q-15]):
 
@@ -65,7 +65,7 @@ Releases follow the seed's priorities: **R1 = the Must stories (the MVP)**, **R2
 | P5 | Processing order: Computer Science modules first (Theory of Computation, Machine Learning, LLMs), then the other in-scope modules by nearest assessment; lectures covered by the nearest assessment first within a module | R1 | [SEED §3 story 4] [USER Q-12] |
 | P6 | A human review step before export: flagged items, inferred dates, module-specific notation and a spot-check sample | R1 | [SEED §3 story 5] [DOC flashcard-pipeline.md §9] |
 | P7 | Export of the six app files with stable ids, plus a pipeline run summary and module audit per run | R1 | [SEED §5] [SEED §3 Reports & outputs] |
-| P8 | Reading course material from Canvas directly, or from local files, including maths- and diagram-heavy slides (placed in R1 as part of the `DEC-010` proposal for CP1) | R1 | [DEC-009] [DEC-010] [USER Q-08] |
+| P8 | Reading course material from Canvas directly, or from local files, including maths- and diagram-heavy slides (placed in R1 under `DEC-010` [USER CP1]) | R1 | [DEC-009] [DEC-010] [USER Q-08] [USER CP1] |
 | P9 | Taking reported items (story 11) back into the next run | R1 | [SEED §3 story 11] [ASM-038] |
 | P10 | Reviewing tutor proposals before they join the bank | R2 | [SEED §3 story 14] |
 | P11 | Top-up runs for concepts running low on unseen variants, from the full `feedback.json` | R3 | [SEED §3 story 18] [DOC flashcard-pipeline.md §10] |
@@ -85,7 +85,7 @@ Releases follow the seed's priorities: **R1 = the Must stories (the MVP)**, **R2
 | A9 | Accepting, editing or discarding tutor proposals | R2 | [SEED §3 story 14] |
 | A10 | Assessment mode and timed mock exams, with mock exam results | R2 | [SEED §3 story 15] [SEED §3 Reports & outputs] |
 | A11 | A daily time budget with deferral, coursework milestones and `.ics` export of deadlines | R2 | [SEED §3 story 16] [SEED §3 Reports & outputs] |
-| A12 | A Stats page: reviews per day, retention, concept mastery per assessment's scope, Claude API spend this month (placed in R2 as part of the `DEC-010` proposal for CP1, so SM-3 and SM-6 are visible in R2; the review-load forecast comes with A15 in R3) | R2 | [SEED §3 Reports & outputs] [DEC-010] |
+| A12 | A Stats page: reviews per day, retention, concept mastery per assessment's scope, Claude API spend this month (placed in R2 under `DEC-010` [USER CP1], so SM-3 and SM-6 are visible in R2; the review-load forecast comes with A15 in R3) | R2 | [SEED §3 Reports & outputs] [DEC-010] [USER CP1] |
 | A13 | Hosted access behind a password, offline study, and notifications | R3 | [SEED §3 story 17] [SEED §3 Reports & outputs] |
 | A14 | Full `feedback.json` export (reports, top-up requests, tutor proposals) | R3 | [SEED §3 story 18] |
 | A15 | FSRS parameters fitted to the student's history, and review-load forecasts | R3 | [SEED §3 story 19] |
@@ -147,7 +147,7 @@ The things the system tracks, modelled in A16 at Stage 2 [SEED §4 Main things t
 
 ## 8. Key assumptions
 
-High impact: `ASM-001` (pipeline and app both in scope), `ASM-016` (refuted: text extraction is not enough) and `ASM-046` (slides read as images), `ASM-021` (one user), `ASM-044` (subscription limits), `ASM-045` (dates), `ASM-050` (Canvas credential kept secret), `ASM-053` (3 h/day of agent session time), `ASM-058` (Anthropic's terms on subscription pipeline runs). Medium impact and needing CP1: `ASM-022`, `ASM-036`, `ASM-038`, `ASM-047`, `ASM-048`, `ASM-049`, `ASM-051`, `ASM-061`, `ASM-062`, `ASM-063`, `ASM-064`. The full register is in [assumptions-decisions.md](../00-governance/assumptions-decisions.md).
+High impact: `ASM-001` (pipeline and app both in scope), `ASM-016` (refuted: text extraction is not enough) and `ASM-046` (slides read as images), `ASM-021` (one user), `ASM-044` (subscription limits), `ASM-045` (dates), `ASM-050` (Canvas credential kept secret), `ASM-053` (3 h/day of agent session time), `ASM-058` (Anthropic's terms on subscription pipeline runs). Medium impact and confirmed or accepted for planning at CP1: `ASM-022`, `ASM-036`, `ASM-038`, `ASM-047`, `ASM-048`, `ASM-049`, `ASM-051`, `ASM-061`, `ASM-062`, `ASM-063`, `ASM-064`. The full register is in [assumptions-decisions.md](../00-governance/assumptions-decisions.md).
 
 ## 9. High-level milestones
 

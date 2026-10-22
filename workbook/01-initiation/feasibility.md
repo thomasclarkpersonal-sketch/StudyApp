@@ -105,14 +105,14 @@ The cash cost is small next to the time at stake, and nothing is spent before R2
 
 The table and the processing figures below are generated from A06 by `schedule_calc.py`, so they always match it. Dates are in session time at 3 h/day (`ASM-053`); ranges run from 4 h/day at ET − 2SD to 2 h/day at ET + 2SD.
 
-Targets: the first midterm is within 2 weeks of 2026-10-20 [USER Q-02]; the exam period starts 7 Dec 2026 [DOC ug_course_syllabus_template_doc_COMP4901B.docx.pdf p.2]; 30 Nov is the proposed SM-1 date (A01 §3). The processing load uses 3 Computer Science modules × 10–26 lectures [ASM-051], 15 minutes of pipeline time per lecture [SEED §7 Performance] [ASM-037] and 10–25 minutes of human review per lecture [ASM-057].
+Targets: the first midterm is within 2 weeks of 2026-10-20 [USER Q-02]; the exam period starts 7 Dec 2026 [DOC ug_course_syllabus_template_doc_COMP4901B.docx.pdf p.2]; 30 Nov is the SM-1 target date (A01 §3, `DEC-012`). The processing load uses 3 Computer Science modules × 10–26 lectures [ASM-051], 15 minutes of pipeline time per lecture [SEED §7 Performance] [ASM-037] and 10–25 minutes of human review per lecture [ASM-057].
 
 <!-- BEGIN GENERATED:targets by schedule_calc.py -->
 | Target | Needed by | Derived date at 3 h/day (range) | Result |
 | :-- | :-- | :-- | :-- |
 | R1 (MVP) before the first midterm | 3 Nov 2026 | 16 Nov 2026 (8 Nov 2026 – 3 Dec 2026) | **not met** at 3 h/day |
 | R1 in use before the exam period | 6 Dec 2026 | 16 Nov 2026 (8 Nov 2026 – 3 Dec 2026) | met, even in the slow case |
-| Pipeline complete (SL-05), so processing can start | before 30 Nov 2026 (proposed SM-1) | 9 Nov 2026 (3 Nov 2026 – 21 Nov 2026) | met, even in the slow case |
+| Pipeline complete (SL-05), so processing can start | before 30 Nov 2026 (`DEC-012` SM-1) | 9 Nov 2026 (3 Nov 2026 – 21 Nov 2026) | met, even in the slow case |
 | R2 before the exam period | none set by the student | 23 Nov 2026 (12 Nov 2026 – 13 Dec 2026) | met at 3 h/day; **not** met in the slow case |
 | R3 before the exam period | none set by the student | 27 Nov 2026 (16 Nov 2026 – 20 Dec 2026) | met at 3 h/day; **not** met in the slow case |
 
@@ -130,8 +130,8 @@ Targets: the first midterm is within 2 weeks of 2026-10-20 [USER Q-02]; the exam
 **Assessment:**
 - **First midterm.** R1 cannot arrive before it. The student accepted this and chose the full MVP for later assessments [USER Q-11].
 - **Where the processing time comes from.** Processing does not use the agent's session time. Pipeline runs happen in Claude Code alongside the agent's sessions (`ASM-063`); they are limited by the subscription (`RSK-004`), not by the schedule. The human review step uses the student's active time, on top of the student's part in the build (`ASM-055`).
-- **SM-1 (proposed).** Whether the Computer Science lectures can be processed by 30 Nov depends on the student giving the review time per day shown above. At 3 h/day almost all of the load fits within the 1.5 h/day assumed in `ASM-063`. In the slow case the window shortens to about 9 days, and less than half of the high end of the load fits. Processing only the lectures each final covers first (`RSK-017` contingency) is the fallback.
-- **R2 and R3.** Building them uses session time, not review time, so pausing them would not free much of the student's review time. It would reduce pull requests to review and subscription use by the CI critic (`ASM-064`) during the processing window and the exam period. Continuing straight on or pausing R2 and R3 until after the exams is a choice for CP1.
+- **SM-1 (`DEC-012`).** Whether the Computer Science lectures can be processed by 30 Nov depends on the student giving the review time per day shown above. At the central session-time pace almost all of the load fits within the daily review capacity in `ASM-063`. In the slow case the window shortens to the days shown in the table above, and less than half of the high end of the load fits. Processing only the lectures each final covers first (`RSK-017` contingency) is the fallback.
+- **R2 and R3.** Building them uses session time, not review time, so pausing them would not free much of the student's review time. It would reduce pull requests to review and subscription use by the CI critic (`ASM-064`) during the processing window and the exam period. Continuing straight on or pausing R2 and R3 until after the exams is decided at R1's CP4 (`DEC-010`).
 
 **Verdict: Feasible with conditions.** Conditions: about 3 hours of session time a day (`ASM-053`); up to 1.5 hours a day of the student's review time from SL-05 to 30 Nov (`ASM-063`); processing starts as soon as SL-05 is done. Risks: `RSK-001`, `RSK-015`.
 

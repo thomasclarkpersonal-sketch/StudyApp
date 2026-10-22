@@ -93,7 +93,7 @@ The two model sets cover **different parts** of the system, so this is not "both
 | A62 | Data Migration & Conversion Plan | Skip | — | MIG not set: nothing is imported from Anki [USER Q-14] |
 | A63 | Documentation Set | Produce | R | Required at M: user guide, runbook (including running the pipeline each semester), developer README |
 | A64 | Training & Support Plan | Skip | — | Optional at M; NTU not set. The only user commissioned the system and reviews every pull request; the user guide (A63) covers learning it |
-| A65 | Adoption & Change Plan | Skip | — | Catalog §3 sets R at tier M unconditionally, so skipping it is a deliberate proportionality departure (R3) presented for the student's confirmation at CP1. Only the student is affected, and they initiated the project and are keen [SEED §6]. The system changes no one else's work, and NTU is not set. Success measurement is in A01 (methods and timing for each metric), with the post-launch review in A72 |
+| A65 | Adoption & Change Plan | Skip | — | Catalog §3 sets R at tier M unconditionally, so skipping it is a deliberate proportionality departure (R3) approved by the student at CP1 (`DEC-013`) [USER CP1]. Only the student is affected, and they initiated the project and are keen [SEED §6]. The system changes no one else's work, and NTU is not set. Success measurement is in A01 (methods and timing for each metric), with the post-launch review in A72 |
 | A70 | Configuration & Change Management | Produce | R | Required at M |
 | A71 | Operational Health & Maintenance Pipeline | Produce | Reduced: maintenance pipeline (intake, B8 classes, triage) and the health metrics that have a data source; continuity section N/A until hosting (R3) | The student maintains the system and re-runs the pipeline each semester. Zero-downtime updates have no meaning for a local single-user app |
 | A72 | Closedown Review | Produce | R | Required at M |
@@ -104,6 +104,6 @@ All 48 catalog artifacts are listed. Every artifact a set flag requires is selec
 
 | Item | Decision | Reason |
 | :-- | :-- | :-- |
-| Releases | R1 = Must, R2 = Should, R3 = Could. Stage 4 runs per release; Stage 5 (G5, CP4) runs after each release; Stage 6 after R3 | `DEC-010`, an agent proposal for CP1: R1 must reach the student before the final exams, and the protocol's single release would hold R1 back until the Could stories are built |
+| Releases | R1 = Must, R2 = Should, R3 = Could. Stage 4 runs per release; Stage 5 (G5, CP4) runs after each release; Stage 6 after R3 | `DEC-010` [USER CP1]: R1 must reach the student before the final exams, and the protocol's single release would hold R1 back until the Could stories are built |
 | Checkpoints | ADVISORY: STRICT at CP1 and CP2 | [USER Q-10] [DEC-005] |
 | Gate reviews | A fresh Reviewer subagent per gate and per re-review, working from a committed snapshot | Protocol §4.2 [CLAUDE.md] |

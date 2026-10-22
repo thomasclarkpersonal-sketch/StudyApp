@@ -27,7 +27,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 | 5 Release Readiness | Not started | G5 | CP4 |
 | 6 Maintenance Setup & Closedown | Not started | G6 | — |
 
-- **Current baseline:** `A01`, `A02`, `A03`, `A04`, `A05` (with `wbs.csv`), `A06` (with `schedule_calc.py`), `A07` (approved at CP1, 2026-10-21).
+- **Current baseline:** `A01`, `A02`, `A03`, `A04`, `A05` (with `wbs.csv`), `A06` (with `schedule_calc.py`), `A07` (approved at CP1, 2026-10-21; updated via `CR-001`).
 - **Pending checkpoint:** none. The next is CP2 (STRICT), after Gate G2.
 - **Carried to CP2:** the proposed performance targets in seed §7 (`ASM-037`); verification in `A22` of Anthropic's terms on subscription pipeline runs (`ASM-058`), plan pricing (`ASM-062`), API token pricing (`ASM-059`), and subscription usage limits (`ASM-044`, plus `ASM-048` on HKUST Canvas API terms); confirmation of tutor thread and pipeline intermediate file retention (`ASM-023`, `ASM-024`) and phone browser targets (`ASM-027`); and the user's sourcing choice (`A22`, protocol §6 Stage 2 step 6).
 - **Branch:** `stage-1/initiation`.
@@ -61,7 +61,7 @@ No section is Blank.
 | `flashcard-pipeline.md` | With the repository | Skimmed at Stage 0; full analysis in A09 (Stage 2) |
 | `study-app-spec.md` | With the repository | Skimmed at Stage 0; full analysis in A09 (Stage 2) |
 | Handbook, sample slides, past paper, semester calendar, screenshots | Requested | Two received 2026-10-21 (below). Past paper, calendar and screenshots not supplied yet. Must not be committed to this public repository |
-| `ug_course_syllabus_template_doc_COMP4901B.docx.pdf` (COMP 4901B Large Language Models syllabus, HKUST, Fall 2026-27, 4 pages) | 2026-10-21; kept outside the repository at `C:\Users\thoma\Documents\AI SLOP\` (`DEC-008`) | Skimmed at Stage 0; full analysis in A09 |
+| `ug_course_syllabus_template_doc_COMP4901B.docx.pdf` (COMP 4901B Large Language Models syllabus, HKUST, Fall 2026-27, 4 pages) | 2026-10-21; kept in the student's local course-material folder, outside the repository (`DEC-008`) | Skimmed at Stage 0; full analysis in A09 |
 | `COMP4901b_Sept24_RL.pdf` (COMP 4901B lecture on reinforcement learning, Keynote export, 61 pages) | 2026-10-21; same location (`DEC-008`) | Skimmed at Stage 0; full analysis in A09 |
 
 **Stage 0 skim findings** (high-impact items only; A09 analyses both documents in full):

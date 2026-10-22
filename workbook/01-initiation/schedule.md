@@ -15,14 +15,14 @@ Owner: Strategic Planner. Stage 1, written 2026-10-21. Generated from [`wbs.csv`
 ## Riskiest work first
 
 - **`SL-01`, the walking skeleton,** is the first slice after the design baseline. It runs the sample lecture through slide reading, a Card Creator and an independent Card Reviewer into the app, retiring `RSK-002` (H/H), `RSK-004` and `RSK-018` before anything else is built. The evaluation set it is measured against (A42, task 3.11) comes before it.
-- **The pipeline slices** (`SL-01`–`SL-05`) come before the app slices, so processing real lectures can start as early as possible (proposed SM-1, `RSK-001`).
+- **The pipeline slices** (`SL-01`–`SL-05`) come before the app slices, so processing real lectures can start as early as possible (`DEC-012` SM-1, `RSK-001`).
 
 ## Reading the results
 
 <!-- BEGIN GENERATED:reading by schedule_calc.py -->
 - **R1 (MVP)** reaches its checkpoint after 80 h of session time: 16 Nov 2026 at 3 h/day, between 8 Nov 2026 and 3 Dec 2026 across the range. Before the exam period: met, even in the slow case.
-- **The pipeline** is complete (SL-05) on 9 Nov 2026 (3 Nov 2026 – 21 Nov 2026). From then on, the Computer Science lectures can be processed for the proposed SM-1 target; A02 §4 shows the student's review load.
-- **R2 and R3** fall on 23 Nov 2026 and 27 Nov 2026 at 3 h/day, and as late as 13 Dec 2026 and 20 Dec 2026 in the slow case. Before the exam period: R2 met at 3 h/day; **not** met in the slow case; R3 met at 3 h/day; **not** met in the slow case. Continuing straight on or pausing R2 and R3 until after the exams is a choice for CP1.
+- **The pipeline** is complete (SL-05) on 9 Nov 2026 (3 Nov 2026 – 21 Nov 2026). From then on, the Computer Science lectures can be processed for the SM-1 target (`DEC-012`); A02 §4 shows the student's review load.
+- **R2 and R3** fall on 23 Nov 2026 and 27 Nov 2026 at 3 h/day, and as late as 13 Dec 2026 and 20 Dec 2026 in the slow case. Before the exam period: R2 met at 3 h/day; **not** met in the slow case; R3 met at 3 h/day; **not** met in the slow case. Continuing straight on or pausing R2 and R3 until after the exams is decided at R1's CP4 (`DEC-010`).
 <!-- END GENERATED:reading -->
 
 <!-- BEGIN GENERATED:schedule by schedule_calc.py -->
@@ -172,7 +172,7 @@ flowchart TD
     n3_13["3.13 · ET 0.47 · ES–EF 37.63–38.10 · LS–LF 37.63–38.10"]
     nM3["M3 · ET 2.33 · ES–EF 38.10–40.43 · LS–LF 38.10–40.43"]
   end
-  subgraph g_4_Slices_R1["4 Slices R1"]
+  subgraph g_4_1_Slices_R1["4.1 Slices R1"]
     nSL_01["SL-01 · ET 5.50 · ES–EF 40.43–45.93 · LS–LF 40.43–45.93"]
     nSL_02["SL-02 · ET 3.33 · ES–EF 45.93–49.27 · LS–LF 45.93–49.27"]
     nSL_03["SL-03 · ET 3.50 · ES–EF 49.27–52.77 · LS–LF 49.27–52.77"]
@@ -185,14 +185,14 @@ flowchart TD
     nSL_10["SL-10 · ET 2.75 · ES–EF 68.60–71.35 · LS–LF 68.60–71.35"]
     nSL_11["SL-11 · ET 1.08 · ES–EF 71.35–72.43 · LS–LF 71.35–72.43"]
   end
-  subgraph g_5_Release_R1["5 Release R1"]
+  subgraph g_5_1_Release_R1["5.1 Release R1"]
     n5_1["5.1 · ET 2.17 · ES–EF 72.43–74.60 · LS–LF 72.43–74.60"]
     n5_2["5.2 · ET 1.08 · ES–EF 74.60–75.68 · LS–LF 74.60–75.68"]
     n5_3["5.3 · ET 1.08 · ES–EF 75.68–76.77 · LS–LF 75.68–76.77"]
     n5_4["5.4 · ET 1.08 · ES–EF 76.77–77.85 · LS–LF 76.77–77.85"]
     nM4["M4 · ET 2.33 · ES–EF 77.85–80.18 · LS–LF 77.85–80.18"]
   end
-  subgraph g_6_Slices_R2["6 Slices R2"]
+  subgraph g_4_2_Slices_R2["4.2 Slices R2"]
     nSL_12["SL-12 · ET 2.17 · ES–EF 80.18–82.35 · LS–LF 80.18–82.35"]
     nSL_13["SL-13 · ET 3.83 · ES–EF 82.35–86.18 · LS–LF 82.35–86.18"]
     nSL_14["SL-14 · ET 1.67 · ES–EF 86.18–87.85 · LS–LF 86.18–87.85"]
@@ -200,21 +200,21 @@ flowchart TD
     nSL_16["SL-16 · ET 2.75 · ES–EF 90.60–93.35 · LS–LF 90.60–93.35"]
     nSL_17["SL-17 · ET 2.17 · ES–EF 93.35–95.52 · LS–LF 93.35–95.52"]
   end
-  subgraph g_7_Release_R2["7 Release R2"]
+  subgraph g_5_2_Release_R2["5.2 Release R2"]
     n5_5["5.5 · ET 1.67 · ES–EF 95.52–97.18 · LS–LF 95.52–97.18"]
     nM5["M5 · ET 1.83 · ES–EF 97.18–99.02 · LS–LF 97.18–99.02"]
   end
-  subgraph g_8_Slices_R3["8 Slices R3"]
+  subgraph g_4_3_Slices_R3["4.3 Slices R3"]
     nSL_18["SL-18 · ET 5.50 · ES–EF 99.02–104.52 · LS–LF 99.02–104.52"]
     nSL_19["SL-19 · ET 1.08 · ES–EF 104.52–105.60 · LS–LF 104.52–105.60"]
     nSL_20["SL-20 · ET 2.17 · ES–EF 105.60–107.77 · LS–LF 105.60–107.77"]
     nSL_21["SL-21 · ET 0.87 · ES–EF 107.77–108.63 · LS–LF 107.77–108.63"]
   end
-  subgraph g_9_Release_R3["9 Release R3"]
+  subgraph g_5_3_Release_R3["5.3 Release R3"]
     n5_6["5.6 · ET 2.17 · ES–EF 108.63–110.80 · LS–LF 108.63–110.80"]
     nM6["M6 · ET 1.83 · ES–EF 110.80–112.63 · LS–LF 110.80–112.63"]
   end
-  subgraph g_10_Closedown["10 Closedown"]
+  subgraph g_6_Closedown["6 Closedown"]
     n6_1["6.1 · ET 0.65 · ES–EF 112.63–113.28 · LS–LF 112.63–113.28"]
     n6_2["6.2 · ET 1.08 · ES–EF 113.28–114.37 · LS–LF 113.28–114.37"]
     n6_3["6.3 · ET 0.65 · ES–EF 114.37–115.02 · LS–LF 114.37–115.02"]
@@ -341,7 +341,7 @@ gantt
   3.12 Test design and review scope :crit, 2026-11-01, 2026-11-02
   3.13 Slice plan :crit, 2026-11-02, 2026-11-03
   M3 Gate G3 and checkpoint CP3 (ADVISORY) :milestone, crit, 2026-11-03, 0d
-  section 4 Slices R1
+  section 4.1 Slices R1
   SL-01 Walking skeleton  one lecture through the pipeline into the app :crit, 2026-11-03, 2026-11-05
   SL-02 Card stage review loop and human review step (stories 1 and 5) :crit, 2026-11-05, 2026-11-06
   SL-03 Extractor and Canvas reading (story 3) :crit, 2026-11-06, 2026-11-07
@@ -353,31 +353,31 @@ gantt
   SL-09 Deadlines and countdowns (story 9) :crit, 2026-11-12, 2026-11-13
   SL-10 Today checklist (story 10) :crit, 2026-11-12, 2026-11-13
   SL-11 Report a problem and export reports (story 11) :crit, 2026-11-13, 2026-11-14
-  section 5 Release R1
+  section 5.1 Release R1
   5.1 NFR verification at system level :crit, 2026-11-14, 2026-11-15
   5.2 Delivery pipeline and environments :crit, 2026-11-14, 2026-11-15
   5.3 Deployment and rollback plan :crit, 2026-11-15, 2026-11-16
   5.4 Documentation set :crit, 2026-11-15, 2026-11-16
   M4 Gate G5 and checkpoint CP4 for R1 (ADVISORY) :milestone, crit, 2026-11-16, 0d
-  section 6 Slices R2
+  section 4.2 Slices R2
   SL-12 Claude marking of written answers (story 12) :crit, 2026-11-16, 2026-11-17
   SL-13 Claude tutor (story 13) :crit, 2026-11-17, 2026-11-18
   SL-14 Tutor proposals (story 14) :crit, 2026-11-18, 2026-11-19
   SL-15 Assessment mode and mock exams (story 15) :crit, 2026-11-19, 2026-11-20
   SL-16 Time budget and milestones and calendar export (story 16) :crit, 2026-11-20, 2026-11-21
   SL-17 Stats page :crit, 2026-11-21, 2026-11-22
-  section 7 Release R2
+  section 5.2 Release R2
   5.5 NFR verification update for R2 :crit, 2026-11-21, 2026-11-22
   M5 Gate G5 and checkpoint CP4 for R2 (ADVISORY) :milestone, crit, 2026-11-23, 0d
-  section 8 Slices R3
+  section 4.3 Slices R3
   SL-18 Hosted access with password and offline study and notifications (story 17) :crit, 2026-11-23, 2026-11-24
   SL-19 Full feedback export (story 18) :crit, 2026-11-24, 2026-11-25
   SL-20 FSRS optimiser and load forecasts (story 19) :crit, 2026-11-25, 2026-11-26
   SL-21 Anki export (story 20) :crit, 2026-11-25, 2026-11-26
-  section 9 Release R3
+  section 5.3 Release R3
   5.6 Deployment and rollback update for hosting :crit, 2026-11-26, 2026-11-27
   M6 Gate G5 and checkpoint CP4 for R3 (ADVISORY) :milestone, crit, 2026-11-27, 0d
-  section 10 Closedown
+  section 6 Closedown
   6.1 Configuration and change management :crit, 2026-11-27, 2026-11-28
   6.2 Operational health and maintenance pipeline :crit, 2026-11-27, 2026-11-28
   6.3 Closedown review :crit, 2026-11-28, 2026-11-29

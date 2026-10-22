@@ -36,38 +36,38 @@ M2,2 Requirements,Gate G2 and checkpoint CP2 (STRICT),milestone,Reviewer / stude
 3.12,3 Design,Test design and review scope,A39,QA & Test Engineer,3.11,1,2,4,task,R1
 3.13,3 Design,Slice plan,A40,System Architect,3.12,0.2,0.4,1,task,R1
 M3,3 Design,Gate G3 and checkpoint CP3 (ADVISORY),milestone,Reviewer,3.13,1,2,5,milestone,R1
-4.0,4 Slices R1,Defect log kept current,A52,QA & Test Engineer,M3,0.2,0.5,1,loe,all
-SL-01,4 Slices R1,Walking skeleton: one lecture through the pipeline into the app,SL-01,System Architect,M3,3,5,10,task,R1
-SL-02,4 Slices R1,Card stage review loop and human review step (stories 1 and 5),SL-02,System Architect,SL-01,2,3,6,task,R1
-SL-03,4 Slices R1,Extractor and Canvas reading (story 3),SL-03,System Architect,SL-02,2,3,7,task,R1
-SL-04,4 Slices R1,Question bank stage and module audit (story 2),SL-04,System Architect,SL-03,2,3,6,task,R1
-SL-05,4 Slices R1,Run order and run summary and exports (story 4),SL-05,System Architect,SL-04,1,2,4,task,R1
-SL-06,4 Slices R1,Import with preview (story 6),SL-06,System Architect,SL-05,1.5,2.5,5,task,R1
-SL-07,4 Slices R1,Flashcard review (story 7),SL-07,System Architect,SL-06,1,2,4,task,R1
-SL-08,4 Slices R1,Daily quiz (story 8),SL-08,System Architect,SL-07,1.5,3,6,task,R1
-SL-09,4 Slices R1,Deadlines and countdowns (story 9),SL-09,System Architect,SL-08,1,2,4,task,R1
-SL-10,4 Slices R1,Today checklist (story 10),SL-10,System Architect,SL-09,1.5,2.5,5,task,R1
-SL-11,4 Slices R1,Report a problem and export reports (story 11),SL-11,System Architect,SL-10,0.5,1,2,task,R1
-5.1,5 Release R1,NFR verification at system level,A53,QA & Test Engineer,SL-11,1,2,4,task,R1
-5.2,5 Release R1,Delivery pipeline and environments,A60,System Architect,5.1,0.5,1,2,task,R1
-5.3,5 Release R1,Deployment and rollback plan,A61,System Architect,5.2,0.5,1,2,task,R1
-5.4,5 Release R1,Documentation set,A63,Strategic Planner,5.3,0.5,1,2,task,R1
-M4,5 Release R1,Gate G5 and checkpoint CP4 for R1 (ADVISORY),milestone,Reviewer / student,5.4,1,2,5,milestone,R1
-SL-12,6 Slices R2,Claude marking of written answers (story 12),SL-12,System Architect,M4,1,2,4,task,R2
-SL-13,6 Slices R2,Claude tutor (story 13),SL-13,System Architect,SL-12,2,3.5,7,task,R2
-SL-14,6 Slices R2,Tutor proposals (story 14),SL-14,System Architect,SL-13,1,1.5,3,task,R2
-SL-15,6 Slices R2,Assessment mode and mock exams (story 15),SL-15,System Architect,SL-14,1.5,2.5,5,task,R2
-SL-16,6 Slices R2,Time budget and milestones and calendar export (story 16),SL-16,System Architect,SL-15,1.5,2.5,5,task,R2
-SL-17,6 Slices R2,Stats page,SL-17,System Architect,SL-16,1,2,4,task,R2
-5.5,7 Release R2,NFR verification update for R2,A53,QA & Test Engineer,SL-17,1,1.5,3,task,R2
-M5,7 Release R2,Gate G5 and checkpoint CP4 for R2 (ADVISORY),milestone,Reviewer / student,5.5,1,1.5,4,milestone,R2
-SL-18,8 Slices R3,Hosted access with password and offline study and notifications (story 17),SL-18,System Architect,M5,3,5,10,task,R3
-SL-19,8 Slices R3,Full feedback export (story 18),SL-19,System Architect,SL-18,0.5,1,2,task,R3
-SL-20,8 Slices R3,FSRS optimiser and load forecasts (story 19),SL-20,System Architect,SL-19,1,2,4,task,R3
-SL-21,8 Slices R3,Anki export (story 20),SL-21,System Architect,SL-20,0.5,0.8,1.5,task,R3
-5.6,9 Release R3,Deployment and rollback update for hosting,A61,System Architect,SL-21,1,2,4,task,R3
-M6,9 Release R3,Gate G5 and checkpoint CP4 for R3 (ADVISORY),milestone,Reviewer / student,5.6,1,1.5,4,milestone,R3
-6.1,10 Closedown,Configuration and change management,A70,System Architect,M6,0.3,0.6,1.2,task,R3
-6.2,10 Closedown,Operational health and maintenance pipeline,A71,System Architect,6.1,0.5,1,2,task,R3
-6.3,10 Closedown,Closedown review,A72,Strategic Planner,6.2,0.3,0.6,1.2,task,R3
-M7,10 Closedown,Gate G6 final audit,milestone,Reviewer,6.3,0.5,1,3,milestone,R3
+4.0,4.1 Slices R1,Defect log kept current,A52,QA & Test Engineer,M3,0.2,0.5,1,loe,all
+SL-01,4.1 Slices R1,Walking skeleton: one lecture through the pipeline into the app,SL-01,System Architect,M3,3,5,10,task,R1
+SL-02,4.1 Slices R1,Card stage review loop and human review step (stories 1 and 5),SL-02,System Architect,SL-01,2,3,6,task,R1
+SL-03,4.1 Slices R1,Extractor and Canvas reading (story 3),SL-03,System Architect,SL-02,2,3,7,task,R1
+SL-04,4.1 Slices R1,Question bank stage and module audit (story 2),SL-04,System Architect,SL-03,2,3,6,task,R1
+SL-05,4.1 Slices R1,Run order and run summary and exports (story 4),SL-05,System Architect,SL-04,1,2,4,task,R1
+SL-06,4.1 Slices R1,Import with preview (story 6),SL-06,System Architect,SL-05,1.5,2.5,5,task,R1
+SL-07,4.1 Slices R1,Flashcard review (story 7),SL-07,System Architect,SL-06,1,2,4,task,R1
+SL-08,4.1 Slices R1,Daily quiz (story 8),SL-08,System Architect,SL-07,1.5,3,6,task,R1
+SL-09,4.1 Slices R1,Deadlines and countdowns (story 9),SL-09,System Architect,SL-08,1,2,4,task,R1
+SL-10,4.1 Slices R1,Today checklist (story 10),SL-10,System Architect,SL-09,1.5,2.5,5,task,R1
+SL-11,4.1 Slices R1,Report a problem and export reports (story 11),SL-11,System Architect,SL-10,0.5,1,2,task,R1
+5.1,5.1 Release R1,NFR verification at system level,A53,QA & Test Engineer,SL-11,1,2,4,task,R1
+5.2,5.1 Release R1,Delivery pipeline and environments,A60,System Architect,5.1,0.5,1,2,task,R1
+5.3,5.1 Release R1,Deployment and rollback plan,A61,System Architect,5.2,0.5,1,2,task,R1
+5.4,5.1 Release R1,Documentation set,A63,Strategic Planner,5.3,0.5,1,2,task,R1
+M4,5.1 Release R1,Gate G5 and checkpoint CP4 for R1 (ADVISORY),milestone,Reviewer / student,5.4,1,2,5,milestone,R1
+SL-12,4.2 Slices R2,Claude marking of written answers (story 12),SL-12,System Architect,M4,1,2,4,task,R2
+SL-13,4.2 Slices R2,Claude tutor (story 13),SL-13,System Architect,SL-12,2,3.5,7,task,R2
+SL-14,4.2 Slices R2,Tutor proposals (story 14),SL-14,System Architect,SL-13,1,1.5,3,task,R2
+SL-15,4.2 Slices R2,Assessment mode and mock exams (story 15),SL-15,System Architect,SL-14,1.5,2.5,5,task,R2
+SL-16,4.2 Slices R2,Time budget and milestones and calendar export (story 16),SL-16,System Architect,SL-15,1.5,2.5,5,task,R2
+SL-17,4.2 Slices R2,Stats page,SL-17,System Architect,SL-16,1,2,4,task,R2
+5.5,5.2 Release R2,NFR verification update for R2,A53,QA & Test Engineer,SL-17,1,1.5,3,task,R2
+M5,5.2 Release R2,Gate G5 and checkpoint CP4 for R2 (ADVISORY),milestone,Reviewer / student,5.5,1,1.5,4,milestone,R2
+SL-18,4.3 Slices R3,Hosted access with password and offline study and notifications (story 17),SL-18,System Architect,M5,3,5,10,task,R3
+SL-19,4.3 Slices R3,Full feedback export (story 18),SL-19,System Architect,SL-18,0.5,1,2,task,R3
+SL-20,4.3 Slices R3,FSRS optimiser and load forecasts (story 19),SL-20,System Architect,SL-19,1,2,4,task,R3
+SL-21,4.3 Slices R3,Anki export (story 20),SL-21,System Architect,SL-20,0.5,0.8,1.5,task,R3
+5.6,5.3 Release R3,Deployment and rollback update for hosting,A61,System Architect,SL-21,1,2,4,task,R3
+M6,5.3 Release R3,Gate G5 and checkpoint CP4 for R3 (ADVISORY),milestone,Reviewer / student,5.6,1,1.5,4,milestone,R3
+6.1,6 Closedown,Configuration and change management,A70,System Architect,M6,0.3,0.6,1.2,task,R3
+6.2,6 Closedown,Operational health and maintenance pipeline,A71,System Architect,6.1,0.5,1,2,task,R3
+6.3,6 Closedown,Closedown review,A72,Strategic Planner,6.2,0.3,0.6,1.2,task,R3
+M7,6 Closedown,Gate G6 final audit,milestone,Reviewer,6.3,0.5,1,3,milestone,R3

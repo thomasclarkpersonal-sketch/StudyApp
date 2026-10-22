@@ -37,7 +37,7 @@ PACING_RANGE = (2.0, 4.0)         # ASM-053 range: (slow, fast)
 # Dates the plan is judged against. Each is sourced in A02 §4.
 FIRST_MIDTERM_BY = date(2026, 11, 3)      # within 2 weeks of 2026-10-20 [USER Q-02]
 EXAM_PERIOD_START = date(2026, 12, 7)     # [DOC ug_course_syllabus_template_doc_COMP4901B.docx.pdf p.2]
-PROCESSED_BY = date(2026, 11, 30)         # proposed SM-1 (A01 §3)
+PROCESSED_BY = date(2026, 11, 30)         # SM-1 target (A01 §3, DEC-012)
 
 # Processing load for the Computer Science lectures (A02 §4).
 CS_LECTURES = (30, 78)                    # 3 modules x 10-26 lectures [ASM-051]
@@ -145,7 +145,7 @@ def wbs_block(rows):
 
 def milestones_block(net):
     by_id = {r["id"]: r for r in net}
-    out = ["| Milestone | Derived date at 3 h/day | Range (earliest – latest) |",
+    out = [f"| Milestone | Derived date at {HOURS_PER_DAY:g} h/day | Range (earliest – latest) |",
            "| :-- | :-- | :-- |"]
     for tid, label in MILESTONE_LABELS:
         r = by_id[tid]
@@ -157,18 +157,18 @@ def verdict(r, needed):
     if r["latest"] <= needed:
         return "met, even in the slow case"
     if r["date"] <= needed:
-        return "met at 3 h/day; **not** met in the slow case"
-    return "**not met** at 3 h/day"
+        return f"met at {HOURS_PER_DAY:g} h/day; **not** met in the slow case"
+    return f"**not met** at {HOURS_PER_DAY:g} h/day"
 
 
 def targets_block(net):
     by_id = {r["id"]: r for r in net}
     m4, m5, m6, sl5 = by_id["M4"], by_id["M5"], by_id["M6"], by_id["SL-05"]
-    out = ["| Target | Needed by | Derived date at 3 h/day (range) | Result |",
+    out = [f"| Target | Needed by | Derived date at {HOURS_PER_DAY:g} h/day (range) | Result |",
            "| :-- | :-- | :-- | :-- |"]
     out.append(f"| R1 (MVP) before the first midterm | {d(FIRST_MIDTERM_BY)} | {d(m4['date'])} ({d(m4['earliest'])} – {d(m4['latest'])}) | {verdict(m4, FIRST_MIDTERM_BY)} |")
     out.append(f"| R1 in use before the exam period | {d(EXAM_PERIOD_START - timedelta(days=1))} | {d(m4['date'])} ({d(m4['earliest'])} – {d(m4['latest'])}) | {verdict(m4, EXAM_PERIOD_START - timedelta(days=1))} |")
-    out.append(f"| Pipeline complete (SL-05), so processing can start | before {d(PROCESSED_BY)} (proposed SM-1) | {d(sl5['date'])} ({d(sl5['earliest'])} – {d(sl5['latest'])}) | {verdict(sl5, PROCESSED_BY)} |")
+    out.append(f"| Pipeline complete (SL-05), so processing can start | before {d(PROCESSED_BY)} (`DEC-012` SM-1) | {d(sl5['date'])} ({d(sl5['earliest'])} – {d(sl5['latest'])}) | {verdict(sl5, PROCESSED_BY)} |")
     for r, name in ((m5, "R2"), (m6, "R3")):
         out.append(f"| {name} before the exam period | none set by the student | {d(r['date'])} ({d(r['earliest'])} – {d(r['latest'])}) | {verdict(r, EXAM_PERIOD_START - timedelta(days=1))} |")
     out.append("")
@@ -183,7 +183,7 @@ def targets_block(net):
     out.append("")
     out.append(f"| Case | Processing window | Days | Review time needed per day | Review time that fits at {REVIEW_CAPACITY_H_PER_DAY:g} h/day (`ASM-063`) |")
     out.append("| :-- | :-- | --: | :-- | :-- |")
-    for case, start in (("At 3 h/day", sl5["date"]), ("Slow case", sl5["latest"])):
+    for case, start in ((f"At {HOURS_PER_DAY:g} h/day", sl5["date"]), ("Slow case", sl5["latest"])):
         days = (PROCESSED_BY - start).days
         if days <= 0:
             out.append(f"| {case} | from {d(start)} | 0 | — | no: the window has closed |")
@@ -201,13 +201,13 @@ def reading_block(net):
     by_id = {r["id"]: r for r in net}
     m4, m5, m6, sl5 = by_id["M4"], by_id["M5"], by_id["M6"], by_id["SL-05"]
     return "\n".join([
-        f"- **R1 (MVP)** reaches its checkpoint after {m4['ef']:.0f} h of session time: {d(m4['date'])} at 3 h/day, "
+        f"- **R1 (MVP)** reaches its checkpoint after {m4['ef']:.0f} h of session time: {d(m4['date'])} at {HOURS_PER_DAY:g} h/day, "
         f"between {d(m4['earliest'])} and {d(m4['latest'])} across the range. Before the exam period: {verdict(m4, EXAM_PERIOD_START - timedelta(days=1))}.",
         f"- **The pipeline** is complete (SL-05) on {d(sl5['date'])} ({d(sl5['earliest'])} – {d(sl5['latest'])}). "
-        "From then on, the Computer Science lectures can be processed for the proposed SM-1 target; A02 §4 shows the student's review load.",
-        f"- **R2 and R3** fall on {d(m5['date'])} and {d(m6['date'])} at 3 h/day, and as late as {d(m5['latest'])} and {d(m6['latest'])} in the slow case. "
+        "From then on, the Computer Science lectures can be processed for the SM-1 target (`DEC-012`); A02 §4 shows the student's review load.",
+        f"- **R2 and R3** fall on {d(m5['date'])} and {d(m6['date'])} at {HOURS_PER_DAY:g} h/day, and as late as {d(m5['latest'])} and {d(m6['latest'])} in the slow case. "
         f"Before the exam period: R2 {verdict(m5, EXAM_PERIOD_START - timedelta(days=1))}; R3 {verdict(m6, EXAM_PERIOD_START - timedelta(days=1))}. "
-        "Continuing straight on or pausing R2 and R3 until after the exams is a choice for CP1.",
+        "Continuing straight on or pausing R2 and R3 until after the exams is decided at R1's CP4 (`DEC-010`).",
     ])
 
 
@@ -229,7 +229,7 @@ def schedule_block(rows, net, end):
             f"Dates count from {d(START_DATE)} at {HOURS_PER_DAY:g} h of session time per day, every day (`ASM-053`). "
             f"The range uses {PACING_RANGE[1]:g} h/day for the earliest date and {PACING_RANGE[0]:g} h/day for the latest, "
             "applied to ET − 2·SD and ET + 2·SD of the path, roughly a 95% band under PERT's assumptions.", "",
-            "| Milestone | EF (h) | Path SD (h) | Date at 3 h/day | Earliest (ET − 2SD at 4 h/day) | Latest (ET + 2SD at 2 h/day) |",
+            f"| Milestone | EF (h) | Path SD (h) | Date at {HOURS_PER_DAY:g} h/day | Earliest (ET − 2SD at {PACING_RANGE[1]:g} h/day) | Latest (ET + 2SD at {PACING_RANGE[0]:g} h/day) |",
             "| :-- | --: | --: | :-- | :-- | :-- |"]
     by_id = {r["id"]: r for r in net}
     for tid, label in MILESTONE_LABELS:
@@ -256,10 +256,14 @@ def schedule_block(rows, net, end):
             out.append(f"  {node(p)} --> {node(r['id'])}")
     out.append("  classDef crit fill:#f9d5d3,stroke:#b03a2e,color:#000")
     out.append("  class " + ",".join(node(r["id"]) for r in crit) + " crit")
+    last_task = [r for r in net if r["kind"] != "milestone"][-1]
+    last_ms = [r for r in net if r["kind"] == "milestone"][-1]
+    last_start = day(last_task["es"])
+    last_end = max(last_task["date"], last_start + timedelta(days=1))
     out += ["```", "", "### Gantt chart", "",
-            f"Bars use the derived dates at {HOURS_PER_DAY:g} h/day. Because Mermaid Gantt uses exclusive end dates and a minimum bar width of one day, a sub-day task on day D is drawn from D to D+1 (so bars within a day overlap, and 6.3 on 28 Nov is drawn 2026-11-28 to 2026-11-29, the same day as milestone M7).", "",
+            f"Bars use the derived dates at {HOURS_PER_DAY:g} h/day. Because Mermaid Gantt uses exclusive end dates and a minimum bar width of one day, a sub-day task on day D is drawn from D to D+1 (so bars within a day overlap, and {last_task['id']} on {last_task['date'].strftime('%-d %b')} is drawn {last_start} to {last_end}, the same day as milestone {last_ms['id']}).", "",
             "```mermaid", "gantt",
-            "  title Study App plan (dates derived at 3 h of session time per day, ASM-053)",
+            f"  title Study App plan (dates derived at {HOURS_PER_DAY:g} h of session time per day, ASM-053)",
             "  dateFormat YYYY-MM-DD", "  axisFormat %d %b"]
     group = None
     for r in net:

@@ -20,7 +20,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 | Stage | Status | Gate | Checkpoint |
 | :-- | :-- | :-- | :-- |
 | 0 Intake & Clarification | Complete (2026-10-21): Q-01 to Q-15 answered (Q-02 and Q-12 in part); Q-16 resolved at CP1; Q-17 answered (direct Canvas access); two of the requested documents received and skimmed | none (reviewed at G1) | — |
-| 1 Initiation, Feasibility & Tailoring | Complete (2026-10-21): Gate G1 APPROVED (r2); CP1 Approved | G1 (`reviews/G1-r1.md`, `reviews/G1-r2.md`) | CP1 Approved (`checkpoints.md`) |
+| 1 Initiation, Feasibility & Tailoring | Complete (2026-10-21): Gate G1 APPROVED (r2, plus `CR-001` re-review); CP1 Approved | G1 (`reviews/G1-r1.md`, `reviews/G1-r2.md`, `reviews/G1-CR001.md`) | CP1 Approved (`checkpoints.md`) |
 | 2 Requirements Analysis & Sourcing | Not started | G2 | CP2 (STRICT) |
 | 3 Architecture & Design | Not started | G3 | CP3 |
 | 4 Slice loop | Not started | G4 per slice | — |
@@ -29,7 +29,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 
 - **Current baseline:** `A01`, `A02`, `A03`, `A04`, `A05` (with `wbs.csv`), `A06` (with `schedule_calc.py`), `A07` (approved at CP1, 2026-10-21; updated via `CR-001`).
 - **Pending checkpoint:** none. The next is CP2 (STRICT), after Gate G2.
-- **Carried to CP2:** the proposed performance targets in seed §7 (`ASM-037`); verification in `A22` of Anthropic's terms on subscription pipeline runs (`ASM-058`), plan pricing (`ASM-062`), API token pricing (`ASM-059`), and subscription usage limits (`ASM-044`, plus `ASM-048` on HKUST Canvas API terms); confirmation of tutor thread and pipeline intermediate file retention (`ASM-023`, `ASM-024`) and phone browser targets (`ASM-027`); and the user's sourcing choice (`A22`, protocol §6 Stage 2 step 6).
+- **Carried to CP2:** change request `CR-001` (post-CP1 baseline alignment across `A01`–`A07`, protocol §7 "Changes to baselined artifacts"); explicit confirmation of `DEC-014` (`Q-16` balanced MCQ/short-written fallback when a module's question-type mix is unknown); the proposed performance targets in seed §7 (`ASM-037`); verification in `A22` of Anthropic's terms on subscription pipeline runs (`ASM-058`), plan pricing (`ASM-062`), API token pricing (`ASM-059`), and subscription usage limits (`ASM-044`, plus `ASM-048` on HKUST Canvas API terms); confirmation of tutor thread and pipeline intermediate file retention (`ASM-023`, `ASM-024`) and phone browser targets (`ASM-027`); and the user's sourcing choice (`A22`, protocol §6 Stage 2 step 6).
 - **Branch:** `stage-1/initiation`.
 
 ## Seed intake (Stage 0 step 1)

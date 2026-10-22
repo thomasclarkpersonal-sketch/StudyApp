@@ -58,7 +58,7 @@ MILESTONE_LABELS = [  # (task id, label used in A01 §9 and A06)
 
 
 def load():
-    with open(os.path.join(HERE, "wbs.csv"), newline="") as f:
+    with open(os.path.join(HERE, "wbs.csv"), newline="", encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
     for r in rows:
         r["o"], r["r"], r["p"] = float(r["o"]), float(r["r"]), float(r["p"])
@@ -113,6 +113,10 @@ def day(hours, per_day=HOURS_PER_DAY):
 
 def d(x):
     return f"{x.day} {x.strftime('%b')} {x.year}"
+
+
+def d_short(x):
+    return f"{x.day} {x.strftime('%b')}"
 
 
 def f(x):
@@ -260,8 +264,13 @@ def schedule_block(rows, net, end):
     last_ms = [r for r in net if r["kind"] == "milestone"][-1]
     last_start = day(last_task["es"])
     last_end = max(last_task["date"], last_start + timedelta(days=1))
+    ms_clause = (
+        f", the same day as milestone {last_ms['id']}"
+        if last_task["date"] == last_ms["date"]
+        else f", while milestone {last_ms['id']} falls on {d_short(last_ms['date'])}"
+    )
     out += ["```", "", "### Gantt chart", "",
-            f"Bars use the derived dates at {HOURS_PER_DAY:g} h/day. Because Mermaid Gantt uses exclusive end dates and a minimum bar width of one day, a sub-day task on day D is drawn from D to D+1 (so bars within a day overlap, and {last_task['id']} on {last_task['date'].strftime('%-d %b')} is drawn {last_start} to {last_end}, the same day as milestone {last_ms['id']}).", "",
+            f"Bars use the derived dates at {HOURS_PER_DAY:g} h/day. Because Mermaid Gantt uses exclusive end dates and a minimum bar width of one day, a sub-day task on day D is drawn from D to D+1 (so bars within a day overlap, and {last_task['id']} on {d_short(last_task['date'])} is drawn {last_start} to {last_end}{ms_clause}).", "",
             "```mermaid", "gantt",
             f"  title Study App plan (dates derived at {HOURS_PER_DAY:g} h of session time per day, ASM-053)",
             "  dateFormat YYYY-MM-DD", "  axisFormat %d %b"]
@@ -299,23 +308,27 @@ def bpp_block(rows, net, end):
 
 
 def replace_block(path, name, content):
-    with open(path) as fh:
+    with open(path, encoding="utf-8") as fh:
         text = fh.read()
     pat = re.compile(r"(<!-- BEGIN GENERATED:" + re.escape(name) + r" [^>]*-->).*?(<!-- END GENERATED:" + re.escape(name) + r" -->)", re.S)
     if not pat.search(text):
         raise SystemExit(f"No GENERATED:{name} markers in {path}")
     text = pat.sub(lambda m: m.group(1) + "\n" + content + "\n" + m.group(2), text)
-    with open(path, "w") as fh:
+    with open(path, "w", encoding="utf-8") as fh:
         fh.write(text)
 
 
 if __name__ == "__main__":
     rows = load()
     net, end = cpm(rows)
-    replace_block(os.path.join(HERE, "wbs.md"), "wbs", wbs_block(rows))
-    replace_block(os.path.join(HERE, "schedule.md"), "schedule", schedule_block(rows, net, end))
-    replace_block(os.path.join(HERE, "schedule.md"), "reading", reading_block(net))
-    replace_block(os.path.join(HERE, "charter-scope.md"), "milestones", milestones_block(net))
-    replace_block(os.path.join(HERE, "feasibility.md"), "targets", targets_block(net))
-    replace_block(os.path.join(HERE, "baseline-project-plan.md"), "bpp", bpp_block(rows, net, end))
+    updates = [
+        (os.path.join(HERE, "wbs.md"), "wbs", wbs_block(rows)),
+        (os.path.join(HERE, "schedule.md"), "schedule", schedule_block(rows, net, end)),
+        (os.path.join(HERE, "schedule.md"), "reading", reading_block(net)),
+        (os.path.join(HERE, "charter-scope.md"), "milestones", milestones_block(net)),
+        (os.path.join(HERE, "feasibility.md"), "targets", targets_block(net)),
+        (os.path.join(HERE, "baseline-project-plan.md"), "bpp", bpp_block(rows, net, end)),
+    ]
+    for path, name, content in updates:
+        replace_block(path, name, content)
     print("wbs.md, schedule.md, charter-scope.md (§9), feasibility.md (§4) and baseline-project-plan.md (§1) regenerated")

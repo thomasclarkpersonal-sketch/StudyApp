@@ -4,8 +4,8 @@ Owner: Strategic Planner. Stage 1, written 2026-10-21.
 
 ## Structure and rules
 
-- **Hierarchy:** by stage (`0`–`6`), and in Stage 4 (`4.1`–`4.3`) and Stage 5 (`5.1`–`5.3`) grouped into the three releases approved in `DEC-010` (R1 = Must, R2 = Should, R3 = Could).
-- **Numbering scheme:** Top-level prefixes match protocol stages: `0` Governance (`0.1`), `1` Initiation (`1.1`–`1.7`), `2` Requirements (`2.1`–`2.13`), `3` Design (`3.1`–`3.13`), `4` Construction Slices (`4.1 Slices R1`, `4.2 Slices R2`, `4.3 Slices R3`; slice leaves use `SL-01`–`SL-21` plus level-of-effort `4.0`), `5` Release Readiness (`5.1 Release R1` leaves `5.1`–`5.4`, `5.2 Release R2` leaf `5.5`, `5.3 Release R3` leaf `5.6`), and `6` Closedown (`6.1`–`6.3`).
+- **Hierarchy:** by stage (`0`–`6`), and in Stage 4 (`4-R1`–`4-R3`) and Stage 5 (`5-R1`–`5-R3`) grouped into the three releases approved in `DEC-010` (R1 = Must, R2 = Should, R3 = Could).
+- **Numbering scheme:** Top-level prefixes match protocol stages: `0` Governance (`0.1`), `1` Initiation (`1.1`–`1.7`), `2` Requirements (`2.1`–`2.13`), `3` Design (`3.1`–`3.13`), `4` Construction Slices (`4-R1 Slices R1`, `4-R2 Slices R2`, `4-R3 Slices R3`; slice leaves use `SL-01`–`SL-21` plus level-of-effort `4.0`), `5` Release Readiness (`5-R1 Release R1` leaves `5.1`–`5.4`, `5-R2 Release R2` leaf `5.5`, `5-R3 Release R3` leaf `5.6`), and `6` Closedown (`6.1`–`6.3`). Release groups use the non-numeric `-R1`/`-R2`/`-R3` suffix so group IDs never collide with numeric leaf IDs (`5.1`–`5.6`).
 - **Leaves:** each work package (leaf) has exactly one deliverable: an artifact ID from the Tailoring Record (A04) or a slice. A deliverable may appear in more than one leaf when it is updated for a later release (A53 and A61).
 - **Gates and checkpoints** (G1–G6, CP1–CP4) are schedule milestones in A06, not work packages, because they produce review records rather than artifacts. Their time includes the revision cycles.
 - **What a slice leaf covers:** the whole slice loop. That is detailed design (4a), unit test cases (4b), red–green–refactor build with static analysis and inspection (4c), NFR checks (4d), the slice record (A50), Gate G4 and the post-slice report.
@@ -26,12 +26,12 @@ Study App
 ├── 1 Initiation ........... A01–A07 (1.1–1.7)
 ├── 2 Requirements ......... A09–A20, A22 (2.1–2.13)
 ├── 3 Design ............... A30–A42 (3.1–3.13)
-├── 4.1 Slices R1 (Must) ... SL-01–SL-11, A52 (level of effort, 4.0)
-├── 5.1 Release R1 ......... A53, A60, A61, A63 (5.1–5.4)
-├── 4.2 Slices R2 (Should) . SL-12–SL-17
-├── 5.2 Release R2 ......... A53 update (5.5)
-├── 4.3 Slices R3 (Could) .. SL-18–SL-21
-├── 5.3 Release R3 ......... A61 update for hosting (5.6)
+├── 4-R1 Slices R1 (Must) .. SL-01–SL-11, A52 (level of effort, 4.0)
+├── 5-R1 Release R1 ........ A53, A60, A61, A63 (5.1–5.4)
+├── 4-R2 Slices R2 (Should)  SL-12–SL-17
+├── 5-R2 Release R2 ........ A53 update (5.5)
+├── 4-R3 Slices R3 (Could) . SL-18–SL-21
+├── 5-R3 Release R3 ........ A61 update for hosting (5.6)
 └── 6 Closedown ............ A70–A72 (6.1–6.3)
 ```
 
@@ -112,7 +112,7 @@ Every story card in seed §3 maps to a slice.
 | 3.11 | Data and model quality plan | A42 | System Architect | 3.10 | 0.5 | 1 | 2.5 | [ASM-052] |
 | 3.12 | Test design and review scope | A39 | QA & Test Engineer | 3.11 | 1 | 2 | 4 | [ASM-052] |
 | 3.13 | Slice plan | A40 | System Architect | 3.12 | 0.2 | 0.4 | 1 | [ASM-052] |
-| **4.1 Slices R1** | | | | | | | | |
+| **4-R1 Slices R1** | | | | | | | | |
 | 4.0 | Defect log kept current (level of effort) | A52 | QA & Test Engineer | M3 | 0.2 | 0.5 | 1 | [ASM-052] |
 | SL-01 | Walking skeleton: one lecture through the pipeline into the app | SL-01 | System Architect | M3 | 3 | 5 | 10 | [ASM-052] |
 | SL-02 | Card stage review loop and human review step (stories 1 and 5) | SL-02 | System Architect | SL-01 | 2 | 3 | 6 | [ASM-052] |
@@ -125,26 +125,26 @@ Every story card in seed §3 maps to a slice.
 | SL-09 | Deadlines and countdowns (story 9) | SL-09 | System Architect | SL-08 | 1 | 2 | 4 | [ASM-052] |
 | SL-10 | Today checklist (story 10) | SL-10 | System Architect | SL-09 | 1.5 | 2.5 | 5 | [ASM-052] |
 | SL-11 | Report a problem and export reports (story 11) | SL-11 | System Architect | SL-10 | 0.5 | 1 | 2 | [ASM-052] |
-| **5.1 Release R1** | | | | | | | | |
+| **5-R1 Release R1** | | | | | | | | |
 | 5.1 | NFR verification at system level | A53 | QA & Test Engineer | SL-11 | 1 | 2 | 4 | [ASM-052] |
 | 5.2 | Delivery pipeline and environments | A60 | System Architect | 5.1 | 0.5 | 1 | 2 | [ASM-052] |
 | 5.3 | Deployment and rollback plan | A61 | System Architect | 5.2 | 0.5 | 1 | 2 | [ASM-052] |
 | 5.4 | Documentation set | A63 | Strategic Planner | 5.3 | 0.5 | 1 | 2 | [ASM-052] |
-| **4.2 Slices R2** | | | | | | | | |
+| **4-R2 Slices R2** | | | | | | | | |
 | SL-12 | Claude marking of written answers (story 12) | SL-12 | System Architect | M4 | 1 | 2 | 4 | [ASM-052] |
 | SL-13 | Claude tutor (story 13) | SL-13 | System Architect | SL-12 | 2 | 3.5 | 7 | [ASM-052] |
 | SL-14 | Tutor proposals (story 14) | SL-14 | System Architect | SL-13 | 1 | 1.5 | 3 | [ASM-052] |
 | SL-15 | Assessment mode and mock exams (story 15) | SL-15 | System Architect | SL-14 | 1.5 | 2.5 | 5 | [ASM-052] |
 | SL-16 | Time budget and milestones and calendar export (story 16) | SL-16 | System Architect | SL-15 | 1.5 | 2.5 | 5 | [ASM-052] |
 | SL-17 | Stats page | SL-17 | System Architect | SL-16 | 1 | 2 | 4 | [ASM-052] |
-| **5.2 Release R2** | | | | | | | | |
+| **5-R2 Release R2** | | | | | | | | |
 | 5.5 | NFR verification update for R2 | A53 | QA & Test Engineer | SL-17 | 1 | 1.5 | 3 | [ASM-052] |
-| **4.3 Slices R3** | | | | | | | | |
+| **4-R3 Slices R3** | | | | | | | | |
 | SL-18 | Hosted access with password and offline study and notifications (story 17) | SL-18 | System Architect | M5 | 3 | 5 | 10 | [ASM-052] |
 | SL-19 | Full feedback export (story 18) | SL-19 | System Architect | SL-18 | 0.5 | 1 | 2 | [ASM-052] |
 | SL-20 | FSRS optimiser and load forecasts (story 19) | SL-20 | System Architect | SL-19 | 1 | 2 | 4 | [ASM-052] |
 | SL-21 | Anki export (story 20) | SL-21 | System Architect | SL-20 | 0.5 | 0.8 | 1.5 | [ASM-052] |
-| **5.3 Release R3** | | | | | | | | |
+| **5-R3 Release R3** | | | | | | | | |
 | 5.6 | Deployment and rollback update for hosting | A61 | System Architect | SL-21 | 1 | 2 | 4 | [ASM-052] |
 | **6 Closedown** | | | | | | | | |
 | 6.1 | Configuration and change management | A70 | System Architect | M6 | 0.3 | 0.6 | 1.2 | [ASM-052] |

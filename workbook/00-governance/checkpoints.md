@@ -60,7 +60,7 @@ Approve
 
 ## CP2 — Requirements Baseline and Sourcing Decision (2026-10-21, STRICT)
 
-Status: **Initial message replied ("Approve", 2026-10-21); CP2 Corrective Addendum pending user reply** (2026-10-21, STRICT). Baseline set (pending CP2 Corrective Addendum approval): `A09` (with `02-analysis/sources/`), `A10` (with `requirements.csv`), `A11`, `A12`, `A13`, `A14`, `A15`, `A16`, `A17`, `A18` (with `data-dictionary.csv`), `A19` (with `acceptance-scenarios.csv`), `A20`, `A22`, and `traceability-matrix.md` (with `traceability-matrix.csv`), joining `A01`–`A07` (updated via `CR-001` and `CR-002`).
+Status: **Approved** (initial reply 2026-10-21; CP2 Corrective Addendum approved 2026-10-23). Baseline set: `A09` (with `02-analysis/sources/`), `A10` (with `requirements.csv`), `A11`, `A12`, `A13`, `A14`, `A15`, `A16`, `A17`, `A18` (with `data-dictionary.csv`), `A19` (with `acceptance-scenarios.csv`), `A20`, `A22`, and `traceability-matrix.md` (with `traceability-matrix.csv`), joining `A01`–`A07` (updated via `CR-001` and `CR-002`).
 
 ```text
 HUMAN CHECKPOINT CP2 — Requirements Baseline and Sourcing Decision
@@ -107,7 +107,7 @@ Full detail: workbook/README.md
 Approve
 ```
 
-### CP2 Corrective Addendum (2026-10-21, STRICT — pending user reply)
+### CP2 Corrective Addendum (2026-10-21, STRICT — Approved 2026-10-23)
 
 Because the initial `CP2` summary block above contained summary figures and descriptions that differed from the underlying Stage 2 artifacts and omitted `CR-001` and `CR-002`, the corrective checkpoint message below presents the exact figures, assumptions, decisions (`DEC-015`, `DEC-016`), and change requests (`CR-001`, `CR-002`) for explicit user confirmation (`R1`, `R6`, `R7`). The original `CP2` message and reply above are preserved unedited (`R1`).
 
@@ -151,6 +151,8 @@ On approval, these artifacts and change requests are confirmed as the Stage 1–
 Full detail: workbook/README.md
 ```
 
-### User reply to CP2 Corrective Addendum (pending)
+### User reply to CP2 Corrective Addendum (verbatim, 2026-10-23)
 
-*(Waiting for user reply in chat.)*
+```text
+approve
+```

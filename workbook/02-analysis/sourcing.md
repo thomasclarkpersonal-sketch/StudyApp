@@ -1,6 +1,6 @@
 # A22 · Sourcing Decision
 
-Owner: Systems Analyst / Solution Architect. Stage 2, written 2026-10-21. Catalog entry: A22 (Appendix B11). Baselined at CP2 (2026-10-21; Option 1 recommended per `DEC-015`, pending CP2 corrective addendum confirmation).
+Owner: Systems Analyst / Solution Architect. Stage 2, written 2026-10-21. Catalog entry: A22 (Appendix B11). Approved and baselined at CP2 (2026-10-21; CP2 corrective addendum approved 2026-10-23; Option 1 adopted per `DEC-015`).
 
 Buying, subscribing to, or reusing existing software is evaluated here **after** structuring the requirements (`A10`–`A20`) and **before** Stage 3 architecture and design.
 

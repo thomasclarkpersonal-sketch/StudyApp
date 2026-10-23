@@ -1,6 +1,6 @@
 # A09 · Requirements Sources & Document Analysis
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A09. Approved and baselined at CP2 (2026-10-21).
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A09. Approved and baselined at CP2 (2026-10-21; updated via `CR-002`, `CR-003`).
 
 ## 1. Purpose and handling of copyrighted course files
 
@@ -38,9 +38,9 @@ The seed spec and the user's answers establish the project boundaries, prioritie
 
 | Source location | What it reveals | Mapped to (A10 / A16 / A17 / A18 / A41) or disposition |
 | :-- | :-- | :-- |
-| `[SEED §1]` Problem & primary goal | One daily checklist combining spaced-repetition flashcards, concept-scheduled quiz questions, required readings, and deadline countdowns, generated from course material and checked by independent AI reviewers. | `REQ-F-001`–`REQ-F-046`; `UC-01`–`UC-11`; `RPT-01` (A41) |
+| `[SEED §1]` Problem & primary goal | One daily checklist combining spaced-repetition flashcards, concept-scheduled quiz questions, required readings, and deadline countdowns, generated from course material and checked by independent AI reviewers. | `REQ-F-001`–`REQ-F-042` (`R1` Must, `UC-01`–`UC-11`) and `REQ-F-043`–`REQ-F-046` (`R2` Should marking/tutor, `UC-12`, `UC-13`); `RPT-01` (A41) |
 | `[SEED §1]`, `[USER CP1]`, `DEC-012` | Six success metrics (`SM-1` to `SM-6`, with `SM-4` split into `SM-4a` and `SM-4b`), including the CP1-approved restatements of `SM-1` (≥7 days before each post-R1 assessment, CS finals by 30 Nov 2026), `SM-2` (≥85% trailing 30-day true retention over review-state cards), and `SM-6` (monthly API spend visible from R2). Data gaps noted in A01 §3 (import timestamp per lecture, pre-review card state, report reason, item completion timestamp, marking call token logging) require explicit requirements and attributes. | `REQ-F-023`, `REQ-F-026`, `REQ-F-038`, `REQ-F-040`, `REQ-F-042`, `REQ-F-046`, `REQ-F-048`, `REQ-F-058` (proposals for the A01 §3 data gaps); `ImportBatch`, `CardReviewLog`, `FeedbackItem`, `DailyPlanItem`, `GradingCallLog` in A16; `BR-027`, `BR-035`, `BR-038`, `BR-041`, `BR-044` in A17 |
-| `[SEED §2]`, `[USER Q-04]`, `[USER CP1]` | Single user (the student) acting as learner and pipeline operator; medium–high tech comfort (`ASM-015`); laptop-only for MVP (`R1`), phone and offline access in `R3` (story 17). Lecturers/HKUST and Anthropic are indirect stakeholders. | `E1[Student]` in A11; `REQ-N-010`, `REQ-N-021`; indirect stakeholders excluded from A11 with reason (G2.5) |
+| `[SEED §2]`, `[USER Q-04]`, `[USER CP1]` | Single user (the student) acting as learner and pipeline operator; medium–high tech comfort (`ASM-015`); laptop-only for MVP (`R1`), phone and offline access in `R3` (story 17). Lecturers/HKUST and Anthropic are indirect stakeholders. | `E1[Student]` in A11; `REQ-N-008`, `REQ-N-009`, `REQ-N-021`; indirect stakeholders excluded from A11 with reason (G2.5) |
 | `[SEED §3]` Stories 1–20 & Reports | 11 Must stories (`1`–`11`), 5 Should stories (`12`–`16`), 4 Could stories (`17`–`20`), plus 6 reports/outputs (Today page, Stats page, Mock exam results, Pipeline run summary & module audit, Notifications, `.ics` calendar feed). | `REQ-F-001`–`REQ-F-066`; `UC-01`–`UC-21` in A13; `RPT-01`–`RPT-06` in A41 |
 | `[SEED §4]`, `[USER Q-08]`, `[USER Q-13]`, `[USER Q-14]` | Four in-scope modules this semester: Theory of Computation, Machine Learning, Large Language Models (COMP 4901B), and Macroeconomics. Mandarin is excluded (`DEC-007`). Fresh start with no Anki import (`ASM-014`). Review history kept indefinitely; removed items suspended, never deleted. Tutor threads kept until deleted by student (`ASM-023`); pipeline intermediate files kept until module ends outside the public repo (`ASM-024`). | `A16` entities (`Module`, `Lecture`, `Concept`, `ConceptState`, `Card`, `CardState`, `CardReviewLog`, etc.); `REQ-F-024`, `REQ-F-025`, `REQ-F-052`, `REQ-N-011`, `REQ-N-016`, `REQ-N-017`; `BR-021`, `BR-022`, `BR-023` |
 | `[SEED §5]`, `[USER Q-05]`, `[USER Q-15]`, `[USER Q-17]`, `DEC-009` | Pipeline runs in Claude Code on the student's Claude subscription; exchanges 6 JSON files (`deck.json`, `question-bank.json`, `concepts.json`, `glossary.json`, `deadlines.json`, `readings.json`) and `feedback.json` (plus minimal reported-items export in R1, `ASM-038`) with the app; reads HKUST Canvas directly (read-only) or local files; exports `.ics` deadlines and optional Anki `.tsv`. | `E2`–`E6` in A11; `REQ-F-001`, `REQ-F-002`, `REQ-F-018`–`REQ-F-023`, `REQ-F-042`, `REQ-F-057`, `REQ-F-063`, `REQ-F-066`; `BR-001`, `BR-002`, `BR-020` |
@@ -130,7 +130,7 @@ Per catalog A09 and protocol R2, no contradiction between sources is resolved si
 
 | Source item | Source | Reason set aside |
 | :-- | :-- | :-- |
-| Mandarin module | `[USER Q-08]`, `[USER Q-13]` | Explicitly excluded by the student (`DEC-007`, out-of-scope item `X8` in A01 §5.2). |
-| Importing existing Anki decks or review history | `[SEED §6]`, `[USER Q-14]` | Explicitly excluded by the student (`ASM-014`, out-of-scope item `X9` in A01 §5.2). |
+| Mandarin module | `[USER Q-08]`, `[USER Q-13]` | Explicitly excluded by the student (`DEC-007`, out-of-scope item `SC-X08` in A01 §5.2). |
+| Importing existing Anki decks or review history | `[SEED §6]`, `[USER Q-14]` | Explicitly excluded by the student (`ASM-014`, out-of-scope item `SC-X09` in A01 §5.2). |
 | Teaching staff names, emails, office hours and venues in `SRC-05` | `SRC-05` p.1 | Personal data of third parties; excluded under `[SEED §4]` ("no data about other people") and `DEC-008`. |
 | Approval-style rules in `[SEED §10]` ("Decisions the agent must always ask you about") | `[SEED §10]` | Catalog A10 and G2.16 prohibit turning approval-style seed items into `REQ`s. Recorded in A10 §4 as governance decision points under protocol R6. |

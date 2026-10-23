@@ -1,6 +1,6 @@
 # A04 · Tailoring Record
 
-Owner: Strategic Planner. Stage 1, written 2026-10-21. Approved and baselined at CP1 (2026-10-21; updated via `CR-003`).
+Owner: Strategic Planner. Stage 1, written 2026-10-21.
 
 ## 1. Tier
 
@@ -58,7 +58,7 @@ The two model sets cover **different parts** of the system, so this is not "both
 | A06 | Schedule | Produce | R | Required at M: PERT, network with critical path, Gantt |
 | A07 | Baseline Project Plan | Produce | R | Required at M |
 | A09 | Requirements Sources & Document Analysis | Produce | R | Required; the seed, two source documents, 16 answers and two course documents to analyse |
-| A10 | Requirements Catalog | Produce | R (with documented `A10.1` sub-clause decomposition rule, `CR-003`) | Required. Cohesive story-level `REQ-F` statements that join coupled sub-behaviours (for example `REQ-F-002` read-only Canvas sync and local-folder fallback, `REQ-F-009` Reviewer context isolation + Pass 1 + Pass 2 rubric evaluation, or `REQ-F-010` 2-revision-round cap + verdict routing) are retained at `66 REQ-F` / `23 REQ-N` (`89` total) as a documented departure from `A10.1`'s strict single-clause rule (`R3`, `CR-003`). Every sub-clause is decomposed into atomic `BR-nnn` (`A17`), `DT-nn` (`A15`), and separate `AT-nnn` (`A19`) items; under the `traceability-matrix.md` verification rule, a `REQ` is marked `Verified` at `G4`/`G5` only when `100%` of its linked in-release `AT-nnn` scenarios pass |
+| A10 | Requirements Catalog | Produce | R | Required |
 | A11 | Context Diagram | Produce | R | Required |
 | A12 | Data Flow Diagrams | Produce | Reduced: the pipeline only, Level-0 plus Level-1 for Must processes | M: conditional on the structured approach, chosen for the pipeline (§4); the DATA type emphasises it. The app is modelled with use cases instead |
 | A13 | Use Cases | Produce | R | Fully dressed for Must, casual for Should and Could |

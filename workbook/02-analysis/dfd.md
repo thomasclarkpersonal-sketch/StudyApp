@@ -125,7 +125,7 @@ flowchart TB
 
 ## 2. Level-1 DFD — `P1` ("1 Ingest & Extract Module Sources")
 
-Decomposes `P1` (`REQ-F-001`–`REQ-F-006`, `REQ-N-014`, `REQ-N-016`):
+Decomposes `P1` (`REQ-F-001`–`REQ-F-006`, `REQ-F-067`–`REQ-F-069`, `REQ-N-014`, `REQ-N-016`):
 
 ```mermaid
 flowchart LR
@@ -158,7 +158,7 @@ flowchart LR
 
 ## 3. Level-1 DFD — `P2` ("2 Generate & Review Flashcards")
 
-Decomposes `P2` (Stage A per lecture: `REQ-F-007`–`REQ-F-010`, `REQ-N-012`):
+Decomposes `P2` (Stage A per lecture: `REQ-F-007`–`REQ-F-010`, `REQ-F-070`–`REQ-F-072`, `REQ-N-012`):
 
 ```mermaid
 flowchart LR
@@ -190,7 +190,7 @@ flowchart LR
 
 ## 4. Level-1 DFD — `P3` ("3 Generate & Review Quiz Questions")
 
-Decomposes `P3` (Stage B per lecture: `REQ-F-011`–`REQ-F-014`, `REQ-N-012`):
+Decomposes `P3` (Stage B per lecture: `REQ-F-011`–`REQ-F-014`, `REQ-F-073`–`REQ-F-075`, `REQ-N-012`):
 
 ```mermaid
 flowchart LR
@@ -335,7 +335,7 @@ flowchart LR
 
 ## 8. Level-1 DFD — `P7` ("7 Operate Study App")
 
-Decomposes `P7` (`REQ-F-021`–`REQ-F-049`, `REQ-F-051`–`REQ-F-063`, `REQ-F-065`), whose user interactions are modelled in full as object-oriented Use Cases (`UC-06`–`UC-20` in [`use-cases.md`](use-cases.md), per `DEC-011`):
+Decomposes `P7` (`REQ-F-021`–`REQ-F-049`, `REQ-F-051`–`REQ-F-063`, `REQ-F-065`, `REQ-F-076`–`REQ-F-085`), whose user interactions are modelled in full as object-oriented Use Cases (`UC-06`–`UC-20` in [`use-cases.md`](use-cases.md), per `DEC-011`):
 
 ```mermaid
 flowchart TB
@@ -384,15 +384,15 @@ flowchart TB
 
 | Process ID | Name | Transformation logic summary | Related `REQ`s |
 | :-- | :-- | :-- | :-- |
-| `P1.1` | Ingest & Normalize Course Sources | Reads `pipeline.config.json`, fetches in-scope course files/pages/assignments from HKUST Canvas in read-only mode (`REQ-F-002`) or local module folders (`REQ-F-001`), renders slide pages to images, extracts text and decoded LaTeXiT equations (`ASM-046`), and wraps all course text in untrusted-data delimiters (`REQ-N-014`). | `REQ-F-001`, `REQ-F-002`, `REQ-N-014`, `REQ-N-016` |
+| `P1.1` | Ingest & Normalize Course Sources | Reads `pipeline.config.json`, fetches in-scope course files/pages/assignments from HKUST Canvas in read-only mode (`REQ-F-002`) with local module folder fallback (`REQ-F-068`) and local file ingestion (`REQ-F-001`), renders slide pages to images, extracts text and decoded LaTeXiT equations (`REQ-F-067`, `ASM-046`), and wraps all course text in untrusted-data delimiters (`REQ-N-014`). | `REQ-F-001`, `REQ-F-002`, `REQ-F-067`, `REQ-F-068`, `REQ-N-014`, `REQ-N-016` |
 | `P1.2` | Extract Module Glossary, Deadlines & Readings | Invokes the Extractor subagent across module handbooks, syllabi, and slides to produce `glossary.json` (`standard` vs `module_specific`), `deadlines.json` (with `explicit` vs `inferred` confidence and UTC/timezone fields), and `readings.json` (with `required` vs `recommended` and default `read_by`). | `REQ-F-003`, `REQ-F-004`, `REQ-F-005` |
-| `P1.3` | Order Module & Lecture Processing Queue | Orders modules with Computer Science modules (`Theory of Computation`, `Machine Learning`, `Large Language Models`) first (`Q-12`, `ASM-040`) and orders lectures within each module by inclusion in the nearest upcoming assessment (`REQ-F-006`). | `REQ-F-006` |
-| `P2.1` | Draft Concept Map & Flashcards | Invokes the Card Creator subagent per lecture with the normalized lecture bundle and `glossary.json` to produce `concept-map.json` (8–20 concepts) and `cards.draft.json` (15–40 atomic cards), diverting ambiguous source points directly to `flagged.json`. | `REQ-F-007`, `REQ-F-008` |
-| `P2.2` | Execute Blind & Rubric Card Review | Invokes a fresh, context-isolated Card Reviewer subagent (`REQ-N-012`) to run Pass 1 (blind-answer test from card fronts only) and Pass 2 (8-criterion rubric and concept coverage check), writing `cards.review.r<n>.json`. | `REQ-F-009`, `REQ-N-012` |
-| `P2.3` | Reconcile Card Verdicts & Revision Rounds | Freezes `accept` cards, discards `reject` cards, sends `revise` cards and `missing_concepts` back to `P2.1` for up to 2 revision rounds (3 review rounds total), and routes any card still failing after round 3 to `flagged.json`. | `REQ-F-010` |
-| `P3.1` | Draft Concept Question Variants | Invokes the Question Creator subagent per lecture (after `P2.3` completes) to draft `3–5` variants per `core` concept (`DEC-006`), `2–3` per `supporting`, and `0–1` per `detail`, weighted to the assessment format (or balanced MCQ/short-written default per `Q-16`). | `REQ-F-011`, `REQ-F-012` |
-| `P3.2` | Execute Blind & Rubric Question Review | Invokes a fresh, context-isolated Question Reviewer subagent (`REQ-N-012`) to run Pass 1 (blind-answer test from stems and options only) and Pass 2 (8-criterion question rubric and core-variant count check), writing `questions.review.r<n>.json`. | `REQ-F-013`, `REQ-N-012` |
-| `P3.3` | Reconcile Question Verdicts & Revision Rounds | Freezes `accept` questions, discards `reject` questions, sends `revise` questions back to `P3.1` for up to 2 revision rounds (3 review rounds total), and routes any question still failing after round 3 to `flagged.json`. | `REQ-F-014` |
+| `P1.3` | Order Module & Lecture Processing Queue | Orders modules with Computer Science modules (`Theory of Computation`, `Machine Learning`, `Large Language Models`) first (`REQ-F-006`, `Q-12`, `ASM-040`) and orders lectures within each module by inclusion in the nearest upcoming assessment (`REQ-F-069`). | `REQ-F-006`, `REQ-F-069` |
+| `P2.1` | Draft Concept Map & Flashcards | Invokes the Card Creator subagent per lecture with the normalized lecture bundle and `glossary.json` to produce `concept-map.json` (8–20 concepts) and `cards.draft.json` (15–40 atomic cards), diverting ambiguous source points directly to `flagged.json` (`REQ-F-070`). | `REQ-F-007`, `REQ-F-008`, `REQ-F-070` |
+| `P2.2` | Execute Blind & Rubric Card Review | Invokes a fresh, context-isolated Card Reviewer subagent (`REQ-N-012`) to run Pass 1 (blind-answer test from card fronts only, `REQ-F-009`) and Pass 2 (8-criterion rubric and concept coverage check, `REQ-F-071`), writing `cards.review.r<n>.json`. | `REQ-F-009`, `REQ-F-071`, `REQ-N-012` |
+| `P2.3` | Reconcile Card Verdicts & Revision Rounds | Freezes `accept` cards, discards `reject` cards, sends `revise` cards and `missing_concepts` back to `P2.1` (`REQ-F-010`) for up to 2 revision rounds (3 review rounds total), and routes any card still failing after round 3 to `flagged.json` (`REQ-F-072`). | `REQ-F-010`, `REQ-F-072` |
+| `P3.1` | Draft Concept Question Variants | Invokes the Question Creator subagent per lecture (after `P2.3` completes) to draft `3–5` variants per `core` concept (`DEC-006`), `2–3` per `supporting`, and `0–1` per `detail` (`REQ-F-011`), weighted to the assessment format (or balanced MCQ/short-written default per `Q-16`, `REQ-F-012`), with `model_answer`, difficulty, source, and `2–5` `marking_points` / distractor notes (`REQ-F-073`). | `REQ-F-011`, `REQ-F-012`, `REQ-F-073` |
+| `P3.2` | Execute Blind & Rubric Question Review | Invokes a fresh, context-isolated Question Reviewer subagent (`REQ-N-012`) to run Pass 1 (blind-answer test from stems and options only, `REQ-F-013`) and Pass 2 (8-criterion question rubric and core-variant count check, `REQ-F-074`), writing `questions.review.r<n>.json`. | `REQ-F-013`, `REQ-F-074`, `REQ-N-012` |
+| `P3.3` | Reconcile Question Verdicts & Revision Rounds | Freezes `accept` questions, discards `reject` questions, sends `revise` questions back to `P3.1` (`REQ-F-014`) for up to 2 revision rounds (3 review rounds total), and routes any question still failing after round 3 to `flagged.json` (`REQ-F-075`). | `REQ-F-014`, `REQ-F-075` |
 | `P4.1` | Audit Module Coverage, Duplicates & Notation | Invokes the Module Auditor subagent across all completed lectures of a module to check learning-outcome coverage, assessment-scope variant counts, cross-lecture duplicates, and glossary notation consistency, proposing synthesis items where needed. | `REQ-F-015` |
 | `P4.2` | Review Cross-Lecture Synthesis Items | Routes any synthesis cards or questions proposed by `P4.1` through a fresh Reviewer subagent before adding accepted items to `D3`/`D4` and writing `module-audit.json` to `D5`. | `REQ-F-015`, `REQ-F-016` |
 | `P5.1` | Assemble Pre-Export Queue & Spot-Check Sample | Gathers all `flagged.json` items, unconfirmed `module_specific` glossary entries, `inferred` deadlines/readings, and a random sample (`human_spot_check_rate`, default 10%) of accepted cards and questions per lecture. | `REQ-F-017` |
@@ -401,11 +401,11 @@ flowchart TB
 | `P6.1` | Parse & Route Feedback JSON | Reads `feedback.json` (`reported` in `R1`, plus `proposed` in `R2` and `topup` in `R3`) and matches entries against existing module records in `D3`/`D4`. | `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
 | `P6.2` | Execute Feedback Re-Review & Top-Up Subagents | Routes `reported` items to Creator + fresh Reviewer (`REQ-F-020`), `proposed` items directly to fresh Reviewer (`REQ-F-050`), and `topup` concepts to Question Creator + fresh Question Reviewer (`REQ-F-064`). | `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
 | `P6.3` | Merge Approved Feedback Revisions | Updates accepted replacement items in place (preserving stable IDs so app FSRS state is retained on re-import) and routes unresolved items to `D5`. | `REQ-F-018`, `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
-| `P7.1` | Import Module Exports & Export Feedback | Validates uploaded module JSON files, shows a diff preview, takes a pre-import backup (`REQ-N-011`), upserts content while preserving FSRS history and manual deadline edits, suspends removed items, logs `ImportBatch`, and exports `feedback.json`. | `REQ-F-021`–`REQ-F-023`, `REQ-F-042`, `REQ-F-063`, `REQ-N-011` |
-| `P7.2` | Schedule & Review Flashcards | Serves due and new flashcards per module up to daily limits (`REQ-F-027`), renders Markdown/KaTeX, processes ratings (`1`–`4`), updates `CardState` via `ts-fsrs`, and appends `CardReviewLog`. | `REQ-F-024`–`REQ-F-027`, `REQ-N-001`, `REQ-N-010` |
-| `P7.3` | Select & Mark Concept Quizzes | Selects due concepts (`ConceptState`) and unseen/least-recently-seen variants near target difficulty (`REQ-F-029`–`REQ-F-031`), auto-marks MCQs (`REQ-F-032`), supports self-marking (`REQ-F-033`), overrides (`REQ-F-044`), and timed mock exams (`REQ-F-054`), and updates `ConceptState`. | `REQ-F-029`–`REQ-F-034`, `REQ-F-044`, `REQ-F-053`, `REQ-F-054` |
-| `P7.4` | Manage Deadlines, Readings & Daily Plan | Computes live deadline countdowns and urgency badges (`REQ-F-035`–`REQ-F-038`), manages milestones, readings, and tasks (`REQ-F-041`, `REQ-F-056`), builds and budgets the 9-step `DailyPlan` (`REQ-F-039`, `REQ-F-040`, `REQ-F-055`), and exports `.ics` (`REQ-F-057`). | `REQ-F-035`–`REQ-F-041`, `REQ-F-055`–`REQ-F-057`, `REQ-N-003` |
-| `P7.5` | Run Course Tutor & Compute Stats | Calls the Anthropic Claude API (`E3`) with cached module prefixes (`REQ-F-047`) for written-answer marking (`REQ-F-043`) and course-grounded tutoring (`REQ-F-045`, `REQ-F-046`), enforces coursework integrity (`REQ-F-051`) and spend caps (`REQ-F-048`), manages tutor `Proposal` items (`REQ-F-049`), and computes `SM-1`–`SM-6` statistics and FSRS forecasts (`REQ-F-058`, `REQ-F-065`). | `REQ-F-043`, `REQ-F-045`–`REQ-F-049`, `REQ-F-051`, `REQ-F-052`, `REQ-F-058`, `REQ-F-065` |
+| `P7.1` | Import Module Exports & Export Feedback | Validates uploaded module JSON files, shows a diff preview, takes a pre-import backup (`REQ-N-011`), upserts content while preserving FSRS history and manual deadline edits, suspends removed items (`REQ-F-023`), logs `ImportBatch` (`REQ-F-076`), and exports `feedback.json` (`REQ-F-042`, `REQ-F-063`, `REQ-F-085`). | `REQ-F-021`–`REQ-F-023`, `REQ-F-042`, `REQ-F-063`, `REQ-F-076`, `REQ-F-085`, `REQ-N-011` |
+| `P7.2` | Schedule & Review Flashcards | Serves due and new flashcards per module up to daily limits (`REQ-F-027`), renders Markdown/KaTeX (`REQ-F-077`), processes ratings (`1`–`4`) and card actions (`REQ-F-025`, `REQ-F-078`), updates `CardState` via `ts-fsrs` (`REQ-F-026`), and appends `CardReviewLog` with `state_before` (`REQ-F-079`). | `REQ-F-024`–`REQ-F-027`, `REQ-F-077`–`REQ-F-079`, `REQ-N-001`, `REQ-N-010` |
+| `P7.3` | Select & Mark Concept Quizzes | Selects due concepts (`ConceptState`) and unseen/least-recently-seen variants near target difficulty (`REQ-F-029`–`REQ-F-031`), auto-marks MCQs (`REQ-F-032`), supports self-marking (`REQ-F-033`), overrides (`REQ-F-044`), and timed mock exams (`REQ-F-054`), updates `ConceptState` (`REQ-F-034`), and offers linked flashcards on `Again` (`REQ-F-080`). | `REQ-F-029`–`REQ-F-034`, `REQ-F-044`, `REQ-F-053`, `REQ-F-054`, `REQ-F-080` |
+| `P7.4` | Manage Deadlines, Readings & Daily Plan | Computes live deadline countdowns and urgency badges (`REQ-F-035`–`REQ-F-038`), manages milestones, readings, and tasks (`REQ-F-041`, `REQ-F-056`, `REQ-F-082`), builds and budgets the 9-step `DailyPlan` (`REQ-F-039`, `REQ-F-040`, `REQ-F-055`, `REQ-F-081`), and exports `.ics` (`REQ-F-057`). | `REQ-F-035`–`REQ-F-041`, `REQ-F-055`–`REQ-F-057`, `REQ-F-081`, `REQ-F-082`, `REQ-N-003` |
+| `P7.5` | Run Course Tutor & Compute Stats | Calls the Anthropic Claude API (`E3`) with cached module prefixes (`REQ-F-047`) for written-answer marking (`REQ-F-043`) and course-grounded tutoring (`REQ-F-045`, `REQ-F-046`), enforces coursework integrity (`REQ-F-051`) and spend caps/logging (`REQ-F-048`, `REQ-F-083`), manages tutor `Proposal` items (`REQ-F-049`) and thread deletion (`REQ-F-084`), and computes `SM-1`–`SM-6` statistics and FSRS forecasts (`REQ-F-058`, `REQ-F-065`). | `REQ-F-043`, `REQ-F-045`–`REQ-F-049`, `REQ-F-051`, `REQ-F-052`, `REQ-F-058`, `REQ-F-065`, `REQ-F-083`, `REQ-F-084` |
 
 ---
 

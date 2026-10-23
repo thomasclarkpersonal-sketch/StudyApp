@@ -16,23 +16,23 @@ Every user story in `[SEED §3]` (`1`–`20`) plus `Q-17` (`DEC-009`) maps to `U
 
 | Seed story | Seed summary | Seed priority | Mapped use case(s) | Priority in `A10`/`A13` | Mapped `REQ-F` IDs |
 | :-: | :-- | :-: | :-- | :-: | :-- |
-| `1` | Generate flashcards from a lecture | Must | `UC-01` | Must | `REQ-F-001`, `REQ-F-007`–`REQ-F-010` |
-| `2` | Generate quiz questions from a lecture | Must | `UC-02` | Must | `REQ-F-011`–`REQ-F-016` |
-| `3` | Extract module glossary, deadlines, and readings | Must | `UC-03` | Must | `REQ-F-001`–`REQ-F-005` |
-| `4` | Process a full module in priority order | Must | `UC-04` | Must | `REQ-F-006`, `REQ-F-018`–`REQ-F-020` |
+| `1` | Generate flashcards from a lecture | Must | `UC-01` | Must | `REQ-F-001`, `REQ-F-007`–`REQ-F-010`, `REQ-F-067`, `REQ-F-070`–`REQ-F-072` |
+| `2` | Generate quiz questions from a lecture | Must | `UC-02` | Must | `REQ-F-011`–`REQ-F-016`, `REQ-F-073`–`REQ-F-075` |
+| `3` | Extract module glossary, deadlines, and readings | Must | `UC-03` | Must | `REQ-F-001`–`REQ-F-005`, `REQ-F-067`, `REQ-F-068` |
+| `4` | Process a full module in priority order | Must | `UC-04` | Must | `REQ-F-006`, `REQ-F-018`–`REQ-F-020`, `REQ-F-069` |
 | `5` | Spot-check and review flagged items before export | Must | `UC-05` | Must | `REQ-F-017`, `REQ-F-018`, `REQ-F-028` |
-| `6` | Import and re-import module files without losing progress | Must | `UC-06` | Must | `REQ-F-021`–`REQ-F-023`, `REQ-F-028` |
-| `7` | Review due flashcards with FSRS | Must | `UC-07` | Must | `REQ-F-024`–`REQ-F-027` |
-| `8` | Take a daily concept quiz | Must | `UC-08` | Must | `REQ-F-029`–`REQ-F-034`, `REQ-F-044` |
+| `6` | Import and re-import module files without losing progress | Must | `UC-06` | Must | `REQ-F-021`–`REQ-F-023`, `REQ-F-028`, `REQ-F-076` |
+| `7` | Review due flashcards with FSRS | Must | `UC-07` | Must | `REQ-F-024`–`REQ-F-027`, `REQ-F-077`–`REQ-F-079` |
+| `8` | Take a daily concept quiz | Must | `UC-08` | Must | `REQ-F-029`–`REQ-F-034`, `REQ-F-044`, `REQ-F-080` |
 | `9` | Track deadlines and countdowns | Must | `UC-09` | Must | `REQ-F-035`–`REQ-F-038` |
-| `10` | Follow the daily "Today" checklist | Must | `UC-10` | Must | `REQ-F-027`, `REQ-F-039`–`REQ-F-041` |
-| `11` | Report a bad card or question (`R1`) | Must | `UC-11` | Must | `REQ-F-020`, `REQ-F-042` |
-| `12` | Mark written answers with Claude | Should | `UC-12` | Should | `REQ-F-043`, `REQ-F-044`, `REQ-F-047`, `REQ-F-048` |
-| `13` | Ask the course-grounded Claude tutor | Should | `UC-13` | Should | `REQ-F-045`–`REQ-F-048`, `REQ-F-051`, `REQ-F-052` |
+| `10` | Follow the daily "Today" checklist | Must | `UC-10` | Must | `REQ-F-027`, `REQ-F-039`–`REQ-F-041`, `REQ-F-081`, `REQ-F-082` |
+| `11` | Report a bad card or question (`R1`) | Must | `UC-11` | Must | `REQ-F-020`, `REQ-F-042`, `REQ-F-085` |
+| `12` | Mark written answers with Claude | Should | `UC-12` | Should | `REQ-F-043`, `REQ-F-044`, `REQ-F-047`, `REQ-F-048`, `REQ-F-083` |
+| `13` | Ask the course-grounded Claude tutor | Should | `UC-13` | Should | `REQ-F-045`–`REQ-F-048`, `REQ-F-051`, `REQ-F-052`, `REQ-F-083`, `REQ-F-084` |
 | `14` | Save cards or questions proposed during a tutor chat | Should | `UC-14` | Should | `REQ-F-049`, `REQ-F-050` |
 | `15` | Prepare for an upcoming exam with assessment mode and mock exams | Should | `UC-15` | Should | `REQ-F-053`, `REQ-F-054` |
 | `16` | Keep the daily plan within a time budget and plan coursework milestones | Should | `UC-16` | Should | `REQ-F-055`–`REQ-F-057` |
-| `—` *(Reports & outputs)* | View learning analytics, retention, coverage, and spend (`SM-1`–`SM-6`) | Should | `UC-17` | Should | `REQ-F-048`, `REQ-F-058` |
+| `—` *(Reports & outputs)* | View learning analytics, retention, coverage, and spend (`SM-1`–`SM-6`) | Should | `UC-17` | Should | `REQ-F-048`, `REQ-F-058`, `REQ-F-083` |
 | `17` | Use the app on phone and laptop, including offline (`R3`) | Could | `UC-18` | Could | `REQ-F-059`–`REQ-F-062` |
 | `18` | Close the full feedback loop (`reported`, `topup`, `proposed`) | Could | `UC-19` | Could | `REQ-F-063`, `REQ-F-064` |
 | `19` | Tune FSRS to my own review history | Could | `UC-20` | Could | `REQ-F-065` |
@@ -108,22 +108,22 @@ flowchart LR
 - **Trigger:** The student invokes the lecture flashcard generation command for a lecture (directly or via `UC-04`).
 - **Main success scenario:**
   1. The student specifies the module and lecture to process.
-  2. The system ingests the lecture file, renders slide page images, extracts normalized text and decoded LaTeXiT equations (`REQ-F-001`), wraps the content as untrusted data (`REQ-N-014`), and loads the module's `glossary.json`.
+  2. The system ingests the lecture file, renders slide page images, extracts normalized text and decoded LaTeXiT equations (`REQ-F-001`, `REQ-F-067`), wraps the content as untrusted data (`REQ-N-014`), and loads the module's `glossary.json`.
   3. The system invokes the Card Creator subagent to extract `concept-map.json` containing 8 to 20 concepts with stable IDs, one-line summaries, source locations, and importance levels (`core`, `supporting`, `detail`) (`REQ-F-007`).
   4. The system invokes the Card Creator subagent to draft 15 to 40 atomic flashcards (`basic`, `cloze`, or `reverse`) in `cards.draft.json` following the 10 card rules and module glossary (`REQ-F-008`).
-  5. The system invokes a fresh, context-isolated Card Reviewer subagent (`REQ-N-012`) to execute Pass 1 (blind-answer test on card fronts only) and Pass 2 (evaluating the 8 pass/fail card rubric criteria in `failed_criteria` and checking concept coverage) and write `cards.review.r1.json` (`REQ-F-009`, `DT-01`).
+  5. The system invokes a fresh, context-isolated Card Reviewer subagent (`REQ-N-012`) to execute Pass 1 (blind-answer test on card fronts only) and Pass 2 (evaluating the 8 pass/fail card rubric criteria in `failed_criteria` and checking concept coverage) and write `cards.review.r1.json` (`REQ-F-009`, `REQ-F-071`, `DT-01`).
   6. The system freezes all `accept` cards, discards `reject` cards (requesting a replacement under a new ID only if a concept still needs coverage), and writes the accepted cards to `cards.final.json` (`REQ-F-010`).
 - **Extensions:**
   - **2a.** The lecture file is missing, unreadable, or corrupt:
     - **2a1.** The system logs a structured ingestion error identifying the lecture path and halts processing for that lecture → *ends in failure*.
   - **4a.** The Card Creator encounters an illegible slide, undefined symbol, or contradiction between slides:
-    - **4a1.** The Card Creator records the issue in `flagged.json` (`reason = "unclear_source"`) without drafting a speculative card (`BR-011`) → *returns to step 5*.
+    - **4a1.** The Card Creator records the issue in `flagged.json` (`reason = "unclear_source"`) without drafting a speculative card (`REQ-F-070`, `BR-011`) → *returns to step 5*.
   - **5a.** One or more cards receive a `revise` verdict or `missing_concepts` is non-empty in review round `r < 3` (`DT-01`):
-    - **5a1.** The system sends only the `revise` cards and `missing_concepts` back to the Card Creator to produce updated drafts (`REQ-F-010`).
-    - **5a2.** The system invokes a fresh Card Reviewer subagent on the revised drafts to write `cards.review.r<r+1>.json` → *returns to step 6*.
+    - **5a1.** The system sends only the `revise` cards and `missing_concepts` back to the Card Creator to produce updated drafts (`REQ-F-010`, `REQ-F-072`).
+    - **5a2.** The system invokes a fresh Card Reviewer subagent on the revised drafts to write `cards.review.r<r+1>.json` (`REQ-F-009`, `REQ-F-071`) → *returns to step 6*.
   - **5b.** A card still receives `revise` or `reject` after review round 3 (2 revision rounds completed, `DT-01`):
-    - **5b1.** The system moves the card and its reviewer feedback into `flagged.json` (`reason = "failed_3_rounds"`) (`REQ-F-010`, `BR-014`) → *returns to step 6*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-001`, `REQ-F-007`–`REQ-F-010`, `REQ-N-006`, `REQ-N-012`, `REQ-N-014`, `REQ-N-016`, `REQ-N-017`; `BR-006`–`BR-014`.
+    - **5b1.** The system moves the card and its reviewer feedback into `flagged.json` (`reason = "failed_3_rounds"`) (`REQ-F-072`, `BR-014`) → *returns to step 6*.
+- **Related `REQ` and `BR` IDs:** `REQ-F-001`, `REQ-F-007`–`REQ-F-010`, `REQ-F-067`, `REQ-F-070`–`REQ-F-072`, `REQ-N-006`, `REQ-N-012`, `REQ-N-014`, `REQ-N-016`, `REQ-N-017`; `BR-006`–`BR-014`.
 
 ---
 
@@ -138,8 +138,8 @@ flowchart LR
 - **Trigger:** Stage A completes for a lecture during a pipeline run, or the student invokes Stage B for the lecture.
 - **Main success scenario:**
   1. The system loads the lecture's reviewed `concept-map.json`, normalized source bundle, `glossary.json`, and target assessment format weights from `pipeline.config.json`.
-  2. The system invokes the Question Creator subagent to draft question variants per concept (`3–5` for `core` per `DEC-006`, `2–3` for `supporting`, `0–1` for `detail`) weighted to the assessment format, with model answers, `2–5` marking points (or 4 MCQ options with distractor explanations), difficulty (`1`–`3`), and source citations (`REQ-F-011`, `REQ-F-012`).
-  3. The system invokes a fresh, context-isolated Question Reviewer subagent (`REQ-N-012`) to execute Pass 1 (answering from question stem and MCQ options only) and Pass 2 (evaluating the 8 pass/fail question rubric criteria in `failed_criteria` and checking `core` variant counts) and write `questions.review.r1.json` (`REQ-F-013`, `DT-01`).
+  2. The system invokes the Question Creator subagent to draft question variants per concept (`3–5` for `core` per `DEC-006`, `2–3` for `supporting`, `0–1` for `detail`) weighted to the assessment format, with model answers, `2–5` marking points (or 4 MCQ options with distractor explanations), difficulty (`1`–`3`), and source citations (`REQ-F-011`, `REQ-F-012`, `REQ-F-073`).
+  3. The system invokes a fresh, context-isolated Question Reviewer subagent (`REQ-N-012`) to execute Pass 1 (answering from question stem and MCQ options only) and Pass 2 (evaluating the 8 pass/fail question rubric criteria in `failed_criteria` and checking `core` variant counts) and write `questions.review.r1.json` (`REQ-F-013`, `REQ-F-074`, `DT-01`).
   4. The system freezes `accept` questions, discards `reject` questions (requesting a replacement under a new ID only if a concept's variant count falls short), and writes `questions.final.json` (`REQ-F-014`).
   5. When all lectures in the module have completed Stages A and B, the system invokes the Module Auditor subagent to write `module-audit.json` checking learning-outcome coverage, assessment-scope variant counts, cross-lecture duplicates, and notation consistency (`REQ-F-015`).
   6. When the Module Auditor proposes cross-lecture synthesis cards or questions, the system routes them through a fresh Reviewer subagent and adds accepted synthesis items to the module output (`REQ-F-016`).
@@ -147,13 +147,13 @@ flowchart LR
   - **1a.** The target assessment format is unannounced in `pipeline.config.json` (`Q-16`, `ASM-047`):
     - **1a1.** The system applies the balanced default question-type mix (MCQ and short-written types) and tags the assessment format as provisional (`REQ-F-012`) → *returns to step 2*.
   - **3a.** One or more questions receive `revise` or a `core` concept has fewer than 3 accepted variants in review round `r < 3` (`DT-01`):
-    - **3a1.** The system sends only the `revise` questions and variant-shortfall concepts to the Question Creator for revision (`REQ-F-014`).
-    - **3a2.** The system invokes a fresh Question Reviewer subagent on the revised questions to write `questions.review.r<r+1>.json` → *returns to step 4*.
+    - **3a1.** The system sends only the `revise` questions and variant-shortfall concepts to the Question Creator for revision (`REQ-F-014`, `REQ-F-075`).
+    - **3a2.** The system invokes a fresh Question Reviewer subagent on the revised questions to write `questions.review.r<r+1>.json` (`REQ-F-013`, `REQ-F-074`) → *returns to step 4*.
   - **3b.** A question still fails after review round 3 (`DT-01`):
-    - **3b1.** The system records the question and reviewer notes in `flagged.json` (`reason = "failed_3_rounds"`) (`REQ-F-014`, `BR-014`) → *returns to step 4*.
+    - **3b1.** The system records the question and reviewer notes in `flagged.json` (`reason = "failed_3_rounds"`) (`REQ-F-075`, `BR-014`) → *returns to step 4*.
   - **6a.** A proposed synthesis item is rejected by the Reviewer after revision:
     - **6a1.** The system routes the rejected synthesis item to `flagged.json` (`REQ-F-016`) → *ends in success*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-011`–`REQ-F-016`, `REQ-N-006`, `REQ-N-012`, `REQ-N-017`; `BR-012`–`BR-019`.
+- **Related `REQ` and `BR` IDs:** `REQ-F-011`–`REQ-F-016`, `REQ-F-073`–`REQ-F-075`, `REQ-N-006`, `REQ-N-012`, `REQ-N-017`; `BR-012`–`BR-019`.
 
 ---
 
@@ -168,18 +168,18 @@ flowchart LR
 - **Trigger:** The student starts module ingestion/extraction for a new or updated module.
 - **Main success scenario:**
   1. The student initiates module source ingestion for a specified module.
-  2. The system queries HKUST Canvas in read-only mode for the module's syllabus, files, pages, announcements, and assignments (`REQ-F-002`), and ingests any local module handbooks, past papers, and slide decks (`REQ-F-001`).
+  2. The system queries HKUST Canvas in read-only mode for the module's syllabus, files, pages, announcements, and assignments (`REQ-F-002`), and ingests any local module handbooks, past papers, and slide decks (`REQ-F-001`, `REQ-F-067`).
   3. The system invokes the Extractor subagent across the module documents to identify every symbol and abbreviation, classify each as `standard` or `module_specific`, and write `glossary.json` (`REQ-F-003`).
   4. The system invokes the Extractor subagent to extract all module assessments and deadlines into `deadlines.json` with UTC `due_at` (`null` with reason if unannounced), `timezone`, `weighting`, `covers_lectures`, `source`, and `confidence` (`explicit` or `inferred`) (`REQ-F-004`).
   5. The system invokes the Extractor subagent to extract required and recommended readings into `readings.json` with `citation`, `pages`, `lecture_id`, `required`, `read_by`, and `source` (`REQ-F-005`).
 - **Extensions:**
   - **2a.** HKUST Canvas is unreachable, rate-limited, or credentials are not configured:
-    - **2a1.** The system logs a Canvas fallback notice and ingests files exclusively from the local module source folders (`REQ-F-002`, `ASM-048`) → *returns to step 3*.
+    - **2a1.** The system logs a Canvas fallback notice and ingests files exclusively from the local module source folders (`REQ-F-068`, `ASM-048`) → *returns to step 3*.
   - **2b.** Both Canvas and the local module folder contain zero readable course documents:
     - **2b1.** The system reports that no readable source documents were found and aborts module extraction → *ends in failure*.
   - **4a.** A syllabus lists an assessment weighting (e.g. midterm or exam) without an announced calendar date (`SRC-05`):
     - **4a1.** The system writes the deadline entry with `due_at = null`, `status = "unannounced"`, and `confidence = "inferred"` (`REQ-F-004`, `ASM-047`) → *returns to step 5*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-001`–`REQ-F-005`, `REQ-N-013`, `REQ-N-014`, `REQ-N-016`; `BR-001`–`BR-005`.
+- **Related `REQ` and `BR` IDs:** `REQ-F-001`–`REQ-F-005`, `REQ-F-067`, `REQ-F-068`, `REQ-N-013`, `REQ-N-014`, `REQ-N-016`; `BR-001`–`BR-005`.
 
 ---
 
@@ -194,7 +194,7 @@ flowchart LR
 - **Trigger:** The student launches a batch pipeline run across one or more modules (optionally supplying `feedback.json` from `R1`).
 - **Main success scenario:**
   1. The student starts a pipeline run specifying the target module(s) and optional `feedback.json`.
-  2. The system orders target modules with Computer Science modules (`Theory of Computation`, `Machine Learning`, `Large Language Models`) before other modules, and orders lectures within each module so lectures covered by the nearest upcoming assessment run first (`REQ-F-006`, `BR-005`).
+  2. The system orders target modules with Computer Science modules (`Theory of Computation`, `Machine Learning`, `Large Language Models`) before other modules (`REQ-F-006`), and orders lectures within each module so lectures covered by the nearest upcoming assessment run first (`REQ-F-069`, `BR-005`).
   3. The system executes module extraction (`UC-03`) if `glossary.json`, `deadlines.json`, or `readings.json` are missing or out of date.
   4. If `feedback.json` with `reported` items (`R1`) was supplied, the system routes each reported item and student comment to the corresponding Creator and a fresh Reviewer (`REQ-F-020`).
   5. For each lecture in priority order, the system executes Stage A (`UC-01`) followed by Stage B (`UC-02`), running independent lectures in parallel up to the concurrency limit (`flashcard-pipeline.md` §3.1).
@@ -203,7 +203,7 @@ flowchart LR
 - **Extensions:**
   - **5a.** The Claude Code session hits a subscription rate limit or is interrupted mid-module:
     - **5a1.** The system saves progress after the last completed lecture/round and outputs a resume command that continues from the first incomplete lecture → *ends in success (partial run saved)*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-006`, `REQ-F-018`–`REQ-F-020`, `REQ-N-006`, `REQ-N-017`, `REQ-N-022`; `BR-005`, `BR-020`.
+- **Related `REQ` and `BR` IDs:** `REQ-F-006`, `REQ-F-018`–`REQ-F-020`, `REQ-F-069`, `REQ-N-006`, `REQ-N-017`, `REQ-N-022`; `BR-005`, `BR-020`.
 
 ---
 
@@ -240,7 +240,7 @@ flowchart LR
 - **Scope and level:** Study App (`P7.1`); user goal.
 - **Preconditions:** The study app is running and the student has one or more pipeline export JSON files (`deck.json`, `question-bank.json`, `concepts.json`, `glossary.json`, `deadlines.json`, `readings.json`).
 - **Minimal guarantees:** Malformed JSON files are rejected before any database write; a verified database backup snapshot is created before any import write (`REQ-N-011`); existing `CardState`, `CardReviewLog`, `ConceptState`, and `QuestionAttempt` rows are never deleted (`BR-021`).
-- **Success guarantees:** New items are inserted, changed items update their content while keeping their FSRS state and logs, absent items from re-imported lectures are marked `suspended = true`, manual deadline edits are preserved, and an `ImportBatch` record is written (`REQ-F-021`–`REQ-F-023`).
+- **Success guarantees:** New items are inserted, changed items update their content while keeping their FSRS state and logs, absent items from re-imported lectures are marked `suspended = true`, manual deadline edits are preserved, and an `ImportBatch` record is written (`REQ-F-021`–`REQ-F-023`, `REQ-F-076`).
 - **Trigger:** The student selects pipeline export files for import in the study app.
 - **Main success scenario:**
   1. The student provides the module export JSON files for import.
@@ -248,7 +248,7 @@ flowchart LR
   3. The system presents the diff preview to the student for confirmation (`REQ-F-021`).
   4. The student confirms the import.
   5. The system creates a verified pre-import backup of the database (`REQ-N-011`).
-  6. Within a single atomic database transaction, the system inserts new items (initializing `CardState` and `ConceptState` to `state = "new"`), updates content fields on changed items while preserving their `CardState`, `CardReviewLog`, `ConceptState`, and `QuestionAttempt` records (`REQ-F-022`, `DT-02`), marks absent items from re-imported lectures as `suspended = true` (`REQ-F-023`), preserves any manually edited deadline fields (`REQ-F-036`), and writes an `ImportBatch` log entry (`REQ-F-023`).
+  6. Within a single atomic database transaction, the system inserts new items (initializing `CardState` and `ConceptState` to `state = "new"`), updates content fields on changed items while preserving their `CardState`, `CardReviewLog`, `ConceptState`, and `QuestionAttempt` records (`REQ-F-022`, `DT-02`), marks absent items from re-imported lectures as `suspended = true` (`REQ-F-023`), preserves any manually edited deadline fields (`REQ-F-036`), and writes an `ImportBatch` log entry (`REQ-F-076`).
   7. The system displays the import completion summary and updated module glossary (`REQ-F-028`).
 - **Extensions:**
   - **2a.** One or more uploaded files fail JSON Schema validation:
@@ -257,7 +257,7 @@ flowchart LR
     - **4a1.** The system discards the staged upload without modifying the database → *ends in success (no-op)*.
   - **6a.** A database error or process crash occurs during the import transaction:
     - **6a1.** The database rolls back the uncommitted transaction (or restores from the step 5 backup snapshot on restart), leaving prior data intact (`REQ-N-011`) → *ends in failure*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-021`–`REQ-F-023`, `REQ-F-028`, `REQ-F-036`, `REQ-N-011`, `REQ-N-020`; `BR-021`–`BR-024`, `DT-02`.
+- **Related `REQ` and `BR` IDs:** `REQ-F-021`–`REQ-F-023`, `REQ-F-028`, `REQ-F-036`, `REQ-F-076`, `REQ-N-011`, `REQ-N-020`; `BR-021`–`BR-024`, `DT-02`.
 
 ---
 
@@ -273,20 +273,20 @@ flowchart LR
 - **Main success scenario:**
   1. The student starts a flashcard review session (optionally filtered by module, lecture, concept, or tag) (`REQ-F-024`).
   2. The system selects due cards (`CardState.due <= end_of_today`, `suspended = false`, `flagged = false`) up to the module's daily review limit (`review_cards_per_day`, default 200) and new cards (`state = "new"`) up to the daily new-card limit (`new_cards_per_day`, default 20) (`REQ-F-027`).
-  3. The system presents the front of the next card with formatted Markdown and KaTeX mathematics (`REQ-F-024`, `REQ-N-002`).
+  3. The system presents the front of the next card with formatted Markdown and KaTeX mathematics (`REQ-F-077`, `REQ-N-002`).
   4. The student recalls the answer and requests to reveal the back of the card (e.g. via the `Space` keyboard shortcut) (`REQ-F-025`, `REQ-N-019`).
-  5. The system reveals the card back, any `extra` note, the source citation, and the predicted next intervals for `Again` (`1`), `Hard` (`2`), `Good` (`3`), and `Easy` (`4`) (`REQ-F-024`, `REQ-F-025`, `REQ-N-001`).
+  5. The system reveals the card back, any `extra` note, the source citation, and the predicted next intervals for `Again` (`1`), `Hard` (`2`), `Good` (`3`), and `Easy` (`4`) (`REQ-F-025`, `REQ-F-077`, `REQ-N-001`).
   6. The student rates recall as `Again` (`1`), `Hard` (`2`), `Good` (`3`), or `Easy` (`4`) (`REQ-F-025`).
-  7. The system computes the new `CardState` using `ts-fsrs` (desired retention `0.90`, or SM-2 fallback if configured), persists the updated `CardState`, and appends a `CardReviewLog` row with `state_before`, `rating`, `reviewed_at`, and `duration_ms` (`REQ-F-026`, `REQ-N-001`, `REQ-N-010`).
+  7. The system computes the new `CardState` using `ts-fsrs` (desired retention `0.90`, or SM-2 fallback if configured), persists the updated `CardState`, and appends a `CardReviewLog` row with `state_before`, `rating`, `reviewed_at`, and `duration_ms` (`REQ-F-026`, `REQ-F-079`, `REQ-N-001`, `REQ-N-010`).
   8. Steps 3–7 repeat until the session queue is completed, and the system displays the session completion summary.
 - **Extensions:**
   - **2a.** Zero due or new cards remain within the daily limits for the selected scope:
     - **2a1.** The system informs the student that all scheduled reviews for today are complete → *ends in success*.
-  - **5a.** The student chooses to suspend, flag, or edit the active card (`REQ-F-025`):
+  - **5a.** The student chooses to suspend, flag, or edit the active card (`REQ-F-078`):
     - **5a1.** The system updates the card's `suspended`, `flagged`, or content fields and removes suspended/flagged cards from the active review queue → *returns to step 3*.
-  - **5b.** The student chooses to report the card as wrong or unclear (`REQ-F-042`):
+  - **5b.** The student chooses to report the card as wrong or unclear (`REQ-F-042`, `REQ-F-085`):
     - **5b1.** The system invokes `UC-11` to record the `FeedbackItem` and flag the card → *returns to step 3*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-024`–`REQ-F-027`, `REQ-N-001`, `REQ-N-002`, `REQ-N-008`, `REQ-N-010`, `REQ-N-019`; `BR-025`–`BR-027`.
+- **Related `REQ` and `BR` IDs:** `REQ-F-024`–`REQ-F-027`, `REQ-F-077`–`REQ-F-079`, `REQ-N-001`, `REQ-N-002`, `REQ-N-008`, `REQ-N-010`, `REQ-N-019`; `BR-025`–`BR-027`.
 
 ---
 
@@ -315,10 +315,10 @@ flowchart LR
   - **5a.** In `R2`+, the question is a written or calculation type and Claude marking is enabled (`REQ-F-043`):
     - **5a1.** The system executes `UC-12` to mark the response via the Anthropic Claude API → *returns to step 6*.
   - **6a.** The attempt is rated `Again` (`rating = 1`):
-    - **6a1.** The system offers immediate review of the concept's linked flashcards (`Concept.card_ids`) (`REQ-F-034`); if the student accepts, the system presents those cards before advancing to the next concept → *returns to step 7*.
+    - **6a1.** The system offers immediate review of the concept's linked flashcards (`Concept.card_ids`) (`REQ-F-080`); if the student accepts, the system presents those cards before advancing to the next concept → *returns to step 7*.
   - **6b.** In `R2`+, the student overrides the automatic or Claude-assigned rating (`REQ-F-044`):
     - **6b1.** The system sets `QuestionAttempt.overridden = true` and recomputes `ConceptState` using the student's chosen rating → *returns to step 7*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-029`–`REQ-F-034`, `REQ-F-044`, `REQ-N-002`, `REQ-N-008`, `REQ-N-010`; `BR-028`–`BR-032`, `DT-03`, `DT-04`.
+- **Related `REQ` and `BR` IDs:** `REQ-F-029`–`REQ-F-034`, `REQ-F-044`, `REQ-F-080`, `REQ-N-002`, `REQ-N-008`, `REQ-N-010`; `BR-028`–`BR-032`, `DT-03`, `DT-04`.
 
 ---
 
@@ -351,18 +351,18 @@ flowchart LR
 - **Scope and level:** Study App (`P7.4`); user goal.
 - **Preconditions:** The study app is running.
 - **Minimal guarantees:** Unfinished checklist items from the previous day are carried over (`REQ-F-039`); completion timestamps (`completed_at`) are persisted atomically.
-- **Success guarantees:** The `DailyPlan` for the current date in `Settings.timezone` is generated in the 9-step priority order (`REQ-F-039`), each `DailyPlanItem` has its formula-computed `est_minutes` (`REQ-F-040`), and checked-off items and updated reading/task statuses are saved (`REQ-F-040`, `REQ-F-041`).
+- **Success guarantees:** The `DailyPlan` for the current date in `Settings.timezone` is generated in the 9-step priority order (`REQ-F-039`), each `DailyPlanItem` has its formula-computed `est_minutes` (`REQ-F-040`), and checked-off items (`REQ-F-081`) and updated reading/task statuses (`REQ-F-041`, `REQ-F-082`) are saved.
 - **Trigger:** Local midnight passes in `Settings.timezone` or the student opens the Today view for the first time on a calendar day.
 - **Main success scenario:**
   1. The student opens the Today view.
   2. The system generates (or loads and refreshes) today's `DailyPlan` ordered strictly as: (1) carried-over unfinished items from yesterday, (2) due flashcard reviews per module, (3) due concept quizzes per module, (4) daily new cards per module, (5) required readings within `reading_lookahead_days` (default 3 days), (6) deadline milestones due today, (7) assessment prep when in assessment mode, (8) recommended readings (collapsed by default), and (9) student tasks (`REQ-F-039`, `REQ-N-003`).
   3. The system computes `est_minutes` for every `DailyPlanItem` (8 s per due card, 25 s per new card, 45 s per MCQ, 3 min per written question, `page_count × minutes_per_page` per reading) and displays the checklist with total estimated study time (`REQ-F-040`).
-  4. The student launches due reviews (`UC-07`) or quizzes (`UC-08`) from the checklist, updates a reading's status (`done`, `skimmed`, or `skipped`), creates or edits a personal `Task`, or marks a checklist item as completed (`REQ-F-040`, `REQ-F-041`).
-  5. The system records `done = true` and `completed_at` on completed `DailyPlanItem` rows, updates the underlying `Reading` or `Task` status, and updates the remaining estimated time for today (`REQ-F-040`, `REQ-F-041`).
+  4. The student launches due reviews (`UC-07`) or quizzes (`UC-08`) from the checklist, updates a reading's status (`done`, `skimmed`, or `skipped`) (`REQ-F-041`), creates or edits a personal `Task` (`REQ-F-082`), or marks a checklist item as completed (`REQ-F-081`).
+  5. The system records `done = true` and `completed_at` on completed `DailyPlanItem` rows (`REQ-F-081`), updates the underlying `Reading` (`REQ-F-041`) or `Task` (`REQ-F-082`) status, and updates the remaining estimated time for today (`REQ-F-040`).
 - **Extensions:**
   - **2a.** In `R2`+, the total estimated time of today's plan exceeds `Settings.daily_budget_min` (`REQ-F-055`, `DT-06`):
     - **2a1.** The system executes `UC-16` budget enforcement to defer `optional` items or display an over-budget warning when required items alone exceed the budget → *returns to step 3*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-027`, `REQ-F-039`–`REQ-F-041`, `REQ-N-003`, `REQ-N-008`; `BR-035`–`BR-037`, `DT-06`.
+- **Related `REQ` and `BR` IDs:** `REQ-F-027`, `REQ-F-039`–`REQ-F-041`, `REQ-F-081`, `REQ-F-082`, `REQ-N-003`, `REQ-N-008`; `BR-035`–`BR-037`, `DT-06`.
 
 ---
 
@@ -373,19 +373,19 @@ flowchart LR
 - **Scope and level:** Study App (`P7.1`, `P7.2`, `P7.3`, `P7.5`) and Generation Pipeline (`P6`); user goal.
 - **Preconditions:** The student is viewing a flashcard or quiz question in the study app.
 - **Minimal guarantees:** Reported items are immediately marked `flagged = true` so they are excluded from subsequent review/quiz queues until re-imported.
-- **Success guarantees:** A `FeedbackItem` (`kind = "reported"`, `reason = "wrong" | "unclear"`, `comment`, `exported = false`) is stored, exported to JSON on request (`REQ-F-042`), and routed to Creator + fresh Reviewer in the next pipeline run (`REQ-F-020`).
+- **Success guarantees:** A `FeedbackItem` (`kind = "reported"`, `reason = "wrong" | "unclear"`, `comment`, `exported = false`) is stored (`REQ-F-042`, `REQ-F-085`), exported to JSON on request (`REQ-F-042`), and routed to Creator + fresh Reviewer in the next pipeline run (`REQ-F-020`).
 - **Trigger:** The student invokes the report action on a flashcard or quiz question.
 - **Main success scenario:**
-  1. The student selects the report action on an active flashcard or quiz question and specifies `reason` (`wrong` or `unclear`) and a short comment (`REQ-F-042`).
-  2. The system creates a `FeedbackItem` record (`kind = "reported"`, `item_type`, `item_id`, `module_id`, `reason`, `comment`, `created_at`, `exported = false`) and marks the target card or question `flagged = true` so it is excluded from active study queues (`REQ-F-042`, `BR-029`).
+  1. The student selects the report action on an active flashcard or quiz question and specifies `reason` (`wrong` or `unclear`, `REQ-F-085`) and a short comment (`REQ-F-042`).
+  2. The system creates a `FeedbackItem` record (`kind = "reported"`, `item_type`, `item_id`, `module_id`, `reason`, `comment`, `created_at`, `exported = false`) and marks the target card or question `flagged = true` so it is excluded from active study queues (`REQ-F-042`, `REQ-F-085`, `BR-029`).
   3. When ready to update module content, the student exports unexported reported items to `feedback.json` (`REQ-F-042`) and supplies `feedback.json` to the pipeline (`UC-04` / `P6`).
   4. The pipeline routes each reported item together with the student's comment to the corresponding Card or Question Creator and a fresh Reviewer subagent, updating the item in place under its stable `id` (`REQ-F-020`).
 - **Extensions:**
   - **1a.** The student submits a report without selecting `wrong` or `unclear`:
-    - **1a1.** The system prompts the student to select a reason (`wrong` or `unclear`) before saving → *returns to step 1*.
+    - **1a1.** The system prompts the student to select a reason (`wrong` or `unclear`, `REQ-F-085`) before saving → *returns to step 1*.
   - **4a.** The revised item fails 3 review rounds in the pipeline:
     - **4a1.** The pipeline places the item in `flagged.json` for human decision in `UC-05` (`BR-014`) → *ends in success*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-020`, `REQ-F-042`; `BR-014`, `BR-029`, `BR-038`.
+- **Related `REQ` and `BR` IDs:** `REQ-F-020`, `REQ-F-042`, `REQ-F-085`; `BR-014`, `BR-029`, `BR-038`.
 
 ---
 
@@ -398,7 +398,7 @@ flowchart LR
   1. During a concept quiz (`UC-08`) or mock exam (`UC-15`), the student submits a written (`short_answer`, `explain`, `scenario`, `compare`, `essay_plan`) or `calculation` answer for Claude marking (`REQ-F-043`).
   2. The system checks that the current calendar month's Claude API spend is below `Settings.monthly_spend_cap_usd` (`REQ-F-048`, `BR-041`).
   3. The system sends the question, `marking_points`, `model_answer`, and student response to the Anthropic Claude API (`E3`) with the module's glossary and slide text attached as a cached prompt prefix (`REQ-F-043`, `REQ-F-047`, `REQ-N-004`, `REQ-N-013`, `REQ-N-014`).
-  4. The system receives the structured marking response (`points_met`, `feedback`, suggested FSRS `rating`) and token usage, writes a `GradingCallLog` entry (`input_tokens`, `output_tokens`, `cost_usd`) (`REQ-F-048`), and displays the met/missed marking points, model answer, and feedback (`REQ-F-043`).
+  4. The system receives the structured marking response (`points_met`, `feedback`, suggested FSRS `rating`) and token usage, writes a `GradingCallLog` entry (`input_tokens`, `output_tokens`, `cost_usd`) (`REQ-F-083`), and displays the met/missed marking points, model answer, and feedback (`REQ-F-043`).
   5. The system records the `QuestionAttempt` with `grader = "claude"` and updates `ConceptState` via `ts-fsrs` (`REQ-F-034`, `DT-04`).
 - **Extensions:**
   - **2a.** Monthly Claude API spend has reached `Settings.monthly_spend_cap_usd` and blocking is enabled (`REQ-F-048`, `BR-041`):
@@ -407,7 +407,7 @@ flowchart LR
     - **3a1.** The system notifies the student of the API error and switches the attempt to self-marking mode (`REQ-F-033`) without losing the student's typed answer → *ends in success (fallback to self-marking)*.
   - **4a.** The student disagrees with Claude's suggested rating (`REQ-F-044`):
     - **4a1.** The student selects an override rating (`1`–`4`); the system sets `QuestionAttempt.overridden = true` and updates `ConceptState` with the overridden rating → *ends in success*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-043`, `REQ-F-044`, `REQ-F-047`, `REQ-F-048`, `REQ-N-004`, `REQ-N-013`, `REQ-N-014`; `BR-031`, `BR-041`, `DT-04`.
+- **Related `REQ` and `BR` IDs:** `REQ-F-043`, `REQ-F-044`, `REQ-F-047`, `REQ-F-048`, `REQ-F-083`, `REQ-N-004`, `REQ-N-013`, `REQ-N-014`; `BR-031`, `BR-041`, `DT-04`.
 
 ---
 
@@ -419,15 +419,15 @@ flowchart LR
   2. The system loads the linked item, student attempt, marking scheme, cited lecture slide text, module `glossary`, the student's weakest concepts (lowest stability and highest lapses), and upcoming assessments (`REQ-F-045`).
   3. The student submits a question or prompt in the thread.
   4. The system verifies the monthly spend cap (`REQ-F-048`) and sends the conversation and cached module prefix to the Anthropic Claude API (`REQ-F-047`, `REQ-N-005`).
-  5. The system streams the tutor response grounded in the course slides with explicit slide/page citations, canonical glossary notation, and an explicit note whenever an explanation goes beyond the course (`REQ-F-046`), and persists the `TutorMessage` with `citations`, `input_tokens`, `output_tokens`, and `cost_usd` (`REQ-F-048`, `REQ-F-052`).
+  5. The system streams the tutor response grounded in the course slides with explicit slide/page citations, canonical glossary notation, and an explicit note whenever an explanation goes beyond the course (`REQ-F-046`), and persists the `TutorMessage` with `citations`, `input_tokens`, `output_tokens`, and `cost_usd` (`REQ-F-052`, `REQ-F-083`).
 - **Extensions:**
   - **3a.** The student's prompt asks the tutor to write, complete, or rewrite assessed coursework (`homework`, `project`, or `coursework` deadline) (`REQ-F-051`, `REQ-N-023`, `BR-040`):
     - **3a1.** The tutor refuses to produce submittable coursework prose or code and instead offers conceptual explanation or Socratic guiding questions → *ends in success (refusal enforced)*.
   - **4a.** Monthly Claude API spend has reached `Settings.monthly_spend_cap_usd` with blocking enabled (`REQ-F-048`):
     - **4a1.** The system blocks the API call and displays the current month's spend and cap settings → *ends in failure*.
-  - **5a.** The student searches past threads or deletes a `TutorThread` (`REQ-F-052`):
-    - **5a1.** The system returns matching threads via full-text search or deletes the selected `TutorThread` and its `TutorMessage` records → *ends in success*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-045`–`REQ-F-048`, `REQ-F-051`, `REQ-F-052`, `REQ-N-005`, `REQ-N-013`, `REQ-N-014`, `REQ-N-023`; `BR-039`–`BR-041`.
+  - **5a.** The student searches past threads (`REQ-F-052`) or deletes a `TutorThread` (`REQ-F-084`):
+    - **5a1.** The system returns matching threads via full-text search or deletes the selected `TutorThread` and its `TutorMessage` records (`REQ-F-052`, `REQ-F-084`) → *ends in success*.
+- **Related `REQ` and `BR` IDs:** `REQ-F-045`–`REQ-F-048`, `REQ-F-051`, `REQ-F-052`, `REQ-F-083`, `REQ-F-084`, `REQ-N-005`, `REQ-N-013`, `REQ-N-014`, `REQ-N-023`; `BR-039`–`BR-041`.
 
 ---
 
@@ -486,11 +486,11 @@ flowchart LR
 - **Scope and level:** Study App (`P7.5`); user goal.
 - **Main success scenario:**
   1. The student opens the Stats view (`REQ-F-058`).
-  2. The system computes and displays: (a) daily flashcard and quiz review counts over time, (b) trailing 30-day true retention (`SM-2`: percentage of non-new card reviews rated `Hard`, `Good`, or `Easy`), (c) reported-wrong rate per module (`SM-3`), (d) concept mastery and ≥2-attempt coverage across each upcoming assessment's scope (`SM-5`), and (e) current calendar month Claude API token usage and USD spend (`SM-6`) (`REQ-F-048`, `REQ-F-058`).
+  2. The system computes and displays: (a) daily flashcard and quiz review counts over time, (b) trailing 30-day true retention (`SM-2`: percentage of non-new card reviews rated `Hard`, `Good`, or `Easy`), (c) reported-wrong rate per module (`SM-3`), (d) concept mastery and ≥2-attempt coverage across each upcoming assessment's scope (`SM-5`), and (e) current calendar month Claude API token usage and USD spend (`SM-6`) (`REQ-F-048`, `REQ-F-058`, `REQ-F-083`).
 - **Extensions:**
   - **2a.** Fewer than 30 days of review logs exist for a module:
     - **2a1.** The system computes retention over the available history window and labels the sample count and date range → *ends in success*.
-- **Related `REQ` and `BR` IDs:** `REQ-F-048`, `REQ-F-058`; `BR-041`, `BR-044`.
+- **Related `REQ` and `BR` IDs:** `REQ-F-048`, `REQ-F-058`, `REQ-F-083`; `BR-041`, `BR-044`.
 
 ---
 

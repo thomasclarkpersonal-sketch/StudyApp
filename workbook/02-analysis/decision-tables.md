@@ -11,7 +11,7 @@ This document specifies the 6 decision tables (`DT-01`–`DT-06`) governing mult
 
 ## 1. `DT-01` · Pipeline Reviewer Verdict & Revision Round Routing
 
-- **Implements:** `REQ-F-009`, `REQ-F-010`, `REQ-F-013`, `REQ-F-014`; `UC-01`, `UC-02`; `BR-012`, `BR-013`, `BR-014`.
+- **Implements:** `REQ-F-009`, `REQ-F-010`, `REQ-F-013`, `REQ-F-014`, `REQ-F-071`, `REQ-F-072`, `REQ-F-074`, `REQ-F-075`; `UC-01`, `UC-02`; `BR-012`, `BR-013`, `BR-014`.
 - **Complete rule count:** $2^3 = 8$ rules (`DT-01-C1`–`DT-01-C8`).
 
 ### 1.1 Complete decision table (`DT-01-C1`–`DT-01-C8`)
@@ -102,7 +102,7 @@ This document specifies the 6 decision tables (`DT-01`–`DT-06`) governing mult
 
 ## 4. `DT-04` · Quiz Attempt Outcome to Concept FSRS Rating Mapping
 
-- **Implements:** `REQ-F-032`–`REQ-F-034`, `REQ-F-043`; `UC-08`, `UC-12`; `BR-031`, `BR-032`.
+- **Implements:** `REQ-F-032`–`REQ-F-034`, `REQ-F-043`, `REQ-F-080`; `UC-08`, `UC-12`; `BR-031`, `BR-032`.
 - **Complete rule count:** $2^3 = 8$ rules (`DT-04-C1`–`DT-04-C8`).
 
 ### 4.1 Complete decision table (`DT-04-C1`–`DT-04-C8`)

@@ -78,15 +78,15 @@ Every flow below is a noun phrase (`A11`, `A12`) and maps to an exact Level-0 pr
 
 | Flow ID | Source | Destination | Flow label (exact noun phrase) | Level-0 process in `A12` | Related `REQ`s |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| `CF-01` | `E1` | `P0` | `course files and pipeline configuration` | `P1` (`P1.1`) | `REQ-F-001`, `REQ-F-006` |
+| `CF-01` | `E1` | `P0` | `course files and pipeline configuration` | `P1` (`P1.1`) | `REQ-F-001`, `REQ-F-006`, `REQ-F-067`–`REQ-F-069` |
 | `CF-02` | `P0` | `E4` | `canvas read-only API requests` | `P1` (`P1.1`) | `REQ-F-002`, `REQ-N-016` |
-| `CF-03` | `E4` | `P0` | `course files, syllabus, pages, and assignments` | `P1` (`P1.1`) | `REQ-F-002` |
+| `CF-03` | `E4` | `P0` | `course files, syllabus, pages, and assignments` | `P1` (`P1.1`) | `REQ-F-002`, `REQ-F-068` |
 | `CF-04` | `P0` | `E2` | `extractor subagent prompts and source bundle` | `P1` (`P1.2`) | `REQ-F-003`–`REQ-F-005`, `REQ-N-014` |
 | `CF-05` | `E2` | `P0` | `extracted glossary, deadlines, and readings drafts` | `P1` (`P1.2`) | `REQ-F-003`–`REQ-F-005` |
-| `CF-06` | `P0` | `E2` | `card creator and reviewer subagent prompts` | `P2` (`P2.1`, `P2.2`) | `REQ-F-007`–`REQ-F-010`, `REQ-N-012` |
-| `CF-07` | `E2` | `P0` | `concept map, card drafts, and card review verdicts` | `P2` (`P2.1`, `P2.2`) | `REQ-F-007`–`REQ-F-010` |
-| `CF-08` | `P0` | `E2` | `question creator and reviewer subagent prompts` | `P3` (`P3.1`, `P3.2`) | `REQ-F-011`–`REQ-F-014`, `REQ-N-012` |
-| `CF-09` | `E2` | `P0` | `question drafts and question review verdicts` | `P3` (`P3.1`, `P3.2`) | `REQ-F-011`–`REQ-F-014` |
+| `CF-06` | `P0` | `E2` | `card creator and reviewer subagent prompts` | `P2` (`P2.1`, `P2.2`) | `REQ-F-007`–`REQ-F-010`, `REQ-F-070`–`REQ-F-072`, `REQ-N-012` |
+| `CF-07` | `E2` | `P0` | `concept map, card drafts, and card review verdicts` | `P2` (`P2.1`, `P2.2`) | `REQ-F-007`–`REQ-F-010`, `REQ-F-070`–`REQ-F-072` |
+| `CF-08` | `P0` | `E2` | `question creator and reviewer subagent prompts` | `P3` (`P3.1`, `P3.2`) | `REQ-F-011`–`REQ-F-014`, `REQ-F-073`–`REQ-F-075`, `REQ-N-012` |
+| `CF-09` | `E2` | `P0` | `question drafts and question review verdicts` | `P3` (`P3.1`, `P3.2`) | `REQ-F-011`–`REQ-F-014`, `REQ-F-073`–`REQ-F-075` |
 | `CF-10` | `P0` | `E2` | `module auditor and synthesis reviewer prompts` | `P4` (`P4.1`, `P4.2`) | `REQ-F-015`, `REQ-F-016` |
 | `CF-11` | `E2` | `P0` | `module audit findings and synthesis verdicts` | `P4` (`P4.1`, `P4.2`) | `REQ-F-015`, `REQ-F-016` |
 | `CF-12` | `P0` | `E1` | `pre-export review queue and spot-check sample` | `P5` (`P5.1`) | `REQ-F-017` |
@@ -96,10 +96,10 @@ Every flow below is a noun phrase (`A11`, `A12`) and maps to an exact Level-0 pr
 | `CF-16` | `E1` | `P0` | `feedback JSON for re-run` | `P6` | `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
 | `CF-17` | `P0` | `E2` | `feedback re-review and top-up subagent prompts` | `P6` | `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
 | `CF-18` | `E2` | `P0` | `revised feedback items and top-up variants` | `P6` | `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
-| `CF-19` | `E1` | `P0` | `pipeline export files for import` | `P7` | `REQ-F-021`–`REQ-F-023` |
-| `CF-20` | `E1` | `P0` | `study actions, ratings, quiz answers, and tutor prompts` | `P7` | `REQ-F-024`–`REQ-F-065` |
-| `CF-21` | `P0` | `E1` | `daily plan, cards, quizzes, feedback, tutor responses, and stats` | `P7` | `REQ-F-024`–`REQ-F-065` |
-| `CF-22` | `P0` | `E1` | `exported feedback JSON` | `P7` | `REQ-F-042`, `REQ-F-063` |
-| `CF-23` | `P0` | `E3` | `grading and tutor requests with cached module prefix` | `P7` | `REQ-F-043`, `REQ-F-045`–`REQ-F-048` |
-| `CF-24` | `E3` | `P0` | `marking results, streamed tutor responses, and token usage` | `P7` | `REQ-F-043`, `REQ-F-045`–`REQ-F-048` |
+| `CF-19` | `E1` | `P0` | `pipeline export files for import` | `P7` | `REQ-F-021`–`REQ-F-023`, `REQ-F-076` |
+| `CF-20` | `E1` | `P0` | `study actions, ratings, quiz answers, and tutor prompts` | `P7` | `REQ-F-024`–`REQ-F-065`, `REQ-F-077`–`REQ-F-085` |
+| `CF-21` | `P0` | `E1` | `daily plan, cards, quizzes, feedback, tutor responses, and stats` | `P7` | `REQ-F-024`–`REQ-F-065`, `REQ-F-077`–`REQ-F-085` |
+| `CF-22` | `P0` | `E1` | `exported feedback JSON` | `P7` | `REQ-F-042`, `REQ-F-063`, `REQ-F-085` |
+| `CF-23` | `P0` | `E3` | `grading and tutor requests with cached module prefix` | `P7` | `REQ-F-043`, `REQ-F-045`–`REQ-F-048`, `REQ-F-083` |
+| `CF-24` | `E3` | `P0` | `marking results, streamed tutor responses, and token usage` | `P7` | `REQ-F-043`, `REQ-F-045`–`REQ-F-048`, `REQ-F-083` |
 | `CF-25` | `P0` | `E5` | `iCalendar deadline and milestone feed` | `P7` | `REQ-F-057` |

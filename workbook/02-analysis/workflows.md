@@ -3,8 +3,8 @@
 Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A14. Approved and baselined at CP2 (2026-10-21).
 
 This document models the two cross-actor workflows with hand-offs, waiting states, and parallel execution (`A04`):
-1. **`WF-01` · Module Generation Pipeline & Independent Reviewer Loop** (`UC-01`–`UC-05`, `REQ-F-001`–`REQ-F-019`)
-2. **`WF-02` · Daily Study, Written-Answer Marking, Feedback Export & Re-Import Cycle** (`UC-06`–`UC-14`, `UC-19`, `REQ-F-020`–`REQ-F-050`, `REQ-F-063`, `REQ-F-064`)
+1. **`WF-01` · Module Generation Pipeline & Independent Reviewer Loop** (`UC-01`–`UC-05`, `REQ-F-001`–`REQ-F-019`, `REQ-F-067`–`REQ-F-075`)
+2. **`WF-02` · Daily Study, Written-Answer Marking, Feedback Export & Re-Import Cycle** (`UC-06`–`UC-14`, `UC-19`, `REQ-F-020`–`REQ-F-050`, `REQ-F-063`, `REQ-F-064`, `REQ-F-076`–`REQ-F-085`)
 
 Every diagram satisfies `A14` acceptance checks:
 - **Swimlanes:** Each participant has a dedicated `subgraph` swimlane.

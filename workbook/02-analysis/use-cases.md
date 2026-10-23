@@ -437,13 +437,13 @@ flowchart LR
 
 ### `UC-14` · Curate tutor-proposed cards and questions (`Should`, `R2`)
 - **Primary actor:** Student (`E1`), assisted by Claude Code Runtime (`E2`).
-- **Scope and level:** Study App (`P7`) and Generation Pipeline (`P6`); user goal.
+- **Scope and level:** Study App (`P7`) and Generation Pipeline (`P6.1`–`P6.3`); user goal.
 - **Main success scenario:**
   1. During a tutor conversation (`UC-13`), the student saves a candidate flashcard or quiz question into the `Proposal` queue (`status = "pending"`) (`REQ-F-049`).
   2. The student reviews pending proposals in the `Proposal` queue and chooses to `accept`, `edit`, or `discard` each proposal (`REQ-F-049`).
   3. For each accepted or edited proposal, the system records a `FeedbackItem` (`kind = "proposed"`) for inclusion in `feedback.json → proposed` (`REQ-F-049`).
-  4. In the next pipeline run (`P6`), the system routes each `proposed` item directly to a fresh Card or Question Reviewer subagent (`REQ-F-050`, `BR-042`).
-  5. Accepted proposals are added to `deck.json` or `question-bank.json` (`REQ-F-050`).
+  4. In the next pipeline run (`P6.1`–`P6.2`), the system routes each `proposed` item directly to a fresh Card or Question Reviewer subagent (`REQ-F-050`, `BR-042`).
+  5. Accepted proposals are merged (`P6.3`) into `deck.json` or `question-bank.json` (`REQ-F-050`).
 - **Extensions:**
   - **2a.** The student chooses `discard` on a proposal:
     - **2a1.** The system marks the `Proposal` as `status = "discarded"` and excludes it from `feedback.json` → *ends in success*.
@@ -516,13 +516,13 @@ flowchart LR
 
 ### `UC-19` · Close the full feedback and variant top-up loop (`Could`, `R3`)
 - **Primary actor:** Student (`E1`), assisted by Claude Code Runtime (`E2`).
-- **Scope and level:** Study App (`P7`) and Generation Pipeline (`P6`); user goal.
+- **Scope and level:** Study App (`P7`) and Generation Pipeline (`P6.1`–`P6.3`); user goal.
 - **Main success scenario:**
   1. The student exports the full `feedback.json` (`GET /export/feedback`) containing unexported `reported` items, `topup` concepts running low on unseen variants, and `proposed` items accepted from tutor chats (`REQ-F-063`).
   2. The system writes `feedback.json` and marks the exported `FeedbackItem` records `exported = true` (`REQ-F-063`).
-  3. The student runs the pipeline with `feedback.json` (`P6`).
-  4. The pipeline processes `reported` items via Creator + fresh Reviewer (`REQ-F-020`), `proposed` items via fresh Reviewer (`REQ-F-050`), and `topup` concepts by invoking only the Question Creator and a fresh Question Reviewer to generate new distinct question variants (`REQ-F-064`).
-  5. Updated `deck.json` and `question-bank.json` are exported for re-import into the study app (`UC-06`).
+  3. The student runs the pipeline with `feedback.json` (`P6.1`).
+  4. The pipeline (`P6.2`) processes `reported` items via Creator + fresh Reviewer (`REQ-F-020`), `proposed` items via fresh Reviewer (`REQ-F-050`), and `topup` concepts by invoking only the Question Creator and a fresh Question Reviewer to generate new distinct question variants (`REQ-F-064`).
+  5. Updated `deck.json` and `question-bank.json` (`P6.3`) are exported for re-import into the study app (`UC-06`).
 - **Extensions:**
   - **1a.** Zero unexported `FeedbackItem` rows exist when export is requested:
     - **1a1.** The system exports an empty `feedback.json` structure (`reported: []`, `topup: []`, `proposed: []`) and informs the student → *ends in success*.

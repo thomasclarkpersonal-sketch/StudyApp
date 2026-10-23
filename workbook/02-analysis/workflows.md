@@ -1,6 +1,6 @@
 # A14 · Activity / BPMN Workflow Diagrams
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21; updated 2026-10-24 via `CR-003` (`A04` scope alignment). Catalog entry: A14. Approved and baselined at CP2 (2026-10-21).
+Owner: Systems Analyst. Stage 2, written 2026-10-21; updated 2026-10-23 via `CR-003` (`A04` scope alignment). Catalog entry: A14. Approved and baselined at CP2 (2026-10-21).
 
 This document models the cross-actor generation pipeline run and its independent reviewer loop (`WF-01`, `UC-01`–`UC-05`, `REQ-F-001`–`REQ-F-019`, `REQ-F-067`–`REQ-F-075`), as selected by [`tailoring.md`](../01-initiation/tailoring.md) (`A04`: *"Reduced: the pipeline run and its review loop, where parallel work and rework loops happen"*). Study-app interactions are modelled in [`use-cases.md`](use-cases.md) (`A13`) and [`decision-tables.md`](decision-tables.md) (`A15`).
 

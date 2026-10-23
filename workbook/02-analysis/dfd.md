@@ -257,7 +257,7 @@ flowchart LR
 
 ## 6. Level-1 DFD — `P5` ("5 Conduct Pre-Export Review & Export")
 
-Decomposes `Must` pipeline export process `P5` (`REQ-F-017`–`REQ-F-019`, `REQ-N-020`; also carries the Level-0 boundary flow `Anki TSV flashcard deck` to `E6` for parent–child balancing `G2.6`, while the optional `R3` `Could` Anki export workflow `REQ-F-066` is modelled as casual `UC-21` in `A13`):
+Decomposes `Must` pipeline export process `P5` (`REQ-F-017`–`REQ-F-019`, `REQ-N-020`; `P5.3` also carries the optional `R3` `Could` Anki TSV export flow `REQ-F-066 [R3]` / `UC-21` to `E6`):
 
 ```mermaid
 flowchart LR
@@ -271,7 +271,7 @@ flowchart LR
 
   P5_1("5.1 Assemble Pre-Export Queue & Spot-Check Sample")
   P5_2("5.2 Apply Student Confirmations & Edits")
-  P5_3("5.3 Validate & Export Module JSON & Summary")
+  P5_3("5.3 Validate & Export Module JSON, Summary & Optional Anki Deck")
 
   %% External boundary inputs/outputs matching P5 on Level-0
   D2 -->|extracted glossary, deadlines, and readings| P5_1
@@ -296,7 +296,7 @@ flowchart LR
 
 ## 7. Level-1 DFD — `P6` ("6 Process Feedback & Top-Up")
 
-Decomposes `Must` pipeline feedback re-review process `P6` (`REQ-F-020`, `UC-11`; `R2` `Should` `proposed` `REQ-F-050` and `R3` `Could` `topup` `REQ-F-064` reuse the same pipeline boundary flows and are modelled as casual use cases `UC-14` and `UC-19` in `A13` per `A04`):
+Decomposes `Must` pipeline feedback process `P6` (`REQ-F-020`, `UC-11`, plus `R2` `Should` `proposed` `REQ-F-050 [R2]` / `UC-14` and `R3` `Could` `topup` `REQ-F-064 [R3]` / `UC-19` sharing the `P6` sub-processes):
 
 ```mermaid
 flowchart LR
@@ -309,9 +309,9 @@ flowchart LR
   D5[(D5 Flagged Items & Module Audit)]
   D6[(D6 Exported Module JSON Package)]
 
-  P6_1("6.1 Parse & Route Reported Feedback JSON")
-  P6_2("6.2 Execute Reported-Item Creator & Fresh Reviewer")
-  P6_3("6.3 Merge Approved Feedback Revisions")
+  P6_1("6.1 Parse & Route Feedback JSON")
+  P6_2("6.2 Execute Feedback Re-Review & Variant Top-Up")
+  P6_3("6.3 Merge Approved Revisions & Top-Up Variants")
 
   %% External boundary inputs/outputs matching P6 on Level-0
   E1 -->|feedback JSON for re-run| P6_1
@@ -327,8 +327,8 @@ flowchart LR
   P6_3 -->|unresolved feedback flags| D5
 
   %% Internal flows within P6
-  P6_1 -->|routed reported item requests| P6_2
-  P6_2 -->|reviewed replacement items| P6_3
+  P6_1 -->|routed reported, proposed, and top-up requests| P6_2
+  P6_2 -->|reviewed replacement items and top-up variants| P6_3
 ```
 
 ---
@@ -350,10 +350,10 @@ flowchart LR
 | `P4.2` | Review Cross-Lecture Synthesis Items | Routes any synthesis cards or questions proposed by `P4.1` through a fresh Reviewer subagent before adding accepted items to `D3`/`D4` and writing `module-audit.json` to `D5`. | `REQ-F-015`, `REQ-F-016` |
 | `P5.1` | Assemble Pre-Export Queue & Spot-Check Sample | Gathers all `flagged.json` items, unconfirmed `module_specific` glossary entries, `inferred` deadlines/readings, and a random sample (`human_spot_check_rate`, default 10%) of accepted cards and questions per lecture. | `REQ-F-017` |
 | `P5.2` | Apply Student Confirmations & Edits | Applies the student's confirmations, edits, and flag dispositions (`accept_edit`, `discard`, `keep_flagged`) to `D2`, `D3`, `D4`, and `D5`. | `REQ-F-017` |
-| `P5.3` | Validate & Export Module JSON & Summary | Preserves deterministic item IDs against prior exports in `D6`, validates all 6 export JSON files against `A34` JSON Schemas (`REQ-N-020`), and writes the pipeline run summary report (`REQ-F-019`; also carries the Level-0 optional `R3` Anki TSV export `REQ-F-066` modelled in `UC-21`). | `REQ-F-018`, `REQ-F-019`, `REQ-N-020` |
-| `P6.1` | Parse & Route Reported Feedback JSON | Reads `feedback.json → reported` (`REQ-F-020`; extended in `R2`/`R3` by `UC-14` `REQ-F-050` and `UC-19` `REQ-F-064`) and matches reported entries against existing module records in `D3`/`D4`. | `REQ-F-020` |
-| `P6.2` | Execute Reported-Item Creator & Fresh Reviewer | Routes `reported` items (`wrong` or `unclear`) with student comments to the Card or Question Creator and a fresh independent Reviewer subagent (`REQ-F-020`; extended in `R2`/`R3` by `REQ-F-050` and `REQ-F-064`). | `REQ-F-020` |
-| `P6.3` | Merge Approved Feedback Revisions | Updates accepted replacement items in place (preserving stable IDs so app FSRS state is retained on re-import) and routes unresolved items to `D5` (`REQ-F-018`, `REQ-F-020`). | `REQ-F-018`, `REQ-F-020` |
+| `P5.3` | Validate & Export Module JSON, Summary & Optional Anki Deck | Preserves deterministic item IDs against prior exports in `D6`, validates all 6 export JSON files against `A34` JSON Schemas (`REQ-N-020`), writes the pipeline run summary report (`REQ-F-019`), and in `R3` optionally formats accepted flashcards into `deck.anki.tsv` (`REQ-F-066` [`R3`], `UC-21`). | `REQ-F-018`, `REQ-F-019`, `REQ-N-020`, `REQ-F-066` (`R3`) |
+| `P6.1` | Parse & Route Feedback JSON | Reads `feedback.json` (`reported` in `R1` `REQ-F-020`; `proposed` in `R2` `REQ-F-050` [`R2`]; `topup` in `R3` `REQ-F-064` [`R3`]) and matches entries against existing module records in `D3`/`D4`. | `REQ-F-020`, `REQ-F-050` (`R2`), `REQ-F-064` (`R3`) |
+| `P6.2` | Execute Feedback Re-Review & Variant Top-Up | Routes `reported` items (`REQ-F-020`) and tutor-`proposed` items (`REQ-F-050` [`R2`]) to the Card/Question Creator and a fresh independent Reviewer subagent, and in `R3` invokes the Question Creator + Reviewer to generate additional question variants for `topup` concepts (`REQ-F-064` [`R3`]). | `REQ-F-020`, `REQ-F-050` (`R2`), `REQ-F-064` (`R3`) |
+| `P6.3` | Merge Approved Revisions & Top-Up Variants | Updates accepted replacement items in place (preserving stable IDs so app FSRS state is retained on re-import), appends approved new variants to `D4`, and routes unresolved items to `D5` (`REQ-F-018`, `REQ-F-020`, `REQ-F-050` [`R2`], `REQ-F-064` [`R3`]). | `REQ-F-018`, `REQ-F-020`, `REQ-F-050` (`R2`), `REQ-F-064` (`R3`) |
 
 ---
 

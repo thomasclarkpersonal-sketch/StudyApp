@@ -1,0 +1,185 @@
+# A22 · Sourcing Decision
+
+Owner: Systems Analyst / Solution Architect. Stage 2, written 2026-10-21. Catalog entry: A22 (Appendix B11). Approved and baselined at CP2 (2026-10-21; CP2 corrective addendum approved 2026-10-23; Option 1 adopted per `DEC-015`; updated via `CR-002`, `CR-003`).
+
+Buying, subscribing to, or reusing existing software is evaluated here **after** structuring the requirements (`A10`–`A20`) and **before** Stage 3 architecture and design.
+
+Per catalog entry `A22` and gate checks `G2.11` and `G2.16`:
+1. **Options are judged and ruled in/out using only user-stated requirements** (`[SEED]`, `[USER]`, `[DOC]`).
+2. **Agent-proposed requirements (`**(Proposal for CP2)**`, `G2.13`)** and **approval-style user decision points (`UDP-01`–`UDP-04` from `[SEED §10]`)** are evaluated in separate tables (§2.4 and §2.5) and never rule out an option on their own.
+3. Product capabilities, pricing, and Anthropic subscription terms were verified via web search on `2026-10-21` (see `ASM-058`, `ASM-059`, `ASM-062`, and `ASM-065` in `A00` for the specific vendor URLs and clauses summarised).
+
+---
+
+## 1. Candidate sourcing options (`B11`)
+
+All six categories in Appendix `B11` were considered; four realistic options (`Opt 1`–`Opt 4`) are evaluated in full below, and two (`B11` enterprise-wide and outsourcing) are dispositioned first:
+
+| Option ID | Category (`B11`) | Description | Initial disposition |
+| :-- | :-- | :-- | :-- |
+| **Opt 1** | **Custom in-house build + OSS libraries** | Custom local TypeScript/React + Node + SQLite study app (`ts-fsrs`, KaTeX) paired with a custom multi-agent generation pipeline implemented as native Claude Code commands and subagent definitions (`.claude/agents/`). | **Evaluated in full** |
+| **Opt 2** | **Hybrid: Packaged OSS (Anki) + custom pipeline & companion app** | Use **Anki** (Desktop + AnkiWeb + native FSRS) as the flashcard scheduler/reviewer via `deck.anki.tsv`, paired with the custom Claude Code pipeline and a stripped-down custom app for concept quizzes, deadlines, Today plan, and tutor. | **Evaluated in full** |
+| **Opt 3** | **SaaS / cloud application (RemNote Pro with AI)** | Subscribe to **RemNote Pro with AI** (`$18–$20/mo` billed annually, `ASM-065`) for PDF annotation, AI flashcard/quiz generation, FSRS spaced repetition, and AI tutor chat. | **Evaluated in full** |
+| **Opt 4** | **Open-source PKM + plugins (Obsidian / Logseq + FSRS plugin)** | Combine **Obsidian** (or Logseq) with community FSRS flashcard plugins (`obsidian-spaced-repetition`), community task/deadline plugins, and manual interactive Claude Code / `claude.ai` prompting. | **Evaluated in full** |
+| *(B11.5)* | *Enterprise-wide solution (Canvas LMS / institutional EdTech)* | Rely on HKUST Canvas native quizzes/calendar alone. | **Ruled out:** HKUST Canvas is controlled by university staff (`BR-002` read-only) and provides no student-side FSRS flashcards, multi-agent generation, or personal study scheduler (`[SEED §1, §3]`). |
+| *(B11.6)* | *IT services firm / commercial outsourcing* | Hire an external agency to build and maintain the app. | **Ruled out:** Single-student personal project with zero capital outsourcing budget (`[SEED §2, §6]`, `A02 §2`). |
+
+---
+
+## 2. Requirement coverage across `Opt 1`–`Opt 4` (`A22`, `G2.11`, `G2.16`)
+
+Legend: **`Met`** = supported natively or within the option's planned build scope; **`Workaround / Partial`** = requires manual steps, plugin scripting, or loses fidelity; **`Gap`** = not supported without building the custom subsystem anyway.
+
+### 2.1 User-stated `Must` functional requirements — Generation pipeline (`REQ-F-001`–`REQ-F-020`, `REQ-F-068`–`REQ-F-075`, 28 rows)
+
+*(Note: All 28 rows below are pure user-stated `Must` requirements (`proposal_for_cp2 = false`); the agent-proposed LaTeXiT metadata decoder `REQ-F-067` is evaluated separately in §2.4.)*
+
+| ID | User-stated requirement summary | Opt 1 (Custom Build) | Opt 2 (Anki Hybrid) | Opt 3 (RemNote AI SaaS) | Opt 4 (Obsidian + Manual Claude) |
+| :-- | :-- | :-: | :-: | :-: | :-: |
+| `REQ-F-001` | Ingest local PDF/PPTX/DOCX/MD + slide page images | **Met** | **Met** (custom pipeline) | **Partial** (PDF/doc import; no `pipeline.config.json`) | **Workaround** (manual file attachment) |
+| `REQ-F-002` | Read-only HKUST Canvas ingestion (`Q-17`) | **Met** | **Met** (custom pipeline) | **Gap** (no HKUST Canvas API reader) | **Gap** (manual download only) |
+| `REQ-F-003` | Extractor runs first to build `glossary.json` (`standard` vs `module_specific`) | **Met** | **Met** (custom pipeline) | **Gap** (single-pass AI; no pre-extracted notation contract) | **Workaround** (manual prompt) |
+| `REQ-F-004` | Extract `deadlines.json` with UTC, timezone, weighting, `explicit`/`inferred` | **Met** | **Met** (custom pipeline) | **Gap** | **Workaround** (manual copy to markdown) |
+| `REQ-F-005` | Extract `readings.json` with `required`/`recommended` & default `read_by` | **Met** | **Met** (custom pipeline) | **Gap** | **Workaround** |
+| `REQ-F-006` | Order CS modules first (`Q-12`) | **Met** | **Met** (custom pipeline) | **Gap** | **Workaround** (manual ordering) |
+| `REQ-F-007` | Stage A Card Creator extracts 8–20 concepts (`core`/`supporting`/`detail`) | **Met** | **Met** (custom pipeline) | **Gap** (no structured concept map with importance tiers) | **Workaround** (manual prompt) |
+| `REQ-F-008` | Draft 15–40 atomic cards following 10 card rules | **Met** | **Met** (custom pipeline) | **Partial** (generates cards, but no 10-rule contract) | **Workaround** |
+| `REQ-F-009` | Fresh context-isolated Card Reviewer: Pass 1 blind-answer test on card fronts | **Met** | **Met** (custom pipeline) | **Gap** (no independent blind-answer Reviewer agent) | **Workaround** (manual 2nd chat) |
+| `REQ-F-010` | Reconcile each Card Reviewer round (`accept` frozen, `reject` removed, `revise` + `missing_concepts` dispatched) | **Met** | **Met** (custom pipeline) | **Gap** | **Gap** (manual file merging) |
+| `REQ-F-011` | Stage B Question Creator (after Stage A): `3–5` core (`Q-07`), `2–3` supporting, `0–1` detail | **Met** | **Met** (custom pipeline) | **Gap** (no per-concept variant quota) | **Workaround** |
+| `REQ-F-012` | Weight question types to assessment format in `pipeline.config.json` (`Q-16`) | **Met** | **Met** (custom pipeline) | **Partial** (basic MCQ/open quiz; no assessment-weight config) | **Workaround** |
+| `REQ-F-013` | Fresh context-isolated Question Reviewer: Pass 1 blind-answer test on stems/options | **Met** | **Met** (custom pipeline) | **Gap** | **Workaround** |
+| `REQ-F-014` | Reconcile each Question Reviewer round (`accept` frozen, `reject` removed, `revise` dispatched) | **Met** | **Met** (custom pipeline) | **Gap** | **Gap** |
+| `REQ-F-015` | Module Auditor checks outcome coverage, assessment variants, duplicates, notation | **Met** | **Met** (custom pipeline) | **Gap** | **Gap** |
+| `REQ-F-016` | Route Auditor synthesis items through fresh Reviewer before inclusion | **Met** | **Met** (custom pipeline) | **Gap** | **Gap** |
+| `REQ-F-017` | Pre-export human review of `flagged.json`, `module_specific` glossary, `inferred` dates, 10% spot check | **Met** | **Met** (custom pipeline) | **Gap** | **Gap** |
+| `REQ-F-018` | Export 6 JSON files (`deck`, `question-bank`, `concepts`, `glossary`, `deadlines`, `readings`) with stable IDs | **Met** | **Met** (custom pipeline) | **Gap** (proprietary export format) | **Gap** |
+| `REQ-F-019` | Write pipeline run summary report (accepted/rejected/flagged per lecture + audit) | **Met** | **Met** (custom pipeline) | **Gap** | **Gap** |
+| `REQ-F-020` | Ingest `R1` reported items and route with comment to Creator + fresh Reviewer | **Met** | **Met** (custom pipeline) | **Gap** | **Gap** |
+| `REQ-F-068` | Fall back to local module folder ingestion when Canvas is unavailable (`Q-17`) | **Met** | **Met** (custom pipeline) | **Gap** (no local folder pipeline fallback) | **Workaround** (manual local files) |
+| `REQ-F-069` | Order lecture processing within each module by nearest upcoming assessment | **Met** | **Met** (custom pipeline) | **Gap** | **Workaround** (manual ordering) |
+| `REQ-F-070` | Divert unclear or contradictory lecture source points into `flagged.json` (`reason = "unclear_source"`) | **Met** | **Met** (custom pipeline) | **Gap** | **Gap** |
+| `REQ-F-071` | Card Reviewer Pass 2: evaluate 8 card rubric criteria & concept coverage into `cards.review.r<n>.json` | **Met** | **Met** (custom pipeline) | **Gap** | **Workaround** |
+| `REQ-F-072` | Cap Card Creator–Reviewer loop at 2 revision rounds; route round-3 unaccepted cards to `flagged.json` | **Met** | **Met** (custom pipeline) | **Gap** | **Gap** |
+| `REQ-F-073` | Populate drafted questions with `model_answer`, difficulty `1`–`3`, `source`, and `2–5` `marking_points` / distractor notes | **Met** | **Met** (custom pipeline) | **Partial** (basic answer key; no 2–5 marking-point contract) | **Workaround** |
+| `REQ-F-074` | Question Reviewer Pass 2: evaluate 8 question rubric criteria & core variant minimums into `questions.review.r<n>.json` | **Met** | **Met** (custom pipeline) | **Gap** | **Workaround** |
+| `REQ-F-075` | Cap Question Creator–Reviewer loop at 2 revision rounds; route round-3 unaccepted questions to `flagged.json` | **Met** | **Met** (custom pipeline) | **Gap** | **Gap** |
+
+---
+
+### 2.2 User-stated `Must` functional requirements — Study app (`REQ-F-021`–`REQ-F-042`, `REQ-F-077`–`REQ-F-078`, `REQ-F-080`, `REQ-F-082`, `REQ-F-086`, 27 rows)
+
+*(Note: All 27 rows below are pure user-stated `Must` requirements (`proposal_for_cp2 = false`); the 4 `**(Proposal for CP2)**` telemetry requirements `REQ-F-076`, `REQ-F-079`, `REQ-F-081`, and `REQ-F-085` are evaluated separately in §2.4.)*
+
+| ID | User-stated requirement summary | Opt 1 (Custom Build) | Opt 2 (Anki Hybrid) | Opt 3 (RemNote AI SaaS) | Opt 4 (Obsidian + Plugins) |
+| :-- | :-- | :-: | :-: | :-: | :-: |
+| `REQ-F-021` | Validate 6 export JSON files against schema before import | **Met** | **Partial** (Anki TSV has no schema validation; companion app must still be built) | **Gap** | **Gap** |
+| `REQ-F-022` | Match re-imported items by stable ID; update content while keeping FSRS history | **Met** | **Partial** (Anki matches by first field or GUID note ID, but split across Anki + companion DB) | **Gap** | **Partial** (plugin ID comments fragile on edit) |
+| `REQ-F-023` | Suspend (`suspended = true`, never delete) items absent from a lecture re-import | **Met** | **Workaround** (Anki TSV import does not auto-suspend absent notes without custom add-on) | **Gap** | **Gap** |
+| `REQ-F-024` | Organise cards `Module → Lecture → Concept → Cards` with tag filtering | **Met** | **Met** (Anki decks/tags) | **Met** | **Met** |
+| `REQ-F-025` | Card review controls: `Space` reveal and `1`–`4` (`Again`/`Hard`/`Good`/`Easy`) rating | **Met** | **Met** (native in Anki) | **Met** | **Partial** |
+| `REQ-F-026` | Update `CardState` on rating via `ts-fsrs` (retention `0.90`, SM-2 fallback) & log review | **Met** | **Met** (Anki native FSRS) | **Met** (RemNote FSRS) | **Partial** (community plugin FSRS) |
+| `REQ-F-027` | Per-module daily limits on new cards (default 20) and due reviews (default 200) | **Met** | **Met** (Anki deck options) | **Met** | **Partial** |
+| `REQ-F-028` | Searchable module notation glossary view with `module_specific` highlight & confirmation | **Met** | **Gap** in Anki (requires custom companion app) | **Workaround** (plain note page) | **Workaround** (markdown note) |
+| `REQ-F-029` | Separate FSRS `ConceptState` per concept; select due concepts up to `quiz_per_day` (10) | **Met** | **Gap** in Anki (requires building custom quiz engine in companion app) | **Gap** (no separate concept-level FSRS state distinct from cards) | **Gap** |
+| `REQ-F-030` | Variant rotation: exclude flagged/suspended, prefer unseen over LRS, match stability difficulty (`1`/`2`/`3`) | **Met** | **Gap** in Anki (requires custom quiz engine) | **Gap** | **Gap** |
+| `REQ-F-031` | Reuse LRS variant when all variants seen & record `topup` `FeedbackItem` | **Met** | **Gap** in Anki (requires custom quiz engine) | **Gap** | **Gap** |
+| `REQ-F-032` | Auto-mark MCQs and show model answer + explanation for each distractor | **Met** | **Gap** in Anki | **Partial** (MCQ support, not tied to concept variant FSRS) | **Gap** |
+| `REQ-F-033` | Self-marking of written & calculation questions against `model_answer` & `marking_points` | **Met** | **Gap** in Anki | **Workaround** | **Gap** |
+| `REQ-F-034` | Map attempt to concept FSRS rating (`1`–`4`) and update `ConceptState` via `ts-fsrs` | **Met** | **Gap** in Anki (requires custom companion app) | **Gap** | **Gap** |
+| `REQ-F-035` | Live deadline countdowns (`< 48 h` hours/mins) + colour & non-colour urgency indicators | **Met** | **Gap** in Anki (requires custom companion app) | **Gap** | **Partial** (community task plugins) |
+| `REQ-F-036` | Manual deadline creation/editing overriding pipeline-extracted values on re-import | **Met** | **Gap** in Anki (requires custom companion app) | **Gap** | **Gap** |
+| `REQ-F-037` | `Confirm` badge on `inferred` deadlines until student confirms/edits | **Met** | **Gap** in Anki | **Gap** | **Gap** |
+| `REQ-F-038` | Store timestamps in UTC with source `timezone` preserved across local timezone changes | **Met** | **Gap** in Anki | **Gap** | **Gap** |
+| `REQ-F-039` | Generate 9-step ordered `DailyPlan` ("Today" checklist) at local midnight / first open | **Met** | **Gap** (Anki due counts aren't readable by browser app without AnkiConnect running on desktop) | **Gap** (no 9-step unified card + concept quiz + reading + milestone plan) | **Gap** |
+| `REQ-F-040` | Compute formula-derived `est_minutes` per `DailyPlanItem` (8 s/due card, 25 s/new, 45 s/MCQ, 3 m/written, pages×rate) | **Met** | **Gap** | **Gap** | **Gap** |
+| `REQ-F-041` | Persist module and week reading progress statuses (`unread`/`done`/`skimmed`/`skipped`) | **Met** | **Gap** in Anki | **Workaround** | **Partial** |
+| `REQ-F-042` | Record student-reported card or question with comment as `FeedbackItem` (`kind = "reported"`) for JSON export | **Met** | **Workaround** (cards in Anki cannot export structured `feedback.json` alongside quiz items) | **Gap** | **Gap** |
+| `REQ-F-077` | Render `basic`, `cloze`, and `reverse` flashcards with Markdown, KaTeX, and post-answer `extra` text | **Met** | **Met** (Anki note types + MathJax) | **Met** | **Met** |
+| `REQ-F-078` | Allow student to suspend, flag, or edit the active flashcard during a review session | **Met** | **Met** (native in Anki) | **Met** | **Partial** |
+| `REQ-F-080` | Offer immediate drill review of concept's linked flashcards (`card_ids`) when `QuestionAttempt` rated `Again` | **Met** | **Gap** (`card_ids` lives in Anki while `ConceptState` lives in companion app; no deep link) | **Gap** | **Gap** |
+| `REQ-F-082` | Persist student-created personal study `Task` items (`title`, `due_on`, `module_id`, `done`) on Today checklist | **Met** | **Gap** in Anki (requires custom companion app) | **Workaround** | **Partial** |
+| `REQ-F-086` | Present pre-import diff preview (`new`, `updated`, `unchanged`, `to-suspend`) before committing import | **Met** | **Partial** (Anki TSV has no diff preview; companion app must still be built) | **Gap** | **Gap** |
+
+---
+
+### 2.3 User-stated `Must` non-functional requirements & `Should`/`Could` summary
+
+| Requirement group | Opt 1 (Custom Build) | Opt 2 (Anki Hybrid) | Opt 3 (RemNote AI SaaS) | Opt 4 (Obsidian + Plugins) |
+| :-- | :-: | :-: | :-: | :-: |
+| **User-stated `Must` NFRs (`REQ-N-007`, `008`, `010`–`014`, `016`, `018`–`020`, `022` — 12 NFRs)** | **12 / 12 Met** (`100%` local offline `R1`, `ts-fsrs` fidelity, crash-safe SQLite backup, `100%` Reviewer isolation, server-only secrets, prompt-injection delimiters, WCAG 2.2 AA, keyboard-only, schema validation, native Claude Code CLI) | **8 / 12 Met, 4 Partial** (splitting state between Anki SQLite and companion SQLite breaks unified atomic backup `REQ-N-011` and unified keyboard/accessibility flow `REQ-N-018`/`019`) | **3 / 12 Met, 9 Gap** (cloud SaaS requires outbound network, no Reviewer isolation `REQ-N-012`, no `A34` schema contract `REQ-N-020`) | **4 / 12 Met, 8 Partial/Gap** (no schema contract, no automated crash-safe import diff, limited keyboard/accessibility guarantees) |
+| **User-stated `Should` (`R2`) requirements (`REQ-F-043`–`058`, `REQ-F-087`–`093`, `REQ-N-021`, `023` — 25 items; `**(Proposal for CP2)**` items `REQ-F-083` and `REQ-F-084` separated in §2.4)** | **25 / 25 Met** (Claude written marking with cached prefix, rating override & `ConceptState` recompute, course-grounded tutor with preloaded context, slide citations & coursework refusal, `warn`/`block` spend cap, tutor proposals → Reviewer, assessment mode & mock exams, daily time budget, `.ics` export & feed, Stats) | **Partial** (companion app must still build `100%` of `R2` quiz marking, tutor, assessment mode, budget, `.ics`, and stats, while lacking access to Anki's `CardReviewLog` on mobile) | **Partial** (`2/25` partial: generic AI chat/grading without module glossary contract, prompt caching control, coursework refusal rule, or tutor-proposal Reviewer pipeline) | **Gap** (`0/25` native) |
+| **User-stated `Could` (`R3`) requirements (`REQ-F-059`–`066`, `REQ-F-094`, `REQ-N-009`, `015` — 11 items)** | **11 / 11 Met** (hosted password auth, offline PWA + `pending_claude` queue, due-review & `< 24 h` deadline notifications, full `feedback.json` loop, custom FSRS fitting, Anki `.tsv` export) | **Partial** (AnkiMobile on iOS costs `$24.99` one-time per `ASM-065` and still leaves the companion web app to be hosted/PWA-enabled separately) | **Partial** (has mobile/offline app and FSRS, but no `feedback.json` top-up loop) | **Partial** |
+
+---
+
+### 2.4 Separate evaluation of Agent-Proposed Requirements (`**(Proposal for CP2)**`, `G2.13`, `G2.16`)
+
+Per `G2.16`, none of the 14 `**(Proposal for CP2)**` items below (`7` `REQ-F` + `7` `REQ-N`) are used to rule out any option:
+
+| Proposal ID(s) | Agent-proposed requirement summary | Basis | Opt 1 | Opt 2 | Opt 3 | Opt 4 |
+| :-- | :-- | :-- | :-: | :-: | :-: | :-: |
+| `REQ-F-067` | Decode embedded `LaTeXiT` base64/zlib PDF metadata streams into LaTeX | `A09` finding on `COMP4901b_Sept24_RL.pdf` (`ASM-046`) | **Met** | **Met** | **Gap** | **Gap** |
+| `REQ-F-076`, `079`, `081`, `083`, `085` | Metric logging requirements (`ImportBatch`, `state_before`, `completed_at`, `GradingCallLog` tokens + `token_rates_json`, structured `wrong`/`unclear` report reason) | Required to compute `A01 §3` `SM-1`, `SM-2`, `SM-3`, `SM-4b`, `SM-6` (`DEC-012`) | **Met** | **Partial** | **Gap** | **Gap** |
+| `REQ-F-084` | Per-thread tutor deletion (`ASM-023`) | Privacy/retention hygiene (`[SEED §4]`) | **Met** | **Met** | **Met** | **Met** |
+| `REQ-N-017` | Pipeline intermediate file (`*.draft.json`, `*.review.r*.json`) cleanup command (`ASM-024`) | Storage/privacy hygiene (`[SEED §4]`) | **Met** | **Met** | **N/A** | **N/A** |
+| `REQ-N-001`–`REQ-N-006` | Concrete latency & runtime targets (`≤ 100 ms` flip, `≤ 300 ms` next, `≤ 1 s` Today, `≤ 10 s` grade, `≤ 3 s` tutor, `≤ 15 m` lecture) | Marked *(proposed)* in `[SEED §7 Performance]` (`ASM-037`) | **Met** | **Met** | **Partial** | **Partial** |
+
+---
+
+### 2.5 Separate evaluation of Approval-Style User Decision Points (`UDP-01`–`UDP-04`, `G2.16`)
+
+Per `G2.16`, the `[SEED §10]` approval rules do not automatically disqualify any option, but any option that triggers one requires the student's explicit approval at `CP2`:
+
+| Decision Point | Rule (`[SEED §10]`) | Impact on `Opt 1` (Custom Build) | Impact on `Opt 2` (Anki Hybrid) | Impact on `Opt 3` (RemNote AI SaaS) | Impact on `Opt 4` (Obsidian) |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| `UDP-01` | Ask before adding a paid service or significantly increasing Claude spend | **No new paid service** (`$0` extra for pipeline on existing Claude subscription per `[USER Q-15]` / `ASM-044` + `$2–$40/mo` `R2` marking and tutor API per `A02 §1.1` / `ASM-059` + `$0–$10/mo` optional `R3` hosting per `ASM-060`). | **`$24.99` one-time fee** if using AnkiMobile on iOS (`ASM-065`; `$0` on desktop/web/Android). | **Triggers `UDP-01`:** Requires a paid RemNote Pro with AI subscription (`$18–$20/mo = $648–$720` over 36 months, `ASM-065`). | **No paid service** for local files (optional Obsidian Sync is `$4–$8/mo = $144–$288` over 36 months, `ASM-065`). |
+| `UDP-02` | Ask before changing card rules, question rules, or reviewer rubrics | Preserves `100%` of rules and rubrics unchanged. | Preserves pipeline rules; drops concept-card link on failed quizzes. | **Triggers `UDP-02`:** Replaces the 10 card rules and 8-criterion Reviewer rubrics with generic black-box SaaS generation. | Requires manual adherence to rules. |
+| `UDP-03` | Ask before sending course material to any third party other than Anthropic | Sends course material **only to Anthropic** (local + Claude Code / Claude API). | Sends course material only to Anthropic (unless synced to AnkiWeb cloud). | **Triggers `UDP-03`:** Uploads copyrighted HKUST PDFs and notes to RemNote's third-party cloud servers and sub-processors. | Local vault (unless third-party cloud sync used). |
+| `UDP-04` | Ask before anything that could delete or overwrite review history | Enforces atomic non-destructive upsert (`BR-021`, `REQ-N-011`). | Splitting cards (Anki) and concepts (companion app) complicates unified backup/restore. | Managed in vendor cloud. | Community plugin markdown comments can be overwritten if note text is edited manually. |
+
+---
+
+## 3. Evaluation against Appendix `B11` criteria and 36-month TCO
+
+| Criterion (`B11`) | Opt 1 · Custom Build + OSS Libraries | Opt 2 · Anki + Custom Pipeline & Companion App | Opt 3 · RemNote Pro with AI (SaaS) | Opt 4 · Obsidian + FSRS Plugin + Manual Claude |
+| :-- | :-- | :-- | :-- | :-- |
+| **User-stated `Must` (`R1`) coverage** | **67 / 67 (`100%`)** (`55/55` user-stated `REQ-F`, `12/12` user-stated `REQ-N`) | **34 / 55 `REQ-F` Met**, 5 Partial/Workaround, **16 Gap** (unless the custom companion app is built anyway, saving only the flashcard UI) | **6 / 55 `REQ-F` Met**, 9 Partial/Workaround, **40 Gap** | **2 / 55 `REQ-F` Met**, 25 Workaround/Partial, **28 Gap** |
+| **Unique differentiating workflow fit** | Purpose-built for the two-pass blind Reviewer pipeline, concept-level FSRS variant rotation, linked card recovery on `Again`, 9-step Today plan, and course-grounded tutor. | Replaces only the flashcard review screen (`UC-07`) while breaking the tight coupling between failed concept quizzes (`UC-08` ext 6a), `DailyPlan` due counts (`UC-10`), `FeedbackItem` reporting (`UC-11`), and unified stats (`UC-17`). | Lacks multi-agent Creator–Reviewer verification, concept-level variant rotation, Canvas ingestion, and coursework-refusal guardrails. | High manual friction per lecture (`30–90 min/lecture, most likely 60 min` of manual card/question creation per `ASM-056`, versus `10–25 min/lecture` of human review in `Opt 1` per `ASM-057` and `≤ 15 min/lecture` automated pipeline runtime in `REQ-N-006` / `ASM-037`), threatening the `SM-1` target (`A01 §3`, `DEC-012`) of processing all lectures ≥ 7 days before each post-R1 assessment. |
+| **36-month TCO (`A02 §1.1` horizon, `ASM-054`)** | **`$72–$1,800` base (`$72–$5,400` with upgrade contingency)** over 36 months (`$2–$50/mo` base; `$2–$150/mo` with contingency, `A02 §1.1`) plus `15–40 hours` of student active build time (`ASM-055`): `$0 extra` for pipeline on existing Claude subscription (`[USER Q-15]`, `ASM-044`); `$2–$40/mo` = `$72–$1,440` in `R2` marking and tutor API (`ASM-059`); `$0–$10/mo` = `$0–$360` in optional `R3` hosting (`ASM-060`); and `$0–$100/mo` = `$0–$3,600` optional subscription upgrade contingency (`ASM-062`). | **`$72–$1,800` base (`$72–$5,400` with contingency)** on desktop/Android (`$0` Anki, `ASM-065`), or **`$96.99–$1,824.99` base (`$96.99–$5,424.99` with contingency)** with iOS AnkiMobile (`$24.99` one-time, `ASM-065`), while replacing only the flashcard review slice (`SL-07`, PERT `ET = 2.17 h` of `56.95 h` = `3.8%` of Stage 4 slice effort in `A05`/`A06`, leaving `36.95 h` across the other 15 study-app slices and `~1–2 h` of the `15–40 h` student active build time in `ASM-055`) because the pipeline, quiz engine, deadline tracker, Today planner, and tutor still have to be built. | **`$648–$720`** subscription (`$18–$20/mo × 36 mo`, `ASM-065`) + existing Claude subscription, **plus** requires user approval under `UDP-01`, `UDP-02`, and `UDP-03`. | **`$0–$288`** (`$0` local or `$4–$8/mo × 36 mo` optional Obsidian Sync, `ASM-065`) + `30–90 min/lecture` (`ASM-056`) of ongoing manual student labour (`20–156 hours/semester` across the `4` in-scope modules × `10–26` lectures/module = `40–104` lectures/semester per `ASM-012`, `DEC-007`, `ASM-051`, and `A02 §1.3`). |
+| **Lock-in & exit cost** | **Zero lock-in:** All data lives in open JSON files (`A34`) and local SQLite (`A33`), with one-way Anki `.tsv` (`REQ-F-066`) and `.ics` (`REQ-F-057`, `REQ-F-093`) exports built in. | Low lock-in, but data is split across two incompatible SQLite schemas (Anki `.apkg` collection vs companion app DB). | **High lock-in:** Concept hierarchy, quiz items, and scheduling metadata are tied to RemNote's proprietary cloud graph. | Low lock-in (plain Markdown files), but fragile scheduling metadata embedded in HTML comments. |
+| **Anthropic Consumer Terms compliance (`ASM-058`, `REQ-N-022`)** | **Aligned with summarised terms (`ASM-058`, open `H`/`M`):** Per Anthropic Consumer Terms (`anthropic.com/legal/consumer-terms`, §"Use of the Services": users may not access the Services through automated or non-human means except via an Anthropic-provided client or as otherwise explicitly permitted, and may not share account credentials/tokens with third parties) and "Using Claude Code with your Pro or Max plan" (`support.anthropic.com`, retrieved `2026-10-21`: Pro and Max subscribers may use the official Claude Code CLI interactively in the terminal within rolling 5-hour and weekly usage limits), the pipeline runs interactively inside the official **Claude Code CLI** without extracting consumer OAuth tokens; the `R2` app backend uses a standard Console API key under Anthropic Commercial Terms (`anthropic.com/legal/commercial-terms`). Exact current clause text re-verified and quoted before `SL-01` (`RSK-021`). | **Aligned with summarised terms** (same pipeline & `R2` API model as `Opt 1`). | Uses vendor-managed LLM routing (triggers `UDP-03`). | **Aligned with summarised terms** (manual interactive Claude usage). |
+
+---
+
+## 4. Recommendation and what would change it (`A22`)
+
+### 4.1 Recommendation: **Option 1 — Custom build adopting mature open-source libraries**
+
+We recommend **Option 1 (Custom in-house build of the Study App & Claude Code Pipeline, adopting open-source libraries)** for three concrete reasons grounded strictly in the user-stated requirements:
+1. **No off-the-shelf or SaaS product supports the two core architectural pillars of the seed (`[SEED §1, §3]`):**
+   - Pillar 1 is the **multi-agent Creator + context-isolated two-pass Reviewer pipeline** (`REQ-F-001`–`REQ-F-020`, `REQ-F-067`–`REQ-F-075`, `REQ-N-012`), which eliminates bad/ambiguous cards before study begins (`SM-3 < 2%`, `A01 §3`).
+   - Pillar 2 is **concept-level FSRS quiz scheduling with unseen variant rotation and immediate linked-card recovery** (`REQ-F-029`–`REQ-F-034`, `REQ-F-080`), unified with flashcards, readings, and deadlines in a single 9-step **Today** plan (`REQ-F-039`).
+2. **Option 2 (Anki Hybrid) saves very little build effort while breaking workflow integration:** Because Anki handles only flashcards (`UC-07`), we would still have to custom-build the entire pipeline (`UC-01`–`UC-05`), the concept quiz engine (`UC-08`), the deadline tracker (`UC-09`), the Today checklist (`UC-10`), the feedback loop (`UC-11`, `UC-19`), the Claude grader (`UC-12`), and the course tutor (`UC-13`). Splitting flashcards into Anki while keeping concepts and quizzes in the web app breaks `REQ-F-080` (offering linked flashcards immediately when a concept quiz is rated `Again`), breaks `REQ-F-039` (building the Today checklist offline without desktop AnkiConnect), and breaks `REQ-F-022`/`REQ-F-042` (unified non-destructive re-import and single-click error reporting). Meanwhile, `REQ-F-066` (`UC-21`) already gives the student a one-way Anki `.tsv` export as a built-in escape hatch.
+3. **Option 3 (RemNote AI SaaS) fails 40 of 55 user-stated `Must` functional requirements (9 Partial/Workaround, 6 Met)** and would also require explicit user waivers on `UDP-01` (`$648–$720` subscription cost, `ASM-065`), `UDP-02` (abandoning the card/question rules and Reviewer rubrics), and `UDP-03` (uploading copyrighted HKUST course files to a third-party cloud).
+
+### 4.2 What would change this recommendation
+- If the student decided at `CP2` to **drop concept-level variant quizzes (`UC-08`), the unified Today checklist (`UC-10`), and the in-app Claude tutor (`UC-13`)**, keeping **only** pipeline flashcard generation (`UC-01`, `UC-03`, `UC-05`) and flashcard review (`UC-07`), then **Option 2 (Pipeline → Anki TSV export only)** would become the recommended choice, cutting Stage 4 slice effort by `68.7%` (PERT `ET = 39.12 h` of `56.95 h` across study-app slices `SL-06`–`SL-21` in `A05`/`A06`, leaving only the `17.83 h` pipeline slices `SL-01`–`SL-05`) and changing Stage 3 in `A04` to pipeline-only design.
+
+---
+
+## 5. Reusable open-source components to adopt in Option 1 (`A22`)
+
+Rather than writing algorithms or parsers from scratch, Option 1 adopts the following open-source libraries (evaluated formally in Stage 3 `A30` ADRs):
+
+| Capability | Adopted open-source component / service | Why adopt rather than write |
+| :-- | :-- | :-- |
+| **FSRS v4/v5 scheduling & parameter fitting** | `ts-fsrs` (MIT, TypeScript) | Reference implementation of FSRS (`REQ-F-026`, `REQ-F-029`, `REQ-F-065`, `REQ-N-010`); eliminates custom memory-math bugs (`RSK-003`). |
+| **LaTeX mathematics rendering** | `KaTeX` (MIT) | Fast, deterministic client-side math rendering (`REQ-F-077`, `REQ-N-001`). |
+| **Markdown rendering & sanitization** | `marked` / `remark` + `DOMPurify` (MIT/Apache-2.0) | Safe rendering of card/question/tutor Markdown without XSS (`REQ-F-077`, `REQ-F-046`). |
+| **Embedded relational store & FTS** | `SQLite 3` via `better-sqlite3` (MIT) with SQLite `FTS5` | ACID transactions, WAL crash safety (`REQ-N-011`), zero-config single-file backups, and native full-text search for glossary and tutor threads (`REQ-F-028`, `REQ-F-052`). |
+| **JSON Schema validation** | `Ajv` (MIT) | Validates all 6 pipeline export files and `feedback.json` in both pipeline and study app (`REQ-N-020`). |
+| **PDF text, page rendering & LaTeXiT extraction** | `pypdf` (BSD) + `poppler-utils` (`pdftoppm` / `pdfimages`) + Python `zlib`/`base64` | Proven local extraction of text, rendered slide images, and embedded macOS `LaTeXiT` equation streams (`REQ-F-001`, `REQ-F-067`, `ASM-046`). |
+| **iCalendar `.ics` generation** | `ical-generator` (MIT) or RFC 5545 formatter | Standards-compliant `.ics` export and feed generation (`REQ-F-057`, `REQ-F-093`). |
+| **Multi-agent pipeline runtime** | **Claude Code CLI** native `.claude/agents/` & slash commands | Zero-harness interactive subagent orchestration with fresh context windows per Reviewer (`[USER Q-05]`, `[USER Q-15]`, `ASM-058`, `REQ-N-012`, `REQ-N-022`). |
+| **In-app marking & tutor LLM client (`R2`+)** | `@anthropic-ai/sdk` (MIT, TypeScript) | Official SDK with first-class prompt caching (`cache_control: { type: "ephemeral" }`) and SSE streaming (`REQ-F-043`–`REQ-F-048`, `REQ-F-083`, `REQ-F-089`). |

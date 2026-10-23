@@ -419,7 +419,7 @@ flowchart LR
   2. The system loads the linked item, student attempt, marking scheme, cited lecture slide text, module `glossary`, the student's weakest concepts (lowest stability and highest lapses), and upcoming assessments (`REQ-F-045`).
   3. The student submits a question or prompt in the thread.
   4. The system verifies the monthly spend cap (`REQ-F-048`) and sends the conversation and cached module prefix to the Anthropic Claude API (`REQ-F-047`, `REQ-N-005`).
-  5. The system streams the tutor response grounded in the course slides with explicit slide/page citations, canonical glossary notation, and an explicit note whenever an explanation goes beyond the course (`REQ-F-046`), and persists the `TutorMessage` with `citations`, `input_tokens`, `output_tokens`, and `cost_usd` (`REQ-F-052`, `REQ-F-083`).
+  5. The system streams the tutor response grounded in the course slides with explicit slide/page citations, canonical glossary notation, and an explicit note whenever an explanation goes beyond the course or when the course differs from standard treatments (`REQ-F-046`), and persists the `TutorMessage` with `citations`, `input_tokens`, `output_tokens`, and `cost_usd` (`REQ-F-052`, `REQ-F-083`).
 - **Extensions:**
   - **3a.** The student's prompt asks the tutor to write, complete, or rewrite assessed coursework (`homework`, `project`, or `coursework` deadline) (`REQ-F-051`, `REQ-N-023`, `BR-040`):
     - **3a1.** The tutor refuses to produce submittable coursework prose or code and instead offers conceptual explanation or Socratic guiding questions → *ends in success (refusal enforced)*.

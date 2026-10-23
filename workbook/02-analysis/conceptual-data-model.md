@@ -441,7 +441,7 @@ All 263 attributes across `E01`–`E28` are defined in [`glossary.md`](glossary.
 | `E18` | `TutorMessage` | PK: `id` (UUID) | `D9` | *Multivalued:* `citations` (slide/page references). *Derived:* `cost_usd` = `(input_tokens * in_rate + output_tokens * out_rate) / 1e6` from `Settings.token_rates_json` (`BR-041`). |
 | `E19` | `Proposal` | PK: `id` (UUID) | `D9` | *Composite:* `payload_json` (draft card or question fields). |
 | `E20` | `FeedbackItem` | PK: `id` (UUID) | `D9` | *Composite:* `payload_json` (for `proposed` items). |
-| `E21` | `Settings` | PK: `id` (`1`, singleton) | `D7` | *Composite:* `fsrs_weights_json`, `token_rates_json`. *Derived:* `current_month_spend_usd` = sum of `TutorMessage.cost_usd + GradingCallLog.cost_usd` in current UTC/local calendar month (`BR-041`). |
+| `E21` | `Settings` | PK: `id` (`1`, singleton) | `D7` | *Composite:* `fsrs_weights_json`, `token_rates_json`. *Derived:* `current_month_spend_usd` = sum of `TutorMessage.cost_usd + GradingCallLog.cost_usd` in the current calendar month bounded in `Settings.timezone` (default `Asia/Hong_Kong` per `ASM-022`, `ASM-067`, `BR-041`). |
 | `E22` | `ImportBatch` | PK: `id` (UUID) | `D7` | *Multivalued:* `lecture_ids` (`Lecture.id` list). |
 | `E23` | `GradingCallLog` | PK: `id` (UUID) | `D9` | *Derived:* `cost_usd` computed from `input_tokens`, `output_tokens`, and `Settings.token_rates_json` (`BR-041`). |
 | `E24` | `PipelineConfig` | PK/FK: `module_id` | `D1` | *Composite:* `semester`, `assessments_json`, `cards_per_lecture`, `variants_json`. |
@@ -518,7 +518,7 @@ Every relationship specifies its degree and the minimum and maximum cardinality 
 
 Every entity (`E01`–`E28`) is created (`C`) by at least one use case/process and read (`R`) by at least one use case/process (`G2.7`):
 
-| Entity | `UC-01` (`P2`) | `UC-02` (`P3`,`P4`) | `UC-03` (`P1`) | `UC-04` (`P1`–`P6`) | `UC-05` (`P5`) | `UC-06` (`P7.1`) | `UC-07` (`P7.2`) | `UC-08` (`P7.3`) | `UC-09` (`P7.4`) | `UC-10` (`P7.4`) | `UC-11` (`P6`,`P7`) | `UC-12`–`14` (`P6`,`P7.5`) | `UC-15`–`17` (`P7.3`–`7.5`) | `UC-18`–`21` (`P5`–`P7`) |
+| Entity | `UC-01` (`P2`) | `UC-02` (`P3`,`P4`) | `UC-03` (`P1`) | `UC-04` (`P1`–`P6`) | `UC-05` (`P5`) | `UC-06` (`P7`) | `UC-07` (`P7`) | `UC-08` (`P7`) | `UC-09` (`P7`) | `UC-10` (`P7`) | `UC-11` (`P6`,`P7`) | `UC-12`–`14` (`P6`,`P7`) | `UC-15`–`17` (`P7`) | `UC-18`–`21` (`P5`–`P7`) |
 | :-- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | `E01 Module` | R | R | C,R | R | R | C,R,U | R | R | R | R | R | R | R | R |
 | `E02 Lecture` | R | R | C,R | R | R | C,R,U | R | R | R | R | R | R | R | R |

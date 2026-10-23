@@ -237,7 +237,7 @@ flowchart LR
 - **Primary actor:** Student (`E1`).
 - **Stakeholders and interests:**
   - *Student:* Wants to load initial or updated pipeline JSON exports into the study app while preserving all FSRS scheduling state, review history, and manual deadline edits (`UDP-04`).
-- **Scope and level:** Study App (`P7.1`); user goal.
+- **Scope and level:** Study App (`P7`); user goal.
 - **Preconditions:** The study app is running and the student has one or more pipeline export JSON files (`deck.json`, `question-bank.json`, `concepts.json`, `glossary.json`, `deadlines.json`, `readings.json`).
 - **Minimal guarantees:** Malformed JSON files are rejected before any database write; a verified database backup snapshot is created before any import write (`REQ-N-011`); existing `CardState`, `CardReviewLog`, `ConceptState`, and `QuestionAttempt` rows are never deleted (`BR-021`).
 - **Success guarantees:** New items are inserted, changed items update their content while keeping their FSRS state and logs, absent items from re-imported lectures are marked `suspended = true`, manual deadline edits are preserved, and an `ImportBatch` record is written (`REQ-F-021`–`REQ-F-023`, `REQ-F-076`, `REQ-F-086`).
@@ -265,7 +265,7 @@ flowchart LR
 - **Primary actor:** Student (`E1`).
 - **Stakeholders and interests:**
   - *Student:* Wants fast, keyboard-driven spaced-repetition flashcard reviews with accurate `ts-fsrs` scheduling and LaTeX math rendering (`SM-2`, `SM-4a`).
-- **Scope and level:** Study App (`P7.2`); user goal.
+- **Scope and level:** Study App (`P7`); user goal.
 - **Preconditions:** At least one module deck has been imported (`UC-06`).
 - **Minimal guarantees:** Every submitted rating is atomically persisted in `CardState` and `CardReviewLog`.
 - **Success guarantees:** Reviewed cards have updated FSRS `due`, `stability`, `difficulty`, `reps`, `lapses`, and `state`, and new `CardReviewLog` entries record `state_before`, `rating`, `reviewed_at`, and `duration_ms`.
@@ -294,7 +294,7 @@ flowchart LR
 - **Primary actor:** Student (`E1`).
 - **Stakeholders and interests:**
   - *Student:* Wants concept-level spaced-repetition quizzes that rotate unseen question variants near the right difficulty, mark MCQs and self-marked written answers in `R1`, and link failed concepts back to their flashcards (`SM-5`).
-- **Scope and level:** Study App (`P7.3`); user goal.
+- **Scope and level:** Study App (`P7`); user goal.
 - **Preconditions:** At least one module's `concepts.json` and `question-bank.json` have been imported (`UC-06`).
 - **Minimal guarantees:** Flagged and suspended questions are never served (`BR-029`); every completed attempt is logged in `QuestionAttempt` and updates `ConceptState`.
 - **Success guarantees:** Due concepts are quizzed using unseen or least-recently-seen variants matched to stability-derived target difficulty (`DT-03`), `ConceptState` is updated via `ts-fsrs` (`DT-04`), and any concept exhausting unseen variants has a `topup` `FeedbackItem` recorded.
@@ -326,7 +326,7 @@ flowchart LR
 - **Primary actor:** Student (`E1`).
 - **Stakeholders and interests:**
   - *Student:* Wants a single accurate view of all module deadlines with timezone-safe countdowns, accessible urgency indicators, manual override protection, and confirmation of inferred dates.
-- **Scope and level:** Study App (`P7.4`); user goal.
+- **Scope and level:** Study App (`P7`); user goal.
 - **Preconditions:** The study app is running.
 - **Minimal guarantees:** All deadline timestamps are stored in UTC alongside their IANA `timezone` (`REQ-F-038`); manual edits set `manually_edited = true` so pipeline re-imports never overwrite them (`BR-023`).
 - **Success guarantees:** Deadlines are displayed in ascending chronological order with live countdowns, colour + non-colour urgency indicators (`DT-05`), and persisted confirmations or edits.
@@ -348,7 +348,7 @@ flowchart LR
 - **Primary actor:** Student (`E1`).
 - **Stakeholders and interests:**
   - *Student:* Wants a single ordered daily study checklist generated automatically each day with realistic duration estimates (`SM-4b`), readings, and personal tasks.
-- **Scope and level:** Study App (`P7.4`); user goal.
+- **Scope and level:** Study App (`P7`); user goal.
 - **Preconditions:** The study app is running.
 - **Minimal guarantees:** Unfinished checklist items from the previous day are carried over (`REQ-F-039`); completion timestamps (`completed_at`) are persisted atomically.
 - **Success guarantees:** The `DailyPlan` for the current date in `Settings.timezone` is generated in the 9-step priority order (`REQ-F-039`), each `DailyPlanItem` has its formula-computed `est_minutes` (`REQ-F-040`), and checked-off items (`REQ-F-081`) and updated reading/task statuses (`REQ-F-041`, `REQ-F-082`) are saved.
@@ -370,7 +370,7 @@ flowchart LR
 - **Primary actor:** Student (`E1`).
 - **Stakeholders and interests:**
   - *Student:* Wants to flag inaccurate or unclear cards/questions with one action during study so they stop appearing in reviews and can be fixed in the next pipeline run (`SM-3`).
-- **Scope and level:** Study App (`P7.1`, `P7.2`, `P7.3`, `P7.5`) and Generation Pipeline (`P6`); user goal.
+- **Scope and level:** Study App (`P7`) and Generation Pipeline (`P6`); user goal.
 - **Preconditions:** The student is viewing a flashcard or quiz question in the study app.
 - **Minimal guarantees:** Reported items are immediately marked `flagged = true` so they are excluded from subsequent review/quiz queues until re-imported.
 - **Success guarantees:** A `FeedbackItem` (`kind = "reported"`, `reason = "wrong" | "unclear"`, `comment`, `exported = false`) is stored (`REQ-F-042`, `REQ-F-085`), exported to JSON on request (`REQ-F-042`), and routed to Creator + fresh Reviewer in the next pipeline run (`REQ-F-020`).
@@ -393,7 +393,7 @@ flowchart LR
 
 ### `UC-12` · Mark written quiz answers with Claude (`Should`, `R2`)
 - **Primary actor:** Student (`E1`), assisted by Anthropic Claude API (`E3`).
-- **Scope and level:** Study App (`P7.3`, `P7.5`); subfunction / user goal extending `UC-08`.
+- **Scope and level:** Study App (`P7`); subfunction / user goal extending `UC-08`.
 - **Main success scenario:**
   1. During a concept quiz (`UC-08`) or mock exam (`UC-15`), the student submits a written (`short_answer`, `explain`, `scenario`, `compare`, `essay_plan`) or `calculation` answer for Claude marking (`REQ-F-043`).
   2. The system checks the current calendar month's Claude API spend against `Settings.monthly_spend_cap_usd` and `Settings.monthly_spend_cap_mode` (`REQ-F-048`, `REQ-F-089`, `BR-041`).
@@ -415,7 +415,7 @@ flowchart LR
 
 ### `UC-13` · Consult the course-grounded Claude tutor (`Should`, `R2`)
 - **Primary actor:** Student (`E1`), assisted by Anthropic Claude API (`E3`).
-- **Scope and level:** Study App (`P7.5`); user goal.
+- **Scope and level:** Study App (`P7`); user goal.
 - **Main success scenario:**
   1. The student opens a tutor thread from the Tutor view or via `"Ask Claude"` on a card, quiz question, quiz result, or reading, and selects a tutor mode (`explain`, `socratic`, or `quiz_me`) (`REQ-F-045`, `REQ-F-046`).
   2. The system preloads the linked item, student attempt, marking scheme, cited lecture slide text, module `glossary`, the student's weakest concepts (lowest stability and highest lapses), and upcoming assessments (`REQ-F-088`).
@@ -437,7 +437,7 @@ flowchart LR
 
 ### `UC-14` · Curate tutor-proposed cards and questions (`Should`, `R2`)
 - **Primary actor:** Student (`E1`), assisted by Claude Code Runtime (`E2`).
-- **Scope and level:** Study App (`P7.5`) and Generation Pipeline (`P6`); user goal.
+- **Scope and level:** Study App (`P7`) and Generation Pipeline (`P6`); user goal.
 - **Main success scenario:**
   1. During a tutor conversation (`UC-13`), the student saves a candidate flashcard or quiz question into the `Proposal` queue (`status = "pending"`) (`REQ-F-049`).
   2. The student reviews pending proposals in the `Proposal` queue and chooses to `accept`, `edit`, or `discard` each proposal (`REQ-F-049`).
@@ -455,7 +455,7 @@ flowchart LR
 
 ### `UC-15` · Prepare for an upcoming exam with assessment mode and mock exams (`Should`, `R2`)
 - **Primary actor:** Student (`E1`).
-- **Scope and level:** Study App (`P7.3`, `P7.4`); user goal.
+- **Scope and level:** Study App (`P7`); user goal.
 - **Main success scenario:**
   1. When a module has an exam or midterm deadline within `Settings.assessment_mode_days` (default 21 days), the system activates assessment mode for that module (`REQ-F-053`, `BR-043`).
   2. In assessment mode, the system prioritises concepts in the assessment's `covers_lectures` scope sorted by lowest FSRS stability in daily quizzes (`REQ-F-090`), increases the module's daily new-card allowance so unreviewed in-scope cards finish before the assessment (`REQ-F-091`), and adds `assessment_prep` to step 7 of the Today checklist (`REQ-F-092`).
@@ -471,7 +471,7 @@ flowchart LR
 
 ### `UC-16` · Keep the daily plan within a time budget and plan coursework milestones (`Should`, `R2`)
 - **Primary actor:** Student (`E1`), with export to Calendar Application (`E5`).
-- **Scope and level:** Study App (`P7.4`); user goal.
+- **Scope and level:** Study App (`P7`); user goal.
 - **Main success scenario:**
   1. The student configures `Settings.daily_budget_min` (default 90 minutes) and defines backward-counted `Milestone` steps (`title`, `due_on`, `est_minutes`) on a coursework or project deadline (`REQ-F-055`, `REQ-F-056`).
   2. On each day's `DailyPlan` generation (`UC-10`), the system includes any `Milestone` due on or before today at step 6 of the plan (`REQ-F-039`, `REQ-F-056`).
@@ -487,7 +487,7 @@ flowchart LR
 
 ### `UC-17` · Inspect study statistics and API spend (`Should`, `R2`)
 - **Primary actor:** Student (`E1`).
-- **Scope and level:** Study App (`P7.5`); user goal.
+- **Scope and level:** Study App (`P7`); user goal.
 - **Main success scenario:**
   1. The student opens the Stats view (`REQ-F-058`).
   2. The system computes and displays: (a) daily flashcard and quiz review counts over time, (b) trailing 30-day true retention (`SM-2`: percentage of non-new card reviews rated `Hard`, `Good`, or `Easy`), (c) reported-wrong rate per module (`SM-3`), (d) concept mastery and ≥2-attempt coverage across each upcoming assessment's scope (`SM-5`), and (e) current calendar month Claude API token usage, USD spend (`SM-6`), and spend-cap status (`REQ-F-048`, `REQ-F-058`, `REQ-F-083`, `REQ-F-089`).
@@ -516,7 +516,7 @@ flowchart LR
 
 ### `UC-19` · Close the full feedback and variant top-up loop (`Could`, `R3`)
 - **Primary actor:** Student (`E1`), assisted by Claude Code Runtime (`E2`).
-- **Scope and level:** Study App (`P7.1`) and Generation Pipeline (`P6`); user goal.
+- **Scope and level:** Study App (`P7`) and Generation Pipeline (`P6`); user goal.
 - **Main success scenario:**
   1. The student exports the full `feedback.json` (`GET /export/feedback`) containing unexported `reported` items, `topup` concepts running low on unseen variants, and `proposed` items accepted from tutor chats (`REQ-F-063`).
   2. The system writes `feedback.json` and marks the exported `FeedbackItem` records `exported = true` (`REQ-F-063`).
@@ -532,7 +532,7 @@ flowchart LR
 
 ### `UC-20` · Fit custom FSRS parameters and forecast review load (`Could`, `R3`)
 - **Primary actor:** Student (`E1`).
-- **Scope and level:** Study App (`P7.5`); user goal.
+- **Scope and level:** Study App (`P7`); user goal.
 - **Main success scenario:**
   1. The student requests custom FSRS parameter fitting and a future review-load forecast for a module on the Stats view (`REQ-F-065`).
   2. The system fits custom `ts-fsrs` weights to the module's `CardReviewLog` history, stores the fitted parameters in `Settings`, and displays the projected daily review load over the upcoming semester window (`REQ-F-065`).

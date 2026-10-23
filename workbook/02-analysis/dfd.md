@@ -2,13 +2,13 @@
 
 Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A12. Approved and baselined at CP2 (2026-10-21; updated via `CR-003`).
 
-This document decomposes `P0("0 Study App & Generation Pipeline")` from [`context-diagram.md`](context-diagram.md) (`A11`) into a **Level-0 Data Flow Diagram** (`P1`–`P7`, data stores `D1`–`D9`) and **Level-1 Data Flow Diagrams** for every Level-0 process (`P1`–`P7`). *(Note: `P1`–`P7` here denote Level-0 DFD processes per catalog entry `A12`; `A01` scope items use `SC-P01`–`SC-P11`.)*
+This document decomposes `P0("0 Study App & Generation Pipeline")` from [`context-diagram.md`](context-diagram.md) (`A11`) into a **Level-0 Data Flow Diagram** (`P1`–`P7`, data stores `D1`–`D9`) and **Level-1 Data Flow Diagrams** for the `Must` generation pipeline processes (`P1`–`P6`), per `A04` (*"Reduced: the pipeline only, Level-0 plus Level-1 for Must processes … The app is modelled with use cases instead"*) and `DEC-011`. Process `P7` (`"7 Operate Study App"`) appears on Level-0 to balance all 25 `P0` context flows (`G2.6`) and connect the pipeline file handoff (`D6`, `CF-12`–`CF-14`, `CF-22`), while the study app's internal behaviour is modelled with object-oriented Use Cases (`UC-06`–`UC-20` in [`use-cases.md`](use-cases.md), `A13`). *(Note: `P1`–`P7` here denote Level-0 DFD processes per catalog entry `A12`; `A01` scope items use `SC-P01`–`SC-P11`.)*
 
 Every rule of catalog entry `A12` and gate checks `G2.6` and `G2.7` holds across the diagram set:
 1. No flow connects two external entities, two data stores, or an external entity and a data store directly.
 2. Every process has at least one input flow and at least one output flow, and uses a verb–noun name.
-3. Every data store (`D1`–`D9`) is written by at least one process and read by at least one process, and maps to entities in [`conceptual-data-model.md`](conceptual-data-model.md) (`A16`, §10 below).
-4. **Strict parent–child balancing (`G2.6`):** The net external flows of Level-0 equal the 25 boundary flows of `P0` in `A11`, and the net boundary flows of each Level-1 diagram (`P1`–`P7`) equal the parent process's inputs and outputs on Level-0.
+3. Every data store (`D1`–`D9`) is written by at least one process and read by at least one process, and maps to entities in [`conceptual-data-model.md`](conceptual-data-model.md) (`A16`, §9 below).
+4. **Strict parent–child balancing (`G2.6`):** The net external flows of Level-0 equal the 25 boundary flows of `P0` in `A11`, and the net boundary flows of each Level-1 pipeline diagram (`P1`–`P6`) equal the parent process's inputs and outputs on Level-0.
 
 ---
 
@@ -257,7 +257,7 @@ flowchart LR
 
 ## 6. Level-1 DFD — `P5` ("5 Conduct Pre-Export Review & Export")
 
-Decomposes `P5` (`REQ-F-017`–`REQ-F-019`, `REQ-F-066`, `REQ-N-020`):
+Decomposes `Must` pipeline export process `P5` (`REQ-F-017`–`REQ-F-019`, `REQ-N-020`; also carries the Level-0 boundary flow `Anki TSV flashcard deck` to `E6` for parent–child balancing `G2.6`, while the optional `R3` `Could` Anki export workflow `REQ-F-066` is modelled as casual `UC-21` in `A13`):
 
 ```mermaid
 flowchart LR
@@ -271,7 +271,7 @@ flowchart LR
 
   P5_1("5.1 Assemble Pre-Export Queue & Spot-Check Sample")
   P5_2("5.2 Apply Student Confirmations & Edits")
-  P5_3("5.3 Validate & Export Module JSON, Summary & Anki TSV")
+  P5_3("5.3 Validate & Export Module JSON & Summary")
 
   %% External boundary inputs/outputs matching P5 on Level-0
   D2 -->|extracted glossary, deadlines, and readings| P5_1
@@ -296,7 +296,7 @@ flowchart LR
 
 ## 7. Level-1 DFD — `P6` ("6 Process Feedback & Top-Up")
 
-Decomposes `P6` (`REQ-F-020`, `REQ-F-050`, `REQ-F-064`):
+Decomposes `Must` pipeline feedback re-review process `P6` (`REQ-F-020`, `UC-11`; `R2` `Should` `proposed` `REQ-F-050` and `R3` `Could` `topup` `REQ-F-064` reuse the same pipeline boundary flows and are modelled as casual use cases `UC-14` and `UC-19` in `A13` per `A04`):
 
 ```mermaid
 flowchart LR
@@ -309,8 +309,8 @@ flowchart LR
   D5[(D5 Flagged Items & Module Audit)]
   D6[(D6 Exported Module JSON Package)]
 
-  P6_1("6.1 Parse & Route Feedback JSON")
-  P6_2("6.2 Execute Feedback Re-Review & Top-Up Subagents")
+  P6_1("6.1 Parse & Route Reported Feedback JSON")
+  P6_2("6.2 Execute Reported-Item Creator & Fresh Reviewer")
   P6_3("6.3 Merge Approved Feedback Revisions")
 
   %% External boundary inputs/outputs matching P6 on Level-0
@@ -327,60 +327,13 @@ flowchart LR
   P6_3 -->|unresolved feedback flags| D5
 
   %% Internal flows within P6
-  P6_1 -->|routed reported, proposed, and top-up requests| P6_2
-  P6_2 -->|reviewed replacement items and new variants| P6_3
+  P6_1 -->|routed reported item requests| P6_2
+  P6_2 -->|reviewed replacement items| P6_3
 ```
 
 ---
 
-## 8. Level-1 DFD — `P7` ("7 Operate Study App")
-
-Decomposes `P7` (`REQ-F-021`–`REQ-F-049`, `REQ-F-051`–`REQ-F-063`, `REQ-F-065`, `REQ-F-076`–`REQ-F-094`), whose user interactions are modelled in full as object-oriented Use Cases (`UC-06`–`UC-20` in [`use-cases.md`](use-cases.md), per `DEC-011`):
-
-```mermaid
-flowchart TB
-  E1[Student]
-  E3[Anthropic Claude API]
-  E5[Calendar Application]
-  D7[(D7 Study App Content & Schedule Store)]
-  D8[(D8 FSRS State & Review History Store)]
-  D9[(D9 Tutor Threads, Proposals & Feedback Store)]
-
-  P7_1("7.1 Import Module Exports & Export Feedback")
-  P7_2("7.2 Schedule & Review Flashcards")
-  P7_3("7.3 Select & Mark Concept Quizzes")
-  P7_4("7.4 Manage Deadlines, Readings & Daily Plan")
-  P7_5("7.5 Run Course Tutor & Compute Stats")
-
-  %% External boundary inputs/outputs matching P7 on Level-0
-  E1 -->|pipeline export files for import| P7_1
-  E1 -->|study actions, ratings, quiz answers, and tutor prompts| P7_2
-  D7 -->|stored cards, questions, concepts, glossary, deadlines, readings, and daily plan| P7_4
-  P7_1 -->|imported module content, deadlines, readings, and tasks| D7
-  D8 -->|current FSRS states, review history, and attempt logs| P7_2
-  P7_2 -->|updated card state, concept state, review logs, and question attempts| D8
-  D9 -->|stored tutor threads, proposals, token spend logs, and unexported feedback| P7_5
-  P7_5 -->|tutor messages, grading call logs, proposals, and feedback items| D9
-  P7_5 -->|grading and tutor requests with cached module prefix| E3
-  E3 -->|marking results, streamed tutor responses, and token usage| P7_5
-  P7_4 -->|daily plan, cards, quizzes, feedback, tutor responses, and stats| E1
-  P7_1 -->|exported feedback JSON| E1
-  P7_4 -->|iCalendar deadline and milestone feed| E5
-
-  %% Internal flows within P7
-  P7_1 -->|import diff preview and validation status| P7_4
-  P7_2 -->|quiz and reading/deadline/tutor actions| P7_3
-  P7_3 -->|graded quiz attempts and concept FSRS updates| P7_2
-  P7_3 -->|written answer grading requests and reported items| P7_5
-  P7_5 -->|Claude marking results and tutor view payloads| P7_4
-  P7_5 -->|unexported feedback items for JSON export| P7_1
-  P7_2 -->|due card counts and review progress| P7_4
-  P7_3 -->|due concept quiz counts and mock exam results| P7_4
-```
-
----
-
-## 9. Primitive process descriptions (`A12`)
+## 8. Primitive process descriptions (`A12` — Pipeline `P1.1`–`P6.3`)
 
 | Process ID | Name | Transformation logic summary | Related `REQ`s |
 | :-- | :-- | :-- | :-- |
@@ -397,19 +350,14 @@ flowchart TB
 | `P4.2` | Review Cross-Lecture Synthesis Items | Routes any synthesis cards or questions proposed by `P4.1` through a fresh Reviewer subagent before adding accepted items to `D3`/`D4` and writing `module-audit.json` to `D5`. | `REQ-F-015`, `REQ-F-016` |
 | `P5.1` | Assemble Pre-Export Queue & Spot-Check Sample | Gathers all `flagged.json` items, unconfirmed `module_specific` glossary entries, `inferred` deadlines/readings, and a random sample (`human_spot_check_rate`, default 10%) of accepted cards and questions per lecture. | `REQ-F-017` |
 | `P5.2` | Apply Student Confirmations & Edits | Applies the student's confirmations, edits, and flag dispositions (`accept_edit`, `discard`, `keep_flagged`) to `D2`, `D3`, `D4`, and `D5`. | `REQ-F-017` |
-| `P5.3` | Validate & Export Module JSON, Summary & Anki TSV | Preserves deterministic item IDs against prior exports in `D6`, validates all 6 export JSON files against `A34` JSON Schemas (`REQ-N-020`), writes the pipeline run summary report (`REQ-F-019`), and optionally writes `deck.anki.tsv` (`REQ-F-066`). | `REQ-F-018`, `REQ-F-019`, `REQ-F-066`, `REQ-N-020` |
-| `P6.1` | Parse & Route Feedback JSON | Reads `feedback.json` (`reported` in `R1`, plus `proposed` in `R2` and `topup` in `R3`) and matches entries against existing module records in `D3`/`D4`. | `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
-| `P6.2` | Execute Feedback Re-Review & Top-Up Subagents | Routes `reported` items to Creator + fresh Reviewer (`REQ-F-020`), `proposed` items directly to fresh Reviewer (`REQ-F-050`), and `topup` concepts to Question Creator + fresh Question Reviewer (`REQ-F-064`). | `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
-| `P6.3` | Merge Approved Feedback Revisions | Updates accepted replacement items in place (preserving stable IDs so app FSRS state is retained on re-import) and routes unresolved items to `D5`. | `REQ-F-018`, `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
-| `P7.1` | Import Module Exports & Export Feedback | Validates uploaded module JSON files (`REQ-F-021`), shows a diff preview (`REQ-F-086`), takes a pre-import backup (`REQ-N-011`), upserts content while preserving FSRS history and manual deadline edits (`REQ-F-022`), suspends removed items (`REQ-F-023`), logs `ImportBatch` (`REQ-F-076`), and exports `feedback.json` (`REQ-F-042`, `REQ-F-063`, `REQ-F-085`). | `REQ-F-021`–`REQ-F-023`, `REQ-F-042`, `REQ-F-063`, `REQ-F-076`, `REQ-F-085`, `REQ-F-086`, `REQ-N-011` |
-| `P7.2` | Schedule & Review Flashcards | Serves due and new flashcards per module up to daily limits (`REQ-F-027`, `REQ-F-091`), renders Markdown/KaTeX (`REQ-F-077`), processes ratings (`1`–`4`) and card actions (`REQ-F-025`, `REQ-F-078`), updates `CardState` via `ts-fsrs` (`REQ-F-026`), and appends `CardReviewLog` with `state_before` (`REQ-F-079`). | `REQ-F-024`–`REQ-F-027`, `REQ-F-077`–`REQ-F-079`, `REQ-F-091`, `REQ-N-001`, `REQ-N-010` |
-| `P7.3` | Select & Mark Concept Quizzes | Selects due concepts (`ConceptState`) and unseen/least-recently-seen variants near target difficulty (`REQ-F-029`–`REQ-F-031`, `REQ-F-090`), auto-marks MCQs (`REQ-F-032`), supports self-marking (`REQ-F-033`), overrides (`REQ-F-044`, `REQ-F-087`), and timed mock exams (`REQ-F-054`), updates `ConceptState` (`REQ-F-034`, `REQ-F-087`), and offers linked flashcards on `Again` (`REQ-F-080`). | `REQ-F-029`–`REQ-F-034`, `REQ-F-044`, `REQ-F-053`, `REQ-F-054`, `REQ-F-080`, `REQ-F-087`, `REQ-F-090` |
-| `P7.4` | Manage Deadlines, Readings & Daily Plan | Computes live deadline countdowns and urgency badges (`REQ-F-035`–`REQ-F-038`), manages milestones, readings, and tasks (`REQ-F-041`, `REQ-F-056`, `REQ-F-082`), builds and budgets the 9-step `DailyPlan` (`REQ-F-039`, `REQ-F-040`, `REQ-F-055`, `REQ-F-081`, `REQ-F-092`), fires due-review and `< 24 h` deadline notifications (`REQ-F-062`, `REQ-F-094`), and exports/serves `.ics` (`REQ-F-057`, `REQ-F-093`). | `REQ-F-035`–`REQ-F-041`, `REQ-F-055`–`REQ-F-057`, `REQ-F-062`, `REQ-F-081`, `REQ-F-082`, `REQ-F-091`–`REQ-F-094`, `REQ-N-003` |
-| `P7.5` | Run Course Tutor & Compute Stats | Calls the Anthropic Claude API (`E3`) with cached module prefixes (`REQ-F-047`) for written-answer marking (`REQ-F-043`) and course-grounded tutoring (`REQ-F-045`, `REQ-F-046`, `REQ-F-088`), enforces coursework integrity (`REQ-F-051`) and spend caps/warnings/logging (`REQ-F-048`, `REQ-F-083`, `REQ-F-089`), manages tutor `Proposal` items (`REQ-F-049`) and thread deletion (`REQ-F-084`), and computes `SM-1`–`SM-6` statistics and FSRS forecasts (`REQ-F-058`, `REQ-F-065`). | `REQ-F-043`, `REQ-F-045`–`REQ-F-049`, `REQ-F-051`, `REQ-F-052`, `REQ-F-058`, `REQ-F-065`, `REQ-F-083`, `REQ-F-084`, `REQ-F-088`, `REQ-F-089` |
+| `P5.3` | Validate & Export Module JSON & Summary | Preserves deterministic item IDs against prior exports in `D6`, validates all 6 export JSON files against `A34` JSON Schemas (`REQ-N-020`), and writes the pipeline run summary report (`REQ-F-019`; also carries the Level-0 optional `R3` Anki TSV export `REQ-F-066` modelled in `UC-21`). | `REQ-F-018`, `REQ-F-019`, `REQ-N-020` |
+| `P6.1` | Parse & Route Reported Feedback JSON | Reads `feedback.json → reported` (`REQ-F-020`; extended in `R2`/`R3` by `UC-14` `REQ-F-050` and `UC-19` `REQ-F-064`) and matches reported entries against existing module records in `D3`/`D4`. | `REQ-F-020` |
+| `P6.2` | Execute Reported-Item Creator & Fresh Reviewer | Routes `reported` items (`wrong` or `unclear`) with student comments to the Card or Question Creator and a fresh independent Reviewer subagent (`REQ-F-020`; extended in `R2`/`R3` by `REQ-F-050` and `REQ-F-064`). | `REQ-F-020` |
+| `P6.3` | Merge Approved Feedback Revisions | Updates accepted replacement items in place (preserving stable IDs so app FSRS state is retained on re-import) and routes unresolved items to `D5` (`REQ-F-018`, `REQ-F-020`). | `REQ-F-018`, `REQ-F-020` |
 
 ---
 
-## 10. Data store mapping to `A16` entities and read/write verification (`G2.6`, `G2.7`)
+## 9. Data store mapping to `A16` entities and read/write verification (`G2.6`, `G2.7`)
 
 Every DFD data store (`D1`–`D9`) is both written and read across the diagram set and maps to conceptual entities in [`conceptual-data-model.md`](conceptual-data-model.md) (`A16`):
 
@@ -421,6 +369,6 @@ Every DFD data store (`D1`–`D9`) is both written and read across the diagram s
 | `D4` | `Question Drafts & Review Records` | `P3` (`P3.3`), `P4` (`P4.2`), `P6` (`P6.3`) | `P4` (`P4.1`), `P5` (`P5.1`), `P6` (`P6.1`) | `Question`, `ReviewRecord` |
 | `D5` | `Flagged Items & Module Audit` | `P2` (`P2.3`), `P3` (`P3.3`), `P4` (`P4.2`), `P5` (`P5.2`), `P6` (`P6.3`) | `P5` (`P5.1`) | `FlaggedItem`, `ModuleAudit` |
 | `D6` | `Exported Module JSON Package` | `P5` (`P5.3`) | `P5` (`P5.3`), `P6` (`P6.3`) | `Module`, `Lecture`, `Concept`, `Card`, `Question`, `GlossaryEntry`, `Deadline`, `Reading`, `PipelineRunSummary` |
-| `D7` | `Study App Content & Schedule Store` | `P7` (`P7.1`) | `P7` (`P7.4`) | `Module`, `Lecture`, `Concept`, `Card`, `Question`, `GlossaryEntry`, `Deadline`, `Milestone`, `Reading`, `Task`, `DailyPlan`, `DailyPlanItem`, `Settings`, `ImportBatch` |
-| `D8` | `FSRS State & Review History Store` | `P7` (`P7.2`) | `P7` (`P7.2`) | `CardState`, `CardReviewLog`, `ConceptState`, `QuestionAttempt` |
-| `D9` | `Tutor Threads, Proposals & Feedback Store` | `P7` (`P7.5`) | `P7` (`P7.5`) | `TutorThread`, `TutorMessage`, `Proposal`, `FeedbackItem`, `GradingCallLog` |
+| `D7` | `Study App Content & Schedule Store` | `P7` (Level-0; `UC-06`, `UC-09`, `UC-10`, `UC-16`) | `P7` (Level-0; `UC-06`–`UC-20`) | `Module`, `Lecture`, `Concept`, `Card`, `Question`, `GlossaryEntry`, `Deadline`, `Milestone`, `Reading`, `Task`, `DailyPlan`, `DailyPlanItem`, `Settings`, `ImportBatch` |
+| `D8` | `FSRS State & Review History Store` | `P7` (Level-0; `UC-07`, `UC-08`, `UC-12`, `UC-15`, `UC-20`) | `P7` (Level-0; `UC-07`, `UC-08`, `UC-10`, `UC-12`, `UC-13`, `UC-15`, `UC-17`, `UC-20`) | `CardState`, `CardReviewLog`, `ConceptState`, `QuestionAttempt` |
+| `D9` | `Tutor Threads, Proposals & Feedback Store` | `P7` (Level-0; `UC-08`, `UC-11`–`UC-14`, `UC-19`) | `P7` (Level-0; `UC-11`–`UC-14`, `UC-17`, `UC-19`) | `TutorThread`, `TutorMessage`, `Proposal`, `FeedbackItem`, `GradingCallLog` |

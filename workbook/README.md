@@ -21,7 +21,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 | :-- | :-- | :-- | :-- |
 | 0 Intake & Clarification | Complete (2026-10-21): Q-01 to Q-15 answered (Q-02 and Q-12 in part); Q-16 resolved at CP1; Q-17 answered (direct Canvas access); two of the requested documents received and skimmed | none (reviewed at G1) | — |
 | 1 Initiation, Feasibility & Tailoring | Complete (2026-10-21): Gate G1 APPROVED (r2, plus `CR-001` re-review); CP1 Approved | G1 (`reviews/G1-r1.md`, `reviews/G1-r2.md`, `reviews/G1-CR001.md`) | CP1 Approved (`checkpoints.md`) |
-| 2 Requirements Analysis & Sourcing | Complete (2026-10-21; CP2 Corrective Addendum approved 2026-10-23): Gate G2 APPROVED (`r2`–`r6`); CP2 Approved | G2 (`reviews/G2-r1.md` .. `reviews/G2-r6.md`) | CP2 Approved (`checkpoints.md`) |
+| 2 Requirements Analysis & Sourcing | Complete (2026-10-21; CP2 Corrective Addendum approved 2026-10-23): Gate G2 APPROVED (`r2`–`r7`); CP2 Approved | G2 (`reviews/G2-r1.md` .. `reviews/G2-r7.md`) | CP2 Approved (`checkpoints.md`) |
 | 3 Architecture & Design | Not started | G3 | CP3 (ADVISORY) |
 | 4 Slice loop | Not started | G4 per slice | — |
 | 5 Release Readiness | Not started | G5 | CP4 |
@@ -29,7 +29,7 @@ The single source of truth for planning (and possibly building) the Study App, f
 
 - **Current baseline:** `A01`, `A02`, `A03`, `A04`, `A05` (with `wbs.csv`), `A06` (with `schedule_calc.py`), `A07` (approved at CP1, 2026-10-21; updated via `CR-001`, `CR-002` approved at CP2, 2026-10-23, and `CR-003` carried to CP3); `A09` (with `02-analysis/sources/`), `A10` (with `requirements.csv`), `A11`, `A12`, `A13`, `A14`, `A15`, `A16`, `A17`, `A18` (with `data-dictionary.csv`), `A19` (with `acceptance-scenarios.csv`), `A20`, `A22`, and `traceability-matrix.md` (with `traceability-matrix.csv`) (approved at CP2, 2026-10-21; CP2 Corrective Addendum approved 2026-10-23; updated via `CR-003` carried to CP3).
 - **Pending checkpoint:** none. The next is CP3 (ADVISORY), after Gate G3.
-- **Carried to CP3:** the architecture (`A31`), key ADRs (`A30`, including stack adoption resolving `ASM-066`, SQLite data store, Claude Code pipeline runtime with `ASM-058` validation, Canvas access method, and `R3` hosting provider resolving `ASM-028` and `ASM-060`), `CR-003`, the slice order (`A40`, updating `A05`/`A06` through a CR if needed), and the review scope (`A39`) with any accepted risks in `A03`.
+- **Carried to CP3:** the architecture (`A31`), key ADRs (`A30`, including stack adoption resolving `ASM-066`, SQLite data store, Claude Code pipeline runtime with `ASM-058` validation, Canvas access method resolving `ASM-048`, and `R3` hosting provider resolving `ASM-028` and `ASM-060`), open assumptions needing confirmation or Stage 3/4 resolution (`ASM-044` [`H`/`L`, subscription usage per lecture measured in `SL-01`], `ASM-048` [`M`/`L`, HKUST Canvas automated-access terms checked before `SL-03`], `ASM-058` [`H`/`M`, listed under *"Assumptions that need your confirmation"* at CP3 with an explicit disclosure that `CR-003` lowered its confidence from `H`/`confirmed` in the CP2 addendum back to `M`/`open` pending pre-`SL-01` clause verification], `ASM-059`, `ASM-060`, and `ASM-066`), `CR-003`, the slice order (`A40`, updating `A05`/`A06` through a CR if needed), and the review scope (`A39`) with any accepted risks in `A03`.
 - **Branch:** `stage-2/requirements` (branched from `main`).
 
 ## Seed intake (Stage 0 step 1)

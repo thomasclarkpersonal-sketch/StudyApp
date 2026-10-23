@@ -4,6 +4,8 @@ Protocol §5.4 and R5. Approved and baselined at CP2 (2026-10-21; CP2 corrective
 
 The full 89-row table is also stored in [`traceability-matrix.csv`](traceability-matrix.csv) beside this file and split into three sections of <= 43 rows below (protocol §5.3). Concrete Stage 3 table names (`A32`/`A33`), API `operationId`s (`A34`), screen IDs (`SCR-nn`, `A35`), report IDs (`RPT-nn`, `A41`), and test case IDs (`TC-nn`, `A39`) are refined in Stage 3.
 
+**All-clauses verification rule (`A10.1` departure, `A04 §5`, `CR-003`):** Where a cohesive `REQ-F` statement in `A10` spans coupled sub-behaviours (such as `REQ-F-002` read-only Canvas sync `AT-003` and local-folder fallback `AT-030`, `REQ-F-009` Reviewer context isolation + Pass 1 + Pass 2 `AT-001, AT-024, AT-051..057`, or `REQ-F-010` 2-revision-round cap + verdict routing `AT-001, AT-024, AT-025, AT-051..058`), each sub-behaviour is traced to its atomic `BR-nnn` rules (`A17`) and separate `AT-nnn` scenarios (`A19`) in the `BR` and `AT / TC` columns below. A requirement's `Status` may be marked `Verified` at Gate `G4` or `G5` only when **100%** of its linked in-release `AT-nnn` scenarios and `TC-*` tests pass; if any sub-clause is unverified or deferred, the requirement cannot be marked `Verified`. Any `CR-nnn` affecting a multi-clause requirement identifies the specific `BR-nnn` and `AT-nnn` sub-clauses impacted.
+
 ---
 
 ## 1. Functional requirements — Generation pipeline (`REQ-F-001`–`REQ-F-020`, `050`, `064`, `066` — 23 rows)

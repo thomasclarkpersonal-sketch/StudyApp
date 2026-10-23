@@ -296,6 +296,7 @@ classDiagram
     +string grading_model
     +string tutor_model
     +decimal monthly_spend_cap_usd
+    +string monthly_spend_cap_mode
     +string fsrs_weights_json
     +string token_rates_json
     +currentMonthSpendUsd() decimal
@@ -416,7 +417,7 @@ classDiagram
 
 ## 3. Entity catalog, candidate keys, and special attributes (`A16`)
 
-All 262 attributes across `E01`–`E28` are defined in [`glossary.md`](glossary.md) (`A18`) and [`data-dictionary.csv`](data-dictionary.csv). The table below records each entity's primary/candidate keys, DFD data store mapping (`G2.7`), and composite, multivalued, or derived attributes:
+All 263 attributes across `E01`–`E28` are defined in [`glossary.md`](glossary.md) (`A18`) and [`data-dictionary.csv`](data-dictionary.csv). The table below records each entity's primary/candidate keys, DFD data store mapping (`G2.7`), and composite, multivalued, or derived attributes:
 
 | ID | Entity | Candidate / primary key(s) | DFD stores (`A12`) | Composite, multivalued & derived attributes (with derivation rules) |
 | :-- | :-- | :-- | :-- | :-- |

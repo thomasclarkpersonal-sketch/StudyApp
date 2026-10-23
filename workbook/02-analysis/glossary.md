@@ -77,7 +77,7 @@ The complete attribute dictionary is also stored in [`data-dictionary.csv`](data
 
 ## 4. Data dictionary — Study App & Pipeline entities (`A16`, `A18.1`)
 
-Type classes (catalog `A18`): `identifier`, `text`, `number`, `money`, `date-time`, `enumeration`, `boolean`. Every entity and attribute below matches [`conceptual-data-model.md`](conceptual-data-model.md) (`A16`) and [`data-dictionary.csv`](data-dictionary.csv) one-for-one (`262` attributes across 28 entities, split into sub-tables of ≤ 45 rows per protocol §5.3). Composite and multivalued attributes are normalised into 3NF relations in `A32` (Stage 3).
+Type classes (catalog `A18`): `identifier`, `text`, `number`, `money`, `date-time`, `enumeration`, `boolean`. Every entity and attribute below matches [`conceptual-data-model.md`](conceptual-data-model.md) (`A16`) and [`data-dictionary.csv`](data-dictionary.csv) one-for-one (`263` attributes across 28 entities, split into sub-tables of ≤ 47 rows per protocol §5.3). Composite and multivalued attributes are normalised into 3NF relations in `A32` (Stage 3).
 
 ### 4.1 Curriculum and concepts (`Module`, `Lecture`, `Concept`, `ConceptState`)
 
@@ -308,6 +308,7 @@ Type classes (catalog `A18`): `identifier`, `text`, `number`, `money`, `date-tim
 | `Settings` | `grading_model` | Claude model ID used for marking written answers. | `text` | Model identifier string | `[DOC study-app-spec.md §4, §5]` |
 | `Settings` | `tutor_model` | Claude model ID used for the tutor chat. | `text` | Model identifier string | `[DOC study-app-spec.md §4, §5]` |
 | `Settings` | `monthly_spend_cap_usd` | Optional monthly Claude API spend cap in USD (`null` = no cap, `[USER Q-06]`). | `money` | Exact decimal `> 0.00` (USD) or `null` | `[SEED §7 Misuse]`, `[USER Q-06]`, `[DOC study-app-spec.md §5]` |
+| `Settings` | `monthly_spend_cap_mode` | Action when cumulative current-month Claude API spend reaches `monthly_spend_cap_usd` (`warn` displays a spend-cap warning and allows the call; `block` blocks the API call and falls back to self-marking for quizzes). | `enumeration` | `warn` \| `block` (default `warn`) | `[SEED §1]`, `[SEED §7 Misuse]`, `[USER Q-06]`, `BR-041` |
 | `Settings` | `fsrs_weights_json` | Custom fitted `ts-fsrs` weight vector JSON (`null` until fitted in `UC-20`). | `text` | JSON array of 17/19 floats or `null` | `[SEED §3 story 19]`, `[DOC study-app-spec.md §4, §7]` |
 | `Settings` | `token_rates_json` | Per-million-token input/output/cache prices per model for computing `SM-6` **(Proposal for CP2)**. | `money` | JSON map of exact decimal USD rates per 1M tokens | `A01 §3 SM-6`, `DEC-012` **(Proposal for CP2)** |
 

@@ -1,6 +1,6 @@
 # A11 · Context Diagram
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A11. Approved and baselined at CP2 (2026-10-21).
+Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A11. Approved and baselined at CP2 (2026-10-21; updated via `CR-003`).
 
 This diagram shows the **Study App & Generation Pipeline** as a single process (`P0`) together with every external entity (`E1`–`E6`) and every data flow crossing the system boundary. No data stores appear at context level (`A11`). Every boundary flow on this diagram balances one-for-one with the net external inputs and outputs of the Level-0 Data Flow Diagram in [`dfd.md`](dfd.md) (`A12`, `G2.5`, `G2.6`).
 
@@ -59,9 +59,9 @@ flowchart LR
 | :-- | :-- | :-- | :-- |
 | `E1` | `Student` | Single primary human actor (`[SEED §2]`): runs the pipeline, reviews flagged/spot-checked items, imports module files, completes daily reviews/quizzes/readings, manages deadlines, uses the tutor, and exports feedback. | Source & Sink |
 | `E2` | `Claude Code Runtime` | External agentic CLI host (`[SEED §5]`, `[USER Q-05]`, `[USER Q-15]`, `ASM-058`, `REQ-N-022`): executes the Extractor, Card Creator, Card Reviewer, Question Creator, Question Reviewer, and Module Auditor subagents during interactive pipeline runs. | Source & Sink |
-| `E3` | `Anthropic Claude API` | External HTTPS API (`[SEED §5]`): invoked by the local/hosted study app backend in `R2`–`R3` for written-answer marking (`REQ-F-043`) and course-grounded tutoring (`REQ-F-045`–`REQ-F-048`) with prompt caching. | Source & Sink |
+| `E3` | `Anthropic Claude API` | External HTTPS API (`[SEED §5]`): invoked by the local/hosted study app backend in `R2`–`R3` for written-answer marking (`REQ-F-043`) and course-grounded tutoring (`REQ-F-045`–`REQ-F-048`, `REQ-F-088`, `REQ-F-089`) with prompt caching. | Source & Sink |
 | `E4` | `HKUST Canvas` | External university LMS (`[USER Q-17]`, `DEC-009`, `REQ-F-002`): read in read-only mode by the pipeline to fetch the student's course files, syllabi, pages, announcements, and assignments. | Source & Sink |
-| `E5` | `Calendar Application` | External calendar client (`[SEED §5]`, `REQ-F-057`): subscribes to or imports the `.ics` deadline and milestone feed (`GET /calendar.ics`). | Sink |
+| `E5` | `Calendar Application` | External calendar client (`[SEED §5]`, `REQ-F-057`, `REQ-F-093`): subscribes to or imports the `.ics` deadline and milestone feed (`GET /calendar.ics`). | Sink |
 | `E6` | `Anki` | External spaced-repetition client (`[SEED §5]`, `[SEED §11]`, `REQ-F-066`): receives the one-way `deck.anki.tsv` flashcard export in `R3`. | Sink |
 
 ### Excluded actors (`A11` acceptance check)
@@ -96,10 +96,10 @@ Every flow below is a noun phrase (`A11`, `A12`) and maps to an exact Level-0 pr
 | `CF-16` | `E1` | `P0` | `feedback JSON for re-run` | `P6` | `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
 | `CF-17` | `P0` | `E2` | `feedback re-review and top-up subagent prompts` | `P6` | `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
 | `CF-18` | `E2` | `P0` | `revised feedback items and top-up variants` | `P6` | `REQ-F-020`, `REQ-F-050`, `REQ-F-064` |
-| `CF-19` | `E1` | `P0` | `pipeline export files for import` | `P7` | `REQ-F-021`–`REQ-F-023`, `REQ-F-076` |
-| `CF-20` | `E1` | `P0` | `study actions, ratings, quiz answers, and tutor prompts` | `P7` | `REQ-F-024`–`REQ-F-065`, `REQ-F-077`–`REQ-F-085` |
-| `CF-21` | `P0` | `E1` | `daily plan, cards, quizzes, feedback, tutor responses, and stats` | `P7` | `REQ-F-024`–`REQ-F-065`, `REQ-F-077`–`REQ-F-085` |
+| `CF-19` | `E1` | `P0` | `pipeline export files for import` | `P7` | `REQ-F-021`–`REQ-F-023`, `REQ-F-076`, `REQ-F-086` |
+| `CF-20` | `E1` | `P0` | `study actions, ratings, quiz answers, and tutor prompts` | `P7` | `REQ-F-024`–`REQ-F-065`, `REQ-F-077`–`REQ-F-094` |
+| `CF-21` | `P0` | `E1` | `daily plan, cards, quizzes, feedback, tutor responses, and stats` | `P7` | `REQ-F-024`–`REQ-F-065`, `REQ-F-077`–`REQ-F-094` |
 | `CF-22` | `P0` | `E1` | `exported feedback JSON` | `P7` | `REQ-F-042`, `REQ-F-063`, `REQ-F-085` |
-| `CF-23` | `P0` | `E3` | `grading and tutor requests with cached module prefix` | `P7` | `REQ-F-043`, `REQ-F-045`–`REQ-F-048`, `REQ-F-083` |
-| `CF-24` | `E3` | `P0` | `marking results, streamed tutor responses, and token usage` | `P7` | `REQ-F-043`, `REQ-F-045`–`REQ-F-048`, `REQ-F-083` |
-| `CF-25` | `P0` | `E5` | `iCalendar deadline and milestone feed` | `P7` | `REQ-F-057` |
+| `CF-23` | `P0` | `E3` | `grading and tutor requests with cached module prefix` | `P7` | `REQ-F-043`, `REQ-F-045`–`REQ-F-048`, `REQ-F-083`, `REQ-F-088`, `REQ-F-089` |
+| `CF-24` | `E3` | `P0` | `marking results, streamed tutor responses, and token usage` | `P7` | `REQ-F-043`, `REQ-F-045`–`REQ-F-048`, `REQ-F-083`, `REQ-F-088`, `REQ-F-089` |
+| `CF-25` | `P0` | `E5` | `iCalendar deadline and milestone feed` | `P7` | `REQ-F-057`, `REQ-F-093` |

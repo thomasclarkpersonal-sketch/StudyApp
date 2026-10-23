@@ -1,10 +1,10 @@
 # A14 · Activity / BPMN Workflow Diagrams
 
-Owner: Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A14. Approved and baselined at CP2 (2026-10-21).
+Owner: Systems Analyst. Stage 2, written 2026-10-21; updated 2026-10-24 via `CR-003` (`REQ-F-086`–`REQ-F-088` and `Settings.monthly_spend_cap_mode` alignment). Catalog entry: A14. Approved and baselined at CP2 (2026-10-21).
 
 This document models the two cross-actor workflows with hand-offs, waiting states, and parallel execution (`A04`):
 1. **`WF-01` · Module Generation Pipeline & Independent Reviewer Loop** (`UC-01`–`UC-05`, `REQ-F-001`–`REQ-F-019`, `REQ-F-067`–`REQ-F-075`)
-2. **`WF-02` · Daily Study, Written-Answer Marking, Feedback Export & Re-Import Cycle** (`UC-06`–`UC-14`, `UC-19`, `REQ-F-020`–`REQ-F-050`, `REQ-F-063`, `REQ-F-064`, `REQ-F-076`–`REQ-F-085`)
+2. **`WF-02` · Daily Study, Written-Answer Marking, Feedback Export & Re-Import Cycle** (`UC-06`–`UC-14`, `UC-19`, `REQ-F-020`–`REQ-F-050`, `REQ-F-063`, `REQ-F-064`, `REQ-F-076`–`REQ-F-088`)
 
 Every diagram satisfies `A14` acceptance checks:
 - **Swimlanes:** Each participant has a dedicated `subgraph` swimlane.
@@ -141,7 +141,7 @@ flowchart TD
 
   subgraph Lane_ClaudeAPI ["Swimlane 3 · Anthropic Claude API (E3)"]
     ACT_CLAUDE_GRADE["Mark Written Answer with Cached Module Glossary & Slides Prefix"]
-    GW_API_OK{"XOR: API Response Within 10s & Spend Under Cap?"}
+    GW_API_OK{"XOR: API Response Within 10s & Spend Not Blocked?"}
   end
 
   subgraph Lane_PipeFB ["Swimlane 4 · Generation Pipeline Feedback Re-Run (P6)"]
@@ -173,8 +173,8 @@ flowchart TD
   GW_Q_TYPE -->|Written Claude marking (R2+)| ACT_CLAUDE_GRADE
 
   ACT_CLAUDE_GRADE --> GW_API_OK
-  GW_API_OK -->|Success within 10s| ACT_FSRS_CONCEPT
-  GW_API_OK -->|Timeout, error, or spend cap reached| ACT_SELF_MARK
+  GW_API_OK -->|Success within 10s (under cap or warn mode)| ACT_FSRS_CONCEPT
+  GW_API_OK -->|Timeout, error, or spend cap blocked| ACT_SELF_MARK
 
   ACT_AUTO_MCQ --> ACT_FSRS_CONCEPT
   ACT_SELF_MARK --> ACT_FSRS_CONCEPT

@@ -3,9 +3,9 @@
 Owner: QA & Test Engineer / Systems Analyst. Stage 2, written 2026-10-21. Catalog entry: A19. Approved and baselined at CP2 (2026-10-21; CP2 corrective addendum approved 2026-10-23; updated via `CR-003`).
 
 This document specifies the **141 Given / When / Then acceptance scenarios (`AT-001`–`AT-141`)** verifying the **Study App & Generation Pipeline**.
-- **Complete UC coverage (`G2.3`, `A19.1`):** Every Use Case main success scenario (`UC-01`–`UC-21`, `AT-001`–`AT-021`) and every Use Case extension (47 extensions across `UC-01`–`UC-21`, `AT-022`–`AT-050`, `AT-099`–`AT-114`, `AT-138`–`AT-141`) has a dedicated scenario.
+- **Complete UC coverage (`G2.3`, `A19.1`):** Every Use Case main success scenario (`UC-01`–`UC-21`, `AT-001`–`AT-021`) and every Use Case extension (47 extensions across `UC-01`–`UC-21`, `AT-022`–`AT-050`, `AT-099`–`AT-114`, `AT-138`–`AT-139`) has a dedicated scenario.
 - **Complete Decision Table rule coverage (`G2.4`, `A19.1`):** Every complete rule before reduction (`DT-01-C1`..`C8` through `DT-06-C1`..`C8`, 48 rules total) has a dedicated scenario (`AT-051`–`AT-098`).
-- **Complete Requirement & Metric coverage (`G2.1`, `G2.15`, `A19.3`):** Every atomic functional requirement (`REQ-F-001`–`REQ-F-094`), every non-functional requirement (`REQ-N-001`–`REQ-N-023`, `AT-115`–`AT-137`), and every `A01` success metric (`SM-1`–`SM-6`) traces to one or more scenarios.
+- **Complete Requirement & Metric coverage (`G2.1`, `G2.15`, `A19.3`):** Every atomic functional requirement (`REQ-F-001`–`REQ-F-094`, including default `'block'` spend-cap mode `AT-140` and `Settings.timezone` calendar-month boundary `AT-141` for `REQ-F-048`/`REQ-F-058`), every non-functional requirement (`REQ-N-001`–`REQ-N-023`, `AT-115`–`AT-137`), and every `A01` success metric (`SM-1`–`SM-6`) traces to one or more scenarios.
 - **Observable outputs (`A19.2`):** Every `Then` clause specifies an observable UI screen state, CLI output, exported file, report, or HTTP response payload rather than internal database inspection alone.
 - **CSV companion (protocol §5.3):** The full 141-row table is stored in [`acceptance-scenarios.csv`](acceptance-scenarios.csv) beside this file, and split into 6 sections of ≤ 29 rows below.
 
@@ -137,7 +137,7 @@ This document specifies the **141 Given / When / Then acceptance scenarios (`AT-
 
 ---
 
-## 5. Remaining UC extensions (`AT-099`–`AT-114`, `AT-138`–`AT-141` — 20 rows)
+## 5. Remaining UC extensions and spend-cap boundary scenarios (`AT-099`–`AT-114`, `AT-138`–`AT-141` — 20 rows)
 
 | ID | UC trace | DT rule (`G2.4`) | REQ trace | Given | When | Then (observable output, `A19.2`) |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |

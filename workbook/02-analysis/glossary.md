@@ -295,7 +295,7 @@ Type classes (catalog `A18`): `identifier`, `text`, `number`, `money`, `date-tim
 | `FeedbackItem` | `comment` | Student's explanation of what is wrong/unclear or top-up note. | `text` | `0..2000` chars | `[DOC flashcard-pipeline.md §10]`, `[DOC study-app-spec.md §2]` |
 | `FeedbackItem` | `created_at` | UTC timestamp when the feedback item was queued. | `date-time` | ISO-8601 UTC timestamp | `[DOC study-app-spec.md §2]` |
 | `FeedbackItem` | `exported` | Whether the item has been exported in `feedback.json`. | `boolean` | `true` \| `false` (default `false`) | `[DOC study-app-spec.md §2]` |
-| `Settings` | `id` | Singleton settings row identifier (`1`). | `identifier` | Constant `1` | `[DOC study-app-spec.md §2]` |
+| `Settings` | `id` | Singleton settings row identifier (`'default'`). | `identifier` | Constant `'default'` | `[DOC study-app-spec.md §2]`, `A32`, `A33` |
 | `Settings` | `daily_budget_min` | Global daily study time budget in minutes. | `number` | Integer `15..720` (default `120`) | `[DOC study-app-spec.md §1.4, §2]` |
 | `Settings` | `new_cards_per_day` | Default daily new-card limit per module. | `number` | Integer `0..500` (default `20`) | `[DOC study-app-spec.md §1.1, §2]` |
 | `Settings` | `review_cards_per_day` | Default daily due-review card limit per module. | `number` | Integer `1..2000` (default `200`) | `[DOC study-app-spec.md §1.1, §2]` |
@@ -309,7 +309,7 @@ Type classes (catalog `A18`): `identifier`, `text`, `number`, `money`, `date-tim
 | `Settings` | `tutor_model` | Claude model ID used for the tutor chat. | `text` | Model identifier string | `[DOC study-app-spec.md §4, §5]` |
 | `Settings` | `monthly_spend_cap_usd` | Optional monthly Claude API spend cap in USD (`null` = no cap, `[USER Q-06]`), evaluated over the calendar month in `Settings.timezone` (default `Asia/Hong_Kong` per `ASM-022`, `ASM-067`). | `money` | Exact decimal `> 0.00` (USD) or `null` | `[SEED §7 Misuse]`, `[USER Q-06]`, `[DOC study-app-spec.md §5]`, `ASM-022`, `ASM-067` |
 | `Settings` | `monthly_spend_cap_mode` | Action when cumulative current-month Claude API spend (bounded in `Settings.timezone`, default `Asia/Hong_Kong` per `ASM-022`) reaches `monthly_spend_cap_usd` (`block` [default per `ASM-067`] blocks the API call and falls back to self-marking for quizzes, preserving `RSK-008`; `warn` [opt-in per `ASM-067`] displays a spend-cap warning and allows the call). | `enumeration` | `block` \| `warn` (default `block`) | `[SEED §1]`, `[SEED §7 Misuse]`, `[DOC study-app-spec.md §1.5]`, `[USER Q-06]`, `ASM-022`, `ASM-067`, `RSK-008`, `BR-041` |
-| `Settings` | `fsrs_weights_json` | Custom fitted `ts-fsrs` weight vector JSON (`null` until fitted in `UC-20`). | `text` | JSON array of 17/19 floats or `null` | `[SEED §3 story 19]`, `[DOC study-app-spec.md §4, §7]` |
+| `Settings` | `fsrs_weights_json` | Custom fitted `ts-fsrs` v5 weight vector JSON (`21`-weight FSRS-6 vector, or `17`/`19`-weight legacy vector migrated by `ts-fsrs`; `null` until fitted in `UC-20`). | `text` | JSON array of 17/19/21 floats or `null` | `[SEED §3 story 19]`, `[DOC study-app-spec.md §4, §7]`, `ASM-066` |
 | `Settings` | `token_rates_json` | Per-million-token input/output/cache prices per model for computing `SM-6` **(Proposal for CP2)**. | `money` | JSON map of exact decimal USD rates per 1M tokens | `A01 §3 SM-6`, `DEC-012` **(Proposal for CP2)** |
 
 ### 4.7 Import/marking logs and pipeline configuration (`ImportBatch`, `GradingCallLog`, `PipelineConfig`)

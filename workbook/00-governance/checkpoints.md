@@ -156,3 +156,52 @@ Full detail: workbook/README.md
 ```text
 approve
 ```
+
+---
+
+## CP3 — Design Baseline (2026-10-21, ADVISORY)
+
+Status: **Original CP3 (`2026-10-21`) Approved** `[USER CP3]`; post-rebase `CR-003` and `CR-004` alignment ready for **Gate G3-r3** review (after which the `CP3 Corrective Addendum` will be recorded). Baseline set at `2026-10-21` `CP3`: `A30` (`ADR-001`–`ADR-007`), `A31`, `A32`, `A33` (with `schema.sql`), `A34` (with `openapi.yaml` and `schemas/pipeline-contracts.schema.json`), `A35`, `A36`, `A37`, `A38`, `A39` (with `test-cases.csv`), `A40`, `A41`, `A42`.
+
+```text
+HUMAN CHECKPOINT CP3 — Design Baseline
+Decision needed: Approve | Approve with changes | Reject (ADVISORY — continuing on stated assumptions unless you request changes)
+
+Summary
+- Produced and reviewed all Stage 3 architecture and design artifacts (A30–A42, plus CR-001 updates to A03 and traceability-matrix.md/.csv) on branch stage-3/design; Gate G3 passed at r2 (48 PASS / 0 FAIL / 0 N/A, workbook/00-governance/reviews/G3-r2.md) after resolving all 12 G3-r1 findings and all observations (workbook/00-governance/dispositions.md).
+- Architecture Decision Records (A30, workbook/03-design/adr/README.md, ADR-001–ADR-007, DEC-016–DEC-022): adopted TypeScript 5.6 + React 18 + Vite 5 + Tailwind CSS + Hono 4 on Node.js 22 LTS + ts-fsrs v5 + better-sqlite3 + KaTeX + marked + DOMPurify + Ajv + @anthropic-ai/sdk + Vitest + Playwright (ADR-001); SQLite 3 WAL mode + external non-git JSON workspace (ADR-002); 3-tier modular monolith with single-location rule enforcement and justified DB/UI backstops (ADR-003); Claude Code subagents + deterministic pipeline-cli context isolation (ADR-004); allowlisted read-only HKUST Canvas REST sync + local PDF/LaTeXiT fallback (ADR-005); localhost bypass in R1–R2 and Fly.io Hong Kong (hkg) container with Argon2id owner auth in R3 (ADR-006); and 3NF relational normalization with 5 justified JSON columns (ADR-007).
+- Architecture Overview (A31, workbook/03-design/architecture.md): 12 modules (M01–M08 in the study app, M09–M12 in the generation pipeline) with an acyclic dependency DAG (ARCH-01), sequence diagrams across UC-01–UC-21, single-module assignment for all 45 business rules (BR-001–BR-045) and 6 decision tables (DR-01–DR-06 / DT-01–DT-06) (ARCH-02), and 4 automated architectural fitness tests (ARCH-01–ARCH-04).
+- Logical & Physical Data Design (A32, A33, workbook/03-design/db/logical-model.md, physical-design.md & schema.sql): 34 3NF SQLite STRICT tables (R01–R34), 3 derived read views (V01–V03), and 15 secondary indexes (IDX-01–IDX-15) verified in live SQLite 3 execution with explicit ON DELETE rules, full A18 attribute/CHECK parity, and verified online VACUUM INTO backups before every import and restore.
+- Interface Contracts (A34, workbook/03-design/api/interfaces.md, openapi.yaml & schemas/pipeline-contracts.schema.json): 38 REST/SSE operations across 36 paths in OpenAPI 3.1.0 with RFC 9457 ProblemDetails error envelopes, 7 deterministic CLI commands (CLI-01–CLI-07), 5 external/file contracts (INT-01–INT-05), and 20 JSON Schema Draft 2020-12 definitions covering all 6 module export files, feedback.json, and workspace files (E23–E27).
+- UI & Dialogue Design and Reports (A35, A41, workbook/03-design/ui.md & reports.md): 11 screens (SCR-01–SCR-11) with full dialogue navigation graph, wireframes, 28 input validation rules (FLD-01–FLD-28), Anki keyboard shortcuts (Space, 1–4, r, f, s, e, a, Esc), WCAG 2.2 AA contrast and non-colour urgency badges; plus 9 operational/analytical reports and exports (RPT-01–RPT-09).
+- Security, Privacy & Observability (A36, A37, A38, workbook/03-design/security.md, privacy.md & observability.md): STRIDE threat model across all 5 trust boundaries (TB-01–TB-05) and full 38×4 + 7×4 authorization matrix; attribute-level privacy data map with zero IP storage, zero staff PII, and Anthropic-only course material transmission; and 9 SLOs (SLO-01–SLO-09), redacted NDJSON logging, 5 metrics (MET-01–MET-05), and 6 alerts (ALT-01–ALT-06).
+- Test Design & Data/Model Quality Plan (A39, A42, workbook/03-design/test-design.md, test-cases.csv & data-model-quality.md): 286 Integration and System test cases (TC-I-001–TC-I-255, TC-I-N10/12/17/20, TC-S-001–TC-S-027) with 100% coverage of operations, FLD rules, DT rules, REQ-Fs, and REQ-Ns; end-to-end lineage matrix, 15 automated data-quality rules (DQR-01–DQR-15) with Halt/Quarantine/Alert actions, 9 AI/model component specs (AI-01–AI-09), and 6 held-out evaluation datasets (EVAL-01–EVAL-06) with numeric thresholds.
+- Slice Plan (A40, workbook/03-design/slice-plan.md): 21 vertical slices (SL-01–SL-21) ordered risk-first (starting with SL-01-walking-skeleton across slide/LaTeXiT extraction -> Card Creator -> isolated Card Reviewer -> SQLite WAL import -> FSRS review UI), confirming the A05 WBS (CR-001) and assigning all 286 test cases.
+
+Assumptions that need your confirmation (high impact, low or medium confidence, or marked for this checkpoint)
+- ASM-028 & ASM-060 (resolved by ADR-006 / DEC-021 for R3): When R3 adds remote phone access, deploying a single Docker container with a 1 GB persistent volume on Fly.io (Hong Kong region, ~$2.10–$5.00/mo, or Tailscale Serve at $0/mo) is acceptable — if wrong: we can target another host or keep Tailscale-only in R3.
+- ASM-044 (H/L, carried to SL-01): Your Claude subscription's rolling and weekly limits sustain single-lecture and batch processing in Claude Code — empirically tested in SL-01 (`TC-S-006`).
+- ASM-046 (H/M, carried to SL-01): 150 DPI slide PNGs + extracted text + recovered LaTeXiT equations give Creators and Reviewers sufficient fidelity on visual/math slides — empirically tested in SL-01 (`TC-S-016`).
+
+Questions and observations raised since the last checkpoint
+- None open (all 12 G3-r1 findings and 4 G3-r1/r2 observations resolved in workbook/00-governance/dispositions.md).
+
+Changes to baselined artifacts since the last checkpoint
+- CR-001 (workbook/00-governance/assumptions-decisions.md): Added accepted out-of-scope failure-class risks RSK-023 and RSK-024 to A03 (risk-register.md), confirmed A05 WBS slices SL-01–SL-21 unchanged, and populated Stage 3 design and test columns in traceability-matrix.md/.csv.
+
+Risks you are being asked to accept
+- RSK-023 (L/M, A03 & A39 §4.2): Out-of-band manual editing or corruption of study.db or pipeline export JSON files outside the app/CLI — mitigation: SQLite application_id header check, PRAGMA quick_check on startup, Ajv schema gate on import, and automatic pre-import VACUUM INTO backups.
+- RSK-024 (L/H, A03 & A39 §4.2): Local OS user-account compromise or malware on the student's laptop in R1–R2 — mitigation: bind server strictly to 127.0.0.1, chmod 0600 on study.db and .env, and never expose API keys to browser or git.
+- Operational/external residual risks already in A03 (`A39 §4.2`): RSK-004 (Claude subscription rolling/weekly rate limits -> pause/resume per lecture), RSK-014 (Canvas token revocation/rate-limit -> automatic fallback to local files), and RSK-008 (student sharing the R3 owner password -> Argon2id + 30-day revocable sessions).
+
+On approval, these artifacts become the baseline: A30 (ADR-001–ADR-007), A31, A32, A33 (with schema.sql), A34 (with openapi.yaml and pipeline-contracts.schema.json), A35, A36, A37, A38, A39 (with test-cases.csv), A40, A41, A42, plus CR-001 updates to A03 and traceability-matrix.md/.csv
+Full detail: workbook/README.md
+```
+
+### User reply (verbatim, 2026-10-21)
+
+```text
+Approve
+```
+
+

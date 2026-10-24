@@ -4,8 +4,8 @@
 - **Stage:** Stage 3 — Architecture & Design
 - **Date:** `2026-10-21`
 - **Status:** Accepted
-- **Deciders:** System Architect (confirmed via `DEC-014` at `CP2`)
-- **Drivers:** `[SEED §8]`, `DEC-014` (`A22 §5`), `ASM-005`, `REQ-F-023`–`034`, `REQ-F-043`–`048`, `REQ-F-057`, `REQ-F-060`, `REQ-N-001`–`005`, `REQ-N-010`, `REQ-N-018`–`021`, `RSK-003`
+- **Deciders:** System Architect (confirmed via `DEC-015` at `CP2` and `DEC-017` at `CP3`)
+- **Drivers:** `[SEED §8]`, `DEC-015` (`A22 §5`), `DEC-017`, `ASM-005`, `ASM-066`, `REQ-F-023`–`034`, `REQ-F-043`–`048`, `REQ-F-057`, `REQ-F-060`, `REQ-N-001`–`005`, `REQ-N-010`, `REQ-N-018`–`021`, `RSK-003`
 
 ---
 
@@ -27,8 +27,8 @@ We adopt an end-to-end **TypeScript 5.x (strict mode)** stack running on **Node.
 1. **Frontend (`packages/web`):** **React 18** + **Vite 5** + **Tailwind CSS 3**, with **Workbox** (`vite-plugin-pwa`) for `R3` offline Service Worker caching and IndexedDB offline mutation queueing (`idb`).
 2. **Backend HTTP Server (`packages/server`):** **Hono** (running on `@hono/node-server` in Node.js 22 LTS), providing lightweight, strictly typed REST + Server-Sent Events (SSE) endpoints and serving the static React build in `R3`.
 3. **Shared Contracts & Domain Types (`packages/shared`):** Shared TypeScript interfaces, **Ajv v8** (JSON Schema Draft 2020-12) validators, and RFC 9457 `ProblemDetails` error models used by both the pipeline CLI, backend server, and frontend.
-4. **Core Reusable Libraries (`DEC-014`, `A22 §5`):**
-   - `ts-fsrs` (`v4.x`): sole scheduling engine for both `CardState` and `ConceptState` (`REQ-N-010`, `BR-024`, `BR-032`).
+4. **Core Reusable Libraries (`DEC-015`, `A22 §5`):**
+   - `ts-fsrs` (`v4.x`/`v5.x`): sole scheduling engine for both `CardState` and `ConceptState` (`REQ-N-010`, `BR-024`, `BR-032`).
    - `better-sqlite3`: synchronous, low-overhead C++ SQLite binding for Node.js (`ADR-002`).
    - `katex` + `marked` + `dompurify`: client-side LaTeX and sanitised Markdown rendering (`REQ-F-024`, `REQ-N-014`).
    - `@anthropic-ai/sdk`: server-side Claude API client with prompt caching (`cache_control: { type: "ephemeral" }`) and SSE streaming for `R2` written-answer marking and the grounded tutor (`REQ-F-043`–`048`).

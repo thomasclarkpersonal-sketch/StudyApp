@@ -18,15 +18,15 @@ Per `A04 §3` (`DEC-002`), the generation pipeline runs interactively in Claude 
 | `SCR-02` | **Flashcard Review Session** | `/review` | Keyboard-first (`Space`, `1`–`4`, `r`, `f`, `e`, `a`) flashcard review with LaTeX (`KaTeX`) and code rendering, FSRS interval previews, inline card edit/suspend/flag, one-keystroke problem report (`wrong`/`unclear`), and `"Ask Claude"` drawer trigger. | `UC-07`, `UC-11`, `UC-13` | `REQ-F-023`–`027`, `REQ-F-042`, `REQ-F-045`, `REQ-N-001`, `REQ-N-002`, `REQ-N-019` | `R1` |
 | `SCR-03` | **Daily Concept Quiz & Written Marking** | `/quiz` | Serves due concept questions (`DT-03`: MCQ, short answer, calculation, explain, scenario, compare, essay plan), grades MCQ automatically and written answers via self-marking (`R1`) or Claude API (`R2`, `REQ-F-043`), allows rating override (`REQ-F-044`), and offers immediate linked-card drill on `Again (1)` (`REQ-F-034`). | `UC-08`, `UC-11`, `UC-12`, `UC-13`, `UC-18` | `REQ-F-028`–`034`, `REQ-F-042`–`045`, `REQ-F-061`, `REQ-N-002`, `REQ-N-004`, `REQ-N-019` | `R1` (`R2` Claude mark) |
 | `SCR-04` | **Module Detail, Mastery Map & Glossary** | `/modules/:moduleId` | Displays module lectures, per-concept mastery status (`RPT-02`: `unseen`, `weak`, `developing`, `strong`, `mastered`), prerequisite graph, assessment-scope coverage (`SM-5`), and searchable canonical notation glossary (`GlossaryEntry.canonical`). | `UC-03`, `UC-08`, `UC-15`, `UC-17` | `REQ-F-003`, `REQ-F-005`, `REQ-F-053`, `REQ-F-058` | `R1` |
-| `SCR-05` | **Deadlines, Milestones, Readings & Tasks** | `/schedule` | Manages module deadlines with non-colour urgency badges (`DT-05`, `BR-033`) and `Confirm` badges on `inferred` dates (`BR-034`), backward-counted coursework milestones (`REQ-F-056`), readings (`unread`/`in_progress`/`completed`), and ad-hoc study tasks. | `UC-09`, `UC-10`, `UC-16` | `REQ-F-035`–`038`, `REQ-F-041`, `REQ-F-056`, `REQ-F-057`, `REQ-N-018` | `R1` (`R2` milestones) |
+| `SCR-05` | **Deadlines, Milestones, Readings & Tasks** | `/schedule` | Manages module deadlines with non-colour urgency badges (`DT-05`, `BR-033`) and `Confirm` badges on `inferred` dates (`BR-034`), backward-counted coursework milestones (`REQ-F-056`), readings (`unread`/`todo`/`done`/`skimmed`/`skipped`), and ad-hoc study tasks. | `UC-09`, `UC-10`, `UC-16` | `REQ-F-035`–`038`, `REQ-F-041`, `REQ-F-056`, `REQ-F-057`, `REQ-N-018` | `R1` (`R2` milestones) |
 | `SCR-06` | **Pipeline Module Import & Diff Preview** | `/import` | Uploads the 6 pipeline export JSON files (`concepts`, `deck`, `question-bank`, `deadlines`, `readings`, `glossary`), validates against `A34` schemas, displays the `DT-02` diff preview (`new`, `updated`, `unchanged`, `suspended` counts and item diff list), and triggers atomic backup + import on confirmation. | `UC-06` | `REQ-F-021`, `REQ-F-022`, `REQ-N-011`, `REQ-N-020` | `R1` |
 | `SCR-07` | **Grounded Claude Tutor & Proposal Queue** | `/tutor` (and contextual slide-over drawer) | Streams grounded Claude tutor responses (`explain`, `socratic`, `quiz_me`) with clickable slide/page citations (`BR-039`), coursework academic-integrity guard (`BR-040`), thread search & deletion (`REQ-F-052`), and the `Proposal` queue (`accept`, `edit`, `discard`, `REQ-F-049`). | `UC-13`, `UC-14` | `REQ-F-045`–`052`, `REQ-N-005`, `REQ-N-023` | `R2` |
-| `SCR-08` | **Stats, Retention, Forecast & API Spend** | `/stats` | Displays `SM-1`–`SM-6` metrics (`RPT-03`): daily review bar chart, trailing 30-day true retention (`SM-2`), per-module reported-wrong rate (`SM-3`), assessment-scope `>= 2`-attempt coverage (`SM-5`), current-month Claude API spend vs cap (`SM-6`), and `R3` 30-day FSRS load forecast (`REQ-F-065`). | `UC-17`, `UC-20` | `REQ-F-048`, `REQ-F-058`, `REQ-F-065` | `R2` (`R3` forecast) |
-| `SCR-09` | **Assessment Mode & Timed Mock Exam** | `/exams/mock` | Configures and runs a timed mock exam for an upcoming midterm or final (`REQ-F-054`), displaying a countdown timer, question navigator, and post-submission concept-level marked results report (`RPT-04`) with one-click weak-concept flashcard drill. | `UC-15` | `REQ-F-053`, `REQ-F-054` | `R2` |
+| `SCR-08` | **Stats, Retention, Forecast & API Spend** | `/stats` | Displays `SM-1`–`SM-6` metrics (`RPT-02`): daily review bar chart, trailing 30-day true retention (`SM-2`), per-module reported-wrong rate (`SM-3`), assessment-scope `>= 2`-attempt coverage (`SM-5`), current-month Claude API spend vs cap (`SM-6`), and `R3` 30-day FSRS load forecast (`REQ-F-065`). | `UC-17`, `UC-20` | `REQ-F-048`, `REQ-F-058`, `REQ-F-065` | `R2` (`R3` forecast) |
+| `SCR-09` | **Assessment Mode & Timed Mock Exam** | `/exams/mock` | Configures and runs a timed mock exam for an upcoming midterm or final (`REQ-F-054`), displaying a countdown timer, question navigator, and post-submission concept-level marked results report (`RPT-03`) with one-click weak-concept flashcard drill. | `UC-15` | `REQ-F-053`, `REQ-F-054` | `R2` |
 | `SCR-10` | **Settings, Backups & File Exports** | `/settings` | Configures daily limits (`new_cards_per_day`, `review_cards_per_day`, `quiz_per_day`, `daily_budget_min`), `desired_retention`, Claude models & `monthly_spend_cap_usd`, notifications (`REQ-F-062`), manual SQLite backup/restore (`UDP-04`), and one-click downloads of `feedback.json`, `calendar.ics`, and `deck.anki.tsv`. | `UC-06`, `UC-11`, `UC-16`–`21` | `REQ-F-026`, `REQ-F-039`, `REQ-F-042`, `REQ-F-048`, `REQ-F-055`, `REQ-F-057`, `REQ-F-062`, `REQ-F-063`, `REQ-F-066`, `REQ-N-011` | `R1`–`R3` |
 | `SCR-11` | **Owner Login (`R3` Hosted Mode)** | `/login` | Password login screen shown only when `APP_MODE=hosted` and no valid `__Host-study_session` cookie is present (`REQ-F-059`, `REQ-N-015`). | `UC-18` | `REQ-F-059`, `REQ-N-015` | `R3` |
 
-*(Note per `A35`: detailed designs of reports, exports, and notifications `RPT-01`–`RPT-10` are in [`workbook/03-design/reports.md`](reports.md) `A41`.)*
+*(Note per `A35`: detailed designs of reports, exports, and notifications `RPT-01`–`RPT-09` are in [`workbook/03-design/reports.md`](reports.md) `A41`.)*
 
 ---
 
@@ -73,7 +73,7 @@ flowchart TD
   SCR04 -->|"Start Timed Mock Exam (Assessment Mode)"| SCR09
   SCR04 -->|"Nav: Today"| SCR01
 
-  SCR09 -->|"Answer exam questions -> Submit or Timer Expiry -> View RPT-04"| SCR09
+  SCR09 -->|"Answer exam questions -> Submit or Timer Expiry -> View RPT-03"| SCR09
   SCR09 -->|"Click 'Drill Weak Concept Cards'"| SCR02
   SCR09 -->|"Exit Mock Exam -> Module or Today"| SCR01
 
@@ -103,7 +103,7 @@ flowchart TD
 +--------------------------------------------------------------------------------------------------+
 | [Study App]  [Today*] [Review] [Quiz] [Modules] [Schedule] [Tutor] [Stats] [Import] [Settings]   |
 +--------------------------------------------------------------------------------------------------+
-| TODAY — Wednesday, 21 Oct 2026 (Asia/Hong_Kong)                 Streak: 6/7 days (SM-4b) [Sync]  |
+| TODAY — Wednesday, 21 Oct 2026 (Asia/Hong_Kong)                Last 7d: 6/7 days (SM-4b) [Sync]  |
 | Study Time Budget: [=================>          ] 68 / 90 min (22 min remaining)                 |
 | [!] ASSESSMENT MODE ACTIVE: COMP4901B Final Exam in 18 days (covers W01-W10)   [Start Mock Exam] |
 +--------------------------------------------------------------------------------------------------+
@@ -206,7 +206,7 @@ flowchart TD
 | 2. [   TBD  - Unannounced] ECON2123 · Problem Set 3 (homework, 5%)                               |
 |    Due: Unannounced (TBD) · [!] Inferred [Set Date / Confirm] [Edit]                             |
 +--------------------------------------------------------------------------------------------------+
-| READINGS (Filter: [All Modules v] [Unread / In Progress v])                                      |
+| READINGS (Filter: [All Modules v] [Unread / Todo / Done / Skimmed / Skipped v])                  |
 | - [Required] COMP4901B W04: Sutton & Barto Ch.13 (10 pp., ~30 min) · Due: 2026-10-22 [Status: v] |
 +--------------------------------------------------------------------------------------------------+
 | AD-HOC STUDY TASKS                                                                               |
@@ -256,7 +256,7 @@ flowchart TD
 ### 3.8 `SCR-08` · Stats, Retention, Forecast & Claude API Spend
 ```text
 +--------------------------------------------------------------------------------------------------+
-| STUDY STATS & SUCCESS METRICS (RPT-03)                         Filter: [All Modules v] [Refresh] |
+| STUDY STATS & SUCCESS METRICS (RPT-02)                         Filter: [All Modules v] [Refresh] |
 +--------------------------------------------------------------------------------------------------+
 | [SM-2 Retention (30d)]   [SM-3 Wrong Rate]     [SM-4a Missed Deadlines]   [SM-6 Month API Spend] |
 |     91.4% (>=85% OK)      0.6% (<2.0% OK)            0 (Target: 0)         $1.42 / $15.00 cap    |
@@ -279,7 +279,7 @@ flowchart TD
 | Progress: 8 / 15 Answered · Format Mix: 6 MCQ, 5 Short Answer, 4 Calculation                     |
 | Question Navigator: [1*] [2*] [3*] [4*] [5*] [6*] [7*] [8*] [9 Current] [10] [11] [12]..[15]     |
 +--------------------------------------------------------------------------------------------------+
-| (Question stem & answer input area; on [Submit Exam] or timer 00:00:00 -> renders RPT-04         |
+| (Question stem & answer input area; on [Submit Exam] or timer 00:00:00 -> renders RPT-03         |
 |  Concept-Level Mock Exam Breakdown with [Drill Linked Flashcards for Weak Concepts] button)      |
 +--------------------------------------------------------------------------------------------------+
 ```
@@ -296,7 +296,7 @@ flowchart TD
 |                                                                                                  |
 | CLAUDE API MODELS & SPEND GUARD (R2)                                                             |
 | Marking Model: [claude-haiku-4-5 v]   Tutor Model: [claude-sonnet-4-6 v]                         |
-| Monthly Spend Cap (USD): [ 15.00 ]    Cap Action: ([No Limit] [Warn*] [Hard Stop])               |
+| Monthly Spend Cap (USD): [ 15.00 ]    Cap Mode: ([Block* (Default)] [Warn Only])                 |
 |                                                                                                  |
 | EXPORTS & DATABASE BACKUPS                                                       [Save Settings] |
 | [Export feedback.json (3 unexported)]  [Download calendar.ics]  [Export Anki TSV (deck.anki.tsv)]|
@@ -348,11 +348,11 @@ Every user-editable input field across `SCR-01`–`SCR-11` is validated on both 
 | `FLD-21` | `SCR-09` | `durationMinutes` (Mock Exam Duration) | `integer` | Yes | `Missing data`, `Range` (`10..300` minutes) | `"Mock exam duration must be between 10 and 300 minutes."` | `REQ-F-054` |
 | `FLD-22` | `SCR-09` | `questionCount` (Mock Exam Size) | `integer` | Yes | `Missing data`, `Range` (`5..100` questions) | `"Mock exam question count must be between 5 and 100."` | `REQ-F-054` |
 | `FLD-23` | `SCR-10` | `dailyBudgetMin` (Daily Study Budget) | `integer` | Yes | `Missing data`, `Range` (`15..720` minutes) | `"Daily study budget must be between 15 and 720 minutes."` | `REQ-F-039`, `REQ-F-055`, `BR-036` |
-| `FLD-24` | `SCR-10` | `newCardsPerDay` / `reviewCardsPerDay` / `quizPerDay` | `integer` | Yes | `Range` (`0..200` new cards, `1..1000` review cards, `1..100` quiz concepts) | `"Enter a valid daily limit (New cards: 0–200, Reviews: 1–1000, Quizzes: 1–100)."` | `REQ-F-026`, `BR-025`, `BR-028` |
+| `FLD-24` | `SCR-10` | `newCardsPerDay` / `reviewCardsPerDay` / `quizPerDay` | `integer` | Yes | `Range` (`0..500` new cards, `1..2000` review cards, `0..100` quiz concepts) | `"Enter a valid daily limit (New cards: 0–500, Reviews: 1–2000, Quizzes: 0–100)."` | `REQ-F-026`, `BR-025`, `BR-028` |
 | `FLD-25` | `SCR-10` | `desiredRetention` (FSRS Target Retention) | `number` | Yes | `Range` (`0.70..0.99`) | `"Desired retention must be a decimal between 0.70 and 0.99 (default 0.90)."` | `BR-026` |
-| `FLD-26` | `SCR-10` | `monthlySpendCapUsd` (Monthly Claude Cap) | `money` | No | `Class / composition` (non-negative decimal with `<= 2` decimal places), `Range` (`0.00..1000.00`) | `"Monthly spend cap must be a non-negative dollar amount (for example, 15.00)."` | `REQ-F-048`, `BR-041` |
+| `FLD-26` | `SCR-10` | `monthlySpendCapUsd`, `monthlySpendCapMode`, `gradingModel`, `tutorModel` & `tokenRatesJson` (Monthly Claude Cap, Mode, Models & Token Rates) | `money` + `enumeration` + `text` + `json` | No / Yes | `Class / composition` (`monthlySpendCapUsd`: nullable non-negative decimal with `<= 2` decimal places; `tokenRatesJson`: valid JSON object mapping each configured model ID to positive integer `input_micro_per_mtok`, `output_micro_per_mtok`, `cache_read_micro_per_mtok`, seeded with `claude-haiku-4-5`, `claude-sonnet-4-6`, `claude-haiku-5-5`, and `claude-sonnet-5-5` per `ASM-070` and `ASM-059`), `Range` (`0.00..1000.00`), `Values` (`monthlySpendCapMode` in `{'block', 'warn'}`, default `'block'` per `ASM-067`), `Size` & `Picture / template` (`gradingModel` and `tutorModel`: `1..100` chars matching `^[A-Za-z0-9._-]+$`, extensible in `Settings` without a schema migration per `[DOC study-app-spec.md §5]` and `ADR-007 §2.2`), `Combinations` (both `gradingModel` and `tutorModel` must exist as keys with positive rate entries in `tokenRatesJson`, `DEC-016`, `TC-I-256`) | `"Monthly spend cap must be a non-negative dollar amount (for example, 15.00), spend cap mode must be 'block' or 'warn', and selected Claude models must have positive token rates in token_rates_json."` | `REQ-F-048`, `REQ-F-083`, `REQ-F-089`, `BR-041`, `ASM-059`, `ASM-067`, `ASM-070`, `DEC-016` |
 | `FLD-27` | `SCR-10` | `backupFileName` & `confirmOverwrite` | `text` + `boolean` | Yes | `Expected values` (existing verified backup file), `Combinations` (`confirmOverwrite == true`, `UDP-04`) | `"Select a verified backup file and tick the confirmation box to restore."` | `REQ-N-011`, `UDP-04` |
-| `FLD-28` | `SCR-11` | `password` (Owner Password in `R3`) | `text` | Yes | `Missing data`, `Size` (`8..256` chars), `Expected values` (matches `APP_PASSWORD_HASH`) | `"Invalid password. Please try again."` (or `"Too many failed login attempts. Please wait 60 seconds."` on `429`) | `REQ-F-059`, `REQ-N-015`, `BR-045` |
+| `FLD-28` | `SCR-11` | `password` (Owner Password in `R3`) | `text` | Yes | `Missing data`, `Size` (`8..256` chars), `Expected values` (matches `STUDY_APP_PASSWORD_HASH`) | `"Invalid password. Please try again."` (or `"Too many failed login attempts. Please wait 60 seconds."` on `429`) | `REQ-F-059`, `REQ-N-015`, `BR-045` |
 
 ---
 

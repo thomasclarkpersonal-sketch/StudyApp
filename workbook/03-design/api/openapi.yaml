@@ -37,7 +37,7 @@ paths:
       summary: "List all modules with due card/concept counts and active assessment mode status"
       x-role: "Student"
       x-traces: ["UC-06", "UC-07", "UC-08", "UC-10", "REQ-F-021", "REQ-F-038", "BR-005", "BR-043"]
-      responses: {"200": {"description": "Ordered list of modules", "content": {"application/json": {"schema": {"type": "object", "required": ["items"], "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/ModuleSummary"}}}}}}}, "401": {"$ref": "#/components/responses/UnauthorizedError"}}
+      responses: {"200": {"description": "Ordered list of modules", "content": {"application/json": {"schema": {"type": "object", "required": ["items"], "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/ModuleSummary"}}}}}}}, "400": {"$ref": "#/components/responses/BadRequestError"}, "401": {"$ref": "#/components/responses/UnauthorizedError"}}
   /api/modules/{moduleId}:
     get:
       operationId: "getModuleSummary"
@@ -135,12 +135,12 @@ paths:
   /api/exams/mock/{examId}/submit:
     post:
       operationId: "submitMockExam"
-      summary: "Submit a timed mock exam and receive concept-level marked results report (RPT-04)"
+      summary: "Submit a timed mock exam and receive concept-level marked results report (RPT-03)"
       x-role: "Student"
       x-traces: ["UC-15", "REQ-F-054"]
       parameters: [{"name": "examId", "in": "path", "required": true, "schema": {"type": "string"}}]
       requestBody: {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["answers"], "properties": {"answers": {"type": "array", "items": {"$ref": "#/components/schemas/QuizAttemptRequest"}}}}}}}
-      responses: {"200": {"description": "Marked mock exam report (RPT-04)", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/MockExamReport"}}}}, "400": {"$ref": "#/components/responses/BadRequestError"}, "401": {"$ref": "#/components/responses/UnauthorizedError"}, "404": {"$ref": "#/components/responses/NotFoundError"}}
+      responses: {"200": {"description": "Marked mock exam report (RPT-03)", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/MockExamReport"}}}}, "400": {"$ref": "#/components/responses/BadRequestError"}, "401": {"$ref": "#/components/responses/UnauthorizedError"}, "404": {"$ref": "#/components/responses/NotFoundError"}}
   /api/deadlines:
     get:
       operationId: "listDeadlines"
@@ -148,7 +148,7 @@ paths:
       x-role: "Student"
       x-traces: ["UC-09", "REQ-F-035", "REQ-F-037", "REQ-N-018", "DT-05", "BR-033", "BR-034"]
       parameters: [{"name": "moduleId", "in": "query", "required": false, "schema": {"type": "string"}}]
-      responses: {"200": {"description": "Deadlines sorted by due_at ASC with urgency badges", "content": {"application/json": {"schema": {"type": "object", "required": ["items"], "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/DeadlineItem"}}}}}}}, "401": {"$ref": "#/components/responses/UnauthorizedError"}}
+      responses: {"200": {"description": "Deadlines sorted by due_at ASC with urgency badges", "content": {"application/json": {"schema": {"type": "object", "required": ["items"], "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/DeadlineItem"}}}}}}}, "400": {"$ref": "#/components/responses/BadRequestError"}, "401": {"$ref": "#/components/responses/UnauthorizedError"}}
   /api/deadlines/{deadlineId}:
     put:
       operationId: "upsertDeadline"
@@ -173,16 +173,16 @@ paths:
       summary: "List readings filtered by module or status"
       x-role: "Student"
       x-traces: ["UC-03", "UC-10", "REQ-F-005", "REQ-F-041"]
-      parameters: [{"name": "moduleId", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "status", "in": "query", "required": false, "schema": {"type": "string", "enum": ["unread", "in_progress", "completed"]}}]
-      responses: {"200": {"description": "Readings list", "content": {"application/json": {"schema": {"type": "object", "required": ["items"], "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/ReadingItem"}}}}}}}, "401": {"$ref": "#/components/responses/UnauthorizedError"}}
+      parameters: [{"name": "moduleId", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "status", "in": "query", "required": false, "schema": {"type": "string", "enum": ["unread", "todo", "done", "skimmed", "skipped"]}}]
+      responses: {"200": {"description": "Readings list", "content": {"application/json": {"schema": {"type": "object", "required": ["items"], "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/ReadingItem"}}}}}}}, "400": {"$ref": "#/components/responses/BadRequestError"}, "401": {"$ref": "#/components/responses/UnauthorizedError"}}
   /api/readings/{readingId}:
     patch:
       operationId: "updateReadingStatus"
-      summary: "Update reading status (unread / in_progress / completed) or due_on date"
+      summary: "Update reading status (unread / todo / done / skimmed / skipped) or due_on date"
       x-role: "Student"
       x-traces: ["UC-10", "REQ-F-041"]
       parameters: [{"name": "readingId", "in": "path", "required": true, "schema": {"type": "string"}}]
-      requestBody: {"required": true, "content": {"application/json": {"schema": {"type": "object", "minProperties": 1, "properties": {"status": {"type": "string", "enum": ["unread", "in_progress", "completed"]}, "dueOn": {"type": "string", "format": "date"}, "estMinutes": {"type": "number", "minimum": 1, "maximum": 600}}}}}}
+      requestBody: {"required": true, "content": {"application/json": {"schema": {"type": "object", "minProperties": 1, "properties": {"status": {"type": "string", "enum": ["unread", "todo", "done", "skimmed", "skipped"]}, "dueOn": {"type": "string", "format": "date"}, "estMinutes": {"type": "number", "minimum": 1, "maximum": 600}, "confirmed": {"type": "boolean"}}}}}}
       responses: {"200": {"description": "Updated Reading record", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ReadingItem"}}}}, "400": {"$ref": "#/components/responses/BadRequestError"}, "401": {"$ref": "#/components/responses/UnauthorizedError"}, "404": {"$ref": "#/components/responses/NotFoundError"}}
   /api/tasks/{taskId}:
     put:
@@ -221,7 +221,7 @@ paths:
   /api/export/feedback:
     get:
       operationId: "exportFeedbackJson"
-      summary: "Export reported items (R1) or full feedback.json (reported, topup, proposed in R3) (RPT-07)"
+      summary: "Export reported items (R1) or full feedback.json (reported, topup, proposed in R3) (RPT-08)"
       x-role: "Student"
       x-traces: ["UC-11", "UC-19", "REQ-F-042", "REQ-F-063", "REQ-N-020"]
       parameters: [{"name": "moduleId", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "markExported", "in": "query", "required": false, "schema": {"type": "boolean", "default": true}}, {"name": "limit", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 1, "maximum": 1000, "default": 500}}]
@@ -233,13 +233,13 @@ paths:
       x-role: "Student"
       x-traces: ["UC-13", "REQ-F-045", "REQ-F-052"]
       parameters: [{"name": "moduleId", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "q", "in": "query", "required": false, "description": "Search query over thread title and message content", "schema": {"type": "string", "maxLength": 200}}, {"name": "limit", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 25}}, {"name": "offset", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 0, "default": 0}}]
-      responses: {"200": {"description": "Paginated tutor threads", "content": {"application/json": {"schema": {"type": "object", "required": ["items", "total"], "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/TutorThreadSummary"}}, "total": {"type": "integer"}}}}}}, "401": {"$ref": "#/components/responses/UnauthorizedError"}}
+      responses: {"200": {"description": "Paginated tutor threads", "content": {"application/json": {"schema": {"type": "object", "required": ["items", "total"], "properties": {"items": {"type": "array", "items": {"$ref": "#/components/schemas/TutorThreadSummary"}}, "total": {"type": "integer"}}}}}}, "400": {"$ref": "#/components/responses/BadRequestError"}, "401": {"$ref": "#/components/responses/UnauthorizedError"}}
     post:
       operationId: "createTutorThread"
       summary: "Open a grounded Claude tutor thread linked to a card, question, concept, reading, or module"
       x-role: "Student"
       x-traces: ["UC-13", "REQ-F-045"]
-      requestBody: {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["moduleId", "mode"], "properties": {"moduleId": {"type": "string", "minLength": 1}, "title": {"type": "string", "minLength": 1, "maxLength": 200}, "mode": {"type": "string", "enum": ["explain", "socratic", "quiz_me"]}, "linkedType": {"type": "string", "enum": ["card", "question", "concept", "reading", "none"], "default": "none"}, "linkedId": {"type": "string"}}}}}}
+      requestBody: {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["moduleId", "mode"], "properties": {"moduleId": {"type": "string", "minLength": 1}, "title": {"type": "string", "minLength": 1, "maxLength": 200}, "mode": {"type": "string", "enum": ["explain", "socratic", "quiz_me"]}, "linkedType": {"type": "string", "enum": ["card", "question", "attempt", "concept", "reading", "deadline", "none"], "default": "none"}, "linkedId": {"type": "string"}}}}}}
       responses: {"201": {"description": "Created TutorThread with preloaded course context summary", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TutorThreadDetail"}}}}, "400": {"$ref": "#/components/responses/BadRequestError"}, "401": {"$ref": "#/components/responses/UnauthorizedError"}, "404": {"$ref": "#/components/responses/NotFoundError"}}
   /api/tutor/threads/{threadId}/messages:
     post:
@@ -270,18 +270,18 @@ paths:
   /api/stats:
     get:
       operationId: "getStatsAndSpend"
-      summary: "Get SM-1..SM-6 metrics, trailing 30-day true retention, mastery, FSRS forecast, and API spend (RPT-03)"
+      summary: "Get SM-1..SM-6 metrics, trailing 30-day true retention, mastery, FSRS forecast, and API spend (RPT-02)"
       x-role: "Student"
       x-traces: ["UC-17", "UC-20", "REQ-F-048", "REQ-F-058", "REQ-F-065", "BR-041", "BR-044"]
       parameters: [{"name": "moduleId", "in": "query", "required": false, "schema": {"type": "string"}}]
-      responses: {"200": {"description": "Stats and API spend dashboard payload", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/StatsDashboardResponse"}}}}, "401": {"$ref": "#/components/responses/UnauthorizedError"}}
+      responses: {"200": {"description": "Stats and API spend dashboard payload", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/StatsDashboardResponse"}}}}, "400": {"$ref": "#/components/responses/BadRequestError"}, "401": {"$ref": "#/components/responses/UnauthorizedError"}}
   /api/settings:
     get:
       operationId: "getSettings"
       summary: "Get current study app settings"
       x-role: "Student"
       x-traces: ["UC-10", "UC-16", "UC-17", "REQ-F-026", "REQ-F-039", "REQ-F-048", "REQ-F-062"]
-      responses: {"200": {"description": "Singleton Settings object", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SettingsObject"}}}}, "401": {"$ref": "#/components/responses/UnauthorizedError"}}
+      responses: {"200": {"description": "Singleton Settings object", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SettingsObject"}}}}, "401": {"$ref": "#/components/responses/UnauthorizedError"}, "503": {"$ref": "#/components/responses/ServiceUnavailableError"}}
     patch:
       operationId: "updateSettings"
       summary: "Update study limits, daily budget, desired retention, models, spend cap, or notifications"
@@ -292,7 +292,7 @@ paths:
   /api/calendar.ics:
     get:
       operationId: "exportCalendarIcs"
-      summary: "Export all upcoming deadlines and coursework milestones as RFC 5545 iCalendar (.ics) (RPT-08)"
+      summary: "Export all upcoming deadlines and coursework milestones as RFC 5545 iCalendar (.ics) (RPT-07)"
       x-role: "Student"
       x-traces: ["UC-16", "REQ-F-057"]
       parameters: [{"name": "moduleId", "in": "query", "required": false, "schema": {"type": "string"}}]
@@ -334,7 +334,7 @@ components:
     NotFoundError: {"description": "Requested entity ID does not exist", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/ProblemDetails"}}}}
     ConflictError: {"description": "Concurrent import or state conflict", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/ProblemDetails"}}}}
     UnprocessableEntityError: {"description": "Domain business-rule or JSON Schema validation failure with field-level errors", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/ProblemDetails"}}}}
-    TooManyRequestsError: {"description": "Rate limit exceeded (login > 5/min/IP) or monthly Claude API spend cap reached (hard_stop)", "headers": {"Retry-After": {"schema": {"type": "integer"}}}, "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/ProblemDetails"}}}}
+    TooManyRequestsError: {"description": "Rate limit exceeded (login > 5/min/IP) or monthly Claude API spend cap reached (monthlySpendCapMode = block)", "headers": {"Retry-After": {"schema": {"type": "integer"}}}, "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/ProblemDetails"}}}}
     BadGatewayError: {"description": "Upstream Anthropic Claude API timeout or error (self-marking fallback offered)", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/ProblemDetails"}}}}
     ServiceUnavailableError: {"description": "SQLite database unavailable or disk full", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/ProblemDetails"}}}}
   schemas:
@@ -346,7 +346,7 @@ components:
     ModuleSummary:
       type: "object"
       required: ["id", "code", "name", "priorityRank", "isCs", "examType", "dueCardsCount", "newCardsAvailable", "dueConceptsCount", "assessmentModeActive"]
-      properties: {"id": {"type": "string"}, "code": {"type": "string"}, "name": {"type": "string"}, "priorityRank": {"type": "integer"}, "isCs": {"type": "boolean"}, "examType": {"type": "string", "enum": ["closed_book", "open_book", "take_home", "no_final", "unknown"]}, "dueCardsCount": {"type": "integer"}, "newCardsAvailable": {"type": "integer"}, "dueConceptsCount": {"type": "integer"}, "assessmentModeActive": {"type": "boolean"}, "nearestAssessmentDueAt": {"type": ["string", "null"], "format": "date-time"}}
+      properties: {"id": {"type": "string"}, "code": {"type": "string"}, "name": {"type": "string"}, "colour": {"type": "string", "default": "#2563EB"}, "priorityRank": {"type": "integer"}, "isCs": {"type": "boolean"}, "examType": {"type": "string", "enum": ["closed_book", "open_book", "take_home", "no_final", "unknown"]}, "timezone": {"type": "string", "default": "Asia/Hong_Kong"}, "newCardsPerDay": {"type": ["integer", "null"]}, "maxReviewsPerDay": {"type": ["integer", "null"]}, "quizPerDay": {"type": ["integer", "null"]}, "desiredRetention": {"type": ["number", "null"]}, "dueCardsCount": {"type": "integer"}, "newCardsAvailable": {"type": "integer"}, "dueConceptsCount": {"type": "integer"}, "assessmentModeActive": {"type": "boolean"}, "nearestAssessmentDueAt": {"type": ["string", "null"], "format": "date-time"}}
     ModuleDetail:
       type: "object"
       required: ["module", "lectures", "concepts", "glossary"]
@@ -406,11 +406,11 @@ components:
     DeadlineItem:
       type: "object"
       required: ["id", "moduleId", "title", "type", "dueAt", "timezone", "status", "confidence", "manuallyEdited", "urgency", "needsConfirmation", "milestones"]
-      properties: {"id": {"type": "string"}, "moduleId": {"type": "string"}, "title": {"type": "string"}, "type": {"type": "string", "enum": ["exam", "midterm", "quiz", "homework", "project", "coursework", "other"]}, "dueAt": {"type": ["string", "null"], "format": "date-time"}, "timezone": {"type": "string"}, "weighting": {"type": ["number", "null"]}, "coversLectures": {"type": "array", "items": {"type": "string"}}, "status": {"type": "string", "enum": ["upcoming", "submitted", "overdue", "unannounced"]}, "confidence": {"type": "string", "enum": ["confirmed", "inferred"]}, "manuallyEdited": {"type": "boolean"}, "urgency": {"type": "string", "enum": ["low", "medium", "high", "overdue", "unannounced"]}, "urgencyLabel": {"type": "string"}, "needsConfirmation": {"type": "boolean"}, "milestones": {"type": "array", "items": {"$ref": "#/components/schemas/MilestoneItem"}}}
+      properties: {"id": {"type": "string"}, "moduleId": {"type": "string"}, "title": {"type": "string"}, "type": {"type": "string", "enum": ["exam", "midterm", "quiz", "homework", "project", "coursework", "other"]}, "dueAt": {"type": ["string", "null"], "format": "date-time"}, "unannouncedReason": {"type": ["string", "null"]}, "timezone": {"type": "string"}, "weighting": {"type": ["number", "null"]}, "coversLectures": {"type": "array", "items": {"type": "string"}}, "submissionUrl": {"type": ["string", "null"]}, "format": {"type": ["object", "null"]}, "origin": {"type": "string", "enum": ["extracted", "manual"]}, "confirmed": {"type": "boolean"}, "status": {"type": "string", "enum": ["upcoming", "unannounced", "submitted", "done", "missed", "overdue"]}, "confidence": {"type": "string", "enum": ["explicit", "inferred"]}, "manuallyEdited": {"type": "boolean"}, "urgency": {"type": "string", "enum": ["low", "medium", "high", "overdue", "unannounced"]}, "urgencyLabel": {"type": "string"}, "needsConfirmation": {"type": "boolean"}, "milestones": {"type": "array", "items": {"$ref": "#/components/schemas/MilestoneItem"}}}
     DeadlineUpsertRequest:
       type: "object"
       required: ["moduleId", "title", "type", "status"]
-      properties: {"moduleId": {"type": "string", "minLength": 1}, "title": {"type": "string", "minLength": 1, "maxLength": 200}, "type": {"type": "string", "enum": ["exam", "midterm", "quiz", "homework", "project", "coursework", "other"]}, "dueAt": {"type": ["string", "null"], "format": "date-time"}, "timezone": {"type": "string", "default": "Asia/Hong_Kong"}, "weighting": {"type": ["number", "null"], "minimum": 0, "maximum": 100}, "coversLectures": {"type": "array", "items": {"type": "string"}}, "status": {"type": "string", "enum": ["upcoming", "submitted", "overdue", "unannounced"]}, "notes": {"type": "string", "maxLength": 2000}}
+      properties: {"moduleId": {"type": "string", "minLength": 1}, "title": {"type": "string", "minLength": 1, "maxLength": 200}, "type": {"type": "string", "enum": ["exam", "midterm", "quiz", "homework", "project", "coursework", "other"]}, "dueAt": {"type": ["string", "null"], "format": "date-time"}, "unannouncedReason": {"type": ["string", "null"], "maxLength": 500}, "timezone": {"type": "string", "default": "Asia/Hong_Kong"}, "weighting": {"type": ["number", "null"], "minimum": 0, "maximum": 100}, "coversLectures": {"type": "array", "items": {"type": "string"}}, "submissionUrl": {"type": ["string", "null"]}, "format": {"type": ["object", "null"]}, "origin": {"type": "string", "enum": ["extracted", "manual"], "default": "manual"}, "confirmed": {"type": "boolean"}, "status": {"type": "string", "enum": ["upcoming", "unannounced", "submitted", "done", "missed", "overdue"]}, "notes": {"type": "string", "maxLength": 2000}}
     MilestoneItem:
       type: "object"
       required: ["id", "deadlineId", "title", "dueOn", "estMinutes", "done", "orderIndex"]
@@ -422,15 +422,15 @@ components:
     ReadingItem:
       type: "object"
       required: ["id", "moduleId", "title", "citation", "kind", "pageCount", "estMinutes", "dueOn", "status", "source"]
-      properties: {"id": {"type": "string"}, "moduleId": {"type": "string"}, "lectureId": {"type": ["string", "null"]}, "title": {"type": "string"}, "citation": {"type": "string"}, "kind": {"type": "string", "enum": ["required", "recommended", "optional"]}, "pageCount": {"type": "integer"}, "estMinutes": {"type": "number"}, "dueOn": {"type": "string", "format": "date"}, "status": {"type": "string", "enum": ["unread", "in_progress", "completed"]}, "completedAt": {"type": ["string", "null"], "format": "date-time"}, "source": {"type": "string"}}
+      properties: {"id": {"type": "string"}, "moduleId": {"type": "string"}, "lectureId": {"type": ["string", "null"]}, "title": {"type": "string"}, "citation": {"type": "string"}, "kind": {"type": "string", "enum": ["required", "recommended", "optional"]}, "pages": {"type": ["string", "null"]}, "pageCount": {"type": "integer"}, "estMinutes": {"type": "number"}, "dueOn": {"type": "string", "format": "date"}, "confidence": {"type": "string", "enum": ["explicit", "inferred"]}, "confirmed": {"type": "boolean"}, "status": {"type": "string", "enum": ["unread", "todo", "done", "skimmed", "skipped"]}, "completedAt": {"type": ["string", "null"], "format": "date-time"}, "source": {"type": "string"}}
     TaskItem:
       type: "object"
       required: ["id", "title", "dueOn", "estMinutes", "priority", "done", "createdAt"]
-      properties: {"id": {"type": "string"}, "moduleId": {"type": ["string", "null"]}, "title": {"type": "string"}, "dueOn": {"type": "string", "format": "date"}, "estMinutes": {"type": "integer"}, "priority": {"type": "string", "enum": ["required", "optional"]}, "done": {"type": "boolean"}, "createdAt": {"type": "string", "format": "date-time"}}
+      properties: {"id": {"type": "string"}, "moduleId": {"type": ["string", "null"]}, "title": {"type": "string"}, "dueOn": {"type": "string", "format": "date"}, "estMinutes": {"type": "integer"}, "priority": {"type": "string", "enum": ["required", "optional"]}, "recurrence": {"type": ["string", "null"], "enum": ["none", "daily", "weekly", null]}, "done": {"type": "boolean"}, "createdAt": {"type": "string", "format": "date-time"}}
     TaskUpsertRequest:
       type: "object"
       required: ["title", "dueOn", "estMinutes", "priority"]
-      properties: {"moduleId": {"type": ["string", "null"]}, "title": {"type": "string", "minLength": 1, "maxLength": 200}, "dueOn": {"type": "string", "format": "date"}, "estMinutes": {"type": "integer", "minimum": 1, "maximum": 600}, "priority": {"type": "string", "enum": ["required", "optional"]}, "done": {"type": "boolean", "default": false}}
+      properties: {"moduleId": {"type": ["string", "null"]}, "title": {"type": "string", "minLength": 1, "maxLength": 200}, "dueOn": {"type": "string", "format": "date"}, "estMinutes": {"type": "integer", "minimum": 1, "maximum": 600}, "priority": {"type": "string", "enum": ["required", "optional"]}, "recurrence": {"type": ["string", "null"], "enum": ["none", "daily", "weekly", null], "default": "none"}, "done": {"type": "boolean", "default": false}}
     TodayPlanResponse:
       type: "object"
       required: ["plan", "items", "deferredItems", "completedDaysCount7d"]
@@ -446,7 +446,7 @@ components:
     TutorThreadSummary:
       type: "object"
       required: ["id", "moduleId", "title", "mode", "linkedType", "updatedAt"]
-      properties: {"id": {"type": "string"}, "moduleId": {"type": "string"}, "title": {"type": "string"}, "mode": {"type": "string", "enum": ["explain", "socratic", "quiz_me"]}, "linkedType": {"type": "string", "enum": ["card", "question", "concept", "reading", "none"]}, "linkedId": {"type": ["string", "null"]}, "updatedAt": {"type": "string", "format": "date-time"}}
+      properties: {"id": {"type": "string"}, "moduleId": {"type": "string"}, "title": {"type": "string"}, "mode": {"type": "string", "enum": ["explain", "socratic", "quiz_me"]}, "linkedType": {"type": "string", "enum": ["card", "question", "attempt", "concept", "reading", "deadline", "none"]}, "linkedId": {"type": ["string", "null"]}, "updatedAt": {"type": "string", "format": "date-time"}}
     TutorThreadDetail:
       type: "object"
       required: ["thread", "messages", "proposals"]
@@ -465,9 +465,9 @@ components:
       properties: {"sm1LecturesProcessedOnTime": {"type": "array", "items": {"type": "object"}}, "sm2TrueRetention30d": {"type": "number"}, "sm3ReportedWrongRateByModule": {"type": "array", "items": {"type": "object"}}, "sm4aMissedDeadlinesCount": {"type": "integer"}, "sm4bCompletedDays7d": {"type": "integer"}, "sm5ConceptCoverageByAssessment": {"type": "array", "items": {"type": "object"}}, "sm6CurrentMonthSpendUsd": {"type": "number"}, "sm6CurrentMonthSpendMicroUsd": {"type": "integer"}, "dailyReviewHistory": {"type": "array", "items": {"type": "object"}}, "loadForecast30d": {"type": "array", "items": {"type": "object"}}}
     SettingsObject:
       type: "object"
-      required: ["id", "dailyBudgetMin", "newCardsPerDay", "reviewCardsPerDay", "quizPerDay", "minutesPerPage", "desiredRetention", "schedulerMode", "assessmentModeDays", "gradingModel", "tutorModel", "spendCapMode", "timezone", "notificationsEnabled"]
-      properties: {"id": {"type": "string", "const": "default"}, "dailyBudgetMin": {"type": "integer"}, "newCardsPerDay": {"type": "integer"}, "reviewCardsPerDay": {"type": "integer"}, "quizPerDay": {"type": "integer"}, "minutesPerPage": {"type": "number"}, "desiredRetention": {"type": "number"}, "schedulerMode": {"type": "string", "enum": ["fsrs", "sm2"]}, "assessmentModeDays": {"type": "integer"}, "gradingModel": {"type": "string"}, "tutorModel": {"type": "string"}, "monthlySpendCapUsd": {"type": ["number", "null"]}, "spendCapMode": {"type": "string", "enum": ["none", "warn", "hard_stop"]}, "timezone": {"type": "string"}, "notificationsEnabled": {"type": "boolean"}}
+      required: ["id", "dailyBudgetMin", "newCardsPerDay", "reviewCardsPerDay", "quizPerDay", "readingLookaheadDays", "minutesPerPage", "desiredRetention", "schedulerMode", "assessmentModeDays", "gradingModel", "tutorModel", "monthlySpendCapMode", "timezone", "notificationsEnabled"]
+      properties: {"id": {"type": "string", "const": "default"}, "dailyBudgetMin": {"type": "integer"}, "newCardsPerDay": {"type": "integer"}, "reviewCardsPerDay": {"type": "integer"}, "quizPerDay": {"type": "integer"}, "readingLookaheadDays": {"type": "integer", "default": 3}, "minutesPerPage": {"type": "number"}, "desiredRetention": {"type": "number"}, "schedulerMode": {"type": "string", "enum": ["fsrs", "sm2"]}, "assessmentModeDays": {"type": "integer"}, "gradingModel": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "^[A-Za-z0-9._-]+$", "default": "claude-haiku-4-5"}, "tutorModel": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "^[A-Za-z0-9._-]+$", "default": "claude-sonnet-4-6"}, "monthlySpendCapUsd": {"type": ["number", "null"]}, "monthlySpendCapMode": {"type": "string", "enum": ["block", "warn"], "default": "block"}, "timezone": {"type": "string"}, "notificationsEnabled": {"type": "boolean"}, "fsrsWeightsJson": {"type": "string"}, "tokenRatesJson": {"type": "string", "description": "JSON map of model ID to {input_micro_per_mtok, output_micro_per_mtok, cache_read_micro_per_mtok} (seeded with claude-haiku-4-5 and claude-sonnet-4-6 per ASM-070 and claude-haiku-5-5 and claude-sonnet-5-5 per ASM-059; must contain positive rate entries for gradingModel and tutorModel)."}, "updatedAt": {"type": "string", "format": "date-time"}}
     SettingsUpdateRequest:
       type: "object"
       minProperties: 1
-      properties: {"dailyBudgetMin": {"type": "integer", "minimum": 15, "maximum": 720}, "newCardsPerDay": {"type": "integer", "minimum": 0, "maximum": 200}, "reviewCardsPerDay": {"type": "integer", "minimum": 1, "maximum": 1000}, "quizPerDay": {"type": "integer", "minimum": 1, "maximum": 100}, "minutesPerPage": {"type": "number", "minimum": 0.5, "maximum": 60}, "desiredRetention": {"type": "number", "minimum": 0.7, "maximum": 0.99}, "schedulerMode": {"type": "string", "enum": ["fsrs", "sm2"]}, "assessmentModeDays": {"type": "integer", "minimum": 1, "maximum": 90}, "gradingModel": {"type": "string", "minLength": 1}, "tutorModel": {"type": "string", "minLength": 1}, "monthlySpendCapUsd": {"type": ["number", "null"], "minimum": 0}, "spendCapMode": {"type": "string", "enum": ["none", "warn", "hard_stop"]}, "timezone": {"type": "string", "minLength": 1}, "notificationsEnabled": {"type": "boolean"}}
+      properties: {"dailyBudgetMin": {"type": "integer", "minimum": 15, "maximum": 720}, "newCardsPerDay": {"type": "integer", "minimum": 0, "maximum": 500}, "reviewCardsPerDay": {"type": "integer", "minimum": 1, "maximum": 2000}, "quizPerDay": {"type": "integer", "minimum": 0, "maximum": 100}, "readingLookaheadDays": {"type": "integer", "minimum": 0, "maximum": 30}, "minutesPerPage": {"type": "number", "minimum": 0.5, "maximum": 60}, "desiredRetention": {"type": "number", "minimum": 0.7, "maximum": 0.99}, "schedulerMode": {"type": "string", "enum": ["fsrs", "sm2"]}, "assessmentModeDays": {"type": "integer", "minimum": 1, "maximum": 90}, "gradingModel": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "^[A-Za-z0-9._-]+$"}, "tutorModel": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "^[A-Za-z0-9._-]+$"}, "monthlySpendCapUsd": {"type": ["number", "null"], "minimum": 0}, "monthlySpendCapMode": {"type": "string", "enum": ["block", "warn"]}, "timezone": {"type": "string", "minLength": 1}, "notificationsEnabled": {"type": "boolean"}, "fsrsWeightsJson": {"type": "string"}, "tokenRatesJson": {"type": "string"}}

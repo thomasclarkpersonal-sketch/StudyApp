@@ -50,7 +50,7 @@ Every index (`IDX-01`–`IDX-15`) in [`schema.sql`](schema.sql) is justified by 
 | Index Name | Table & Columns | Named Query / Access Pattern | Target `REQ-N` |
 | :-- | :-- | :-- | :-- |
 | `idx_card_module_active` | `card(module_id, suspended, flagged, lecture_id)` | Filter active (`suspended = 0 AND flagged = 0`) flashcards for a module during daily queue build (`GET /api/review/next`). | `REQ-N-001`, `REQ-N-002` |
-| `idx_card_state_state_due` | `card_state(state, due)` | Select due review cards (`due <= ?`) and new cards (`state = 'new'`) ordered by `due ASC`. | `REQ-N-002`, `REQ-N-003` |
+| `idx_card_state_state_due` | `card_state(state, due)` | Select due review cards (`due <= ?`) and new cards (`state = 'New'`) ordered by `due ASC`. | `REQ-N-002`, `REQ-N-003` |
 | `idx_card_review_log_reviewed_at` | `card_review_log(reviewed_at, state_before, rating)` | Compute trailing 30-day true retention (`SM-2`, `BR-044`) and daily review counts on `GET /api/stats` across 500,000 rows via index-only covering scan. | `REQ-N-007`, `REQ-F-058` |
 | `idx_card_review_log_card_id` | `card_review_log(card_id, reviewed_at)` | Per-card review history and `R3` FSRS parameter optimiser training sequence (`UC-20`). | `REQ-F-065`, `REQ-N-007` |
 | `idx_concept_state_due_stability` | `concept_state(due, stability)` | Select due concepts (`due <= ?`) and order in assessment mode by lowest `stability ASC` (`BR-028`, `BR-043`). | `REQ-N-002`, `REQ-F-053` |

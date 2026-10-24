@@ -12,13 +12,19 @@
         "id": { "type": "string", "minLength": 1 },
         "code": { "type": "string", "minLength": 1 },
         "name": { "type": "string", "minLength": 1 },
+        "colour": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$", "default": "#2563EB" },
         "priority_rank": { "type": "integer", "minimum": 1, "default": 1 },
         "is_cs": { "type": "boolean", "default": false },
         "exam_type": {
           "type": "string",
           "enum": ["closed_book", "open_book", "take_home", "no_final", "unknown"],
           "default": "unknown"
-        }
+        },
+        "timezone": { "type": "string", "default": "Asia/Hong_Kong" },
+        "new_cards_per_day": { "type": ["integer", "null"], "minimum": 0, "maximum": 500 },
+        "max_reviews_per_day": { "type": ["integer", "null"], "minimum": 1, "maximum": 2000 },
+        "quiz_per_day": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+        "desired_retention": { "type": ["number", "null"], "minimum": 0.70, "maximum": 0.99 }
       }
     },
     "LectureItem": {
@@ -159,11 +165,16 @@
         "title": { "type": "string", "minLength": 1 },
         "type": { "type": "string", "enum": ["exam", "midterm", "quiz", "homework", "project", "coursework", "other"] },
         "due_at": { "type": ["string", "null"], "format": "date-time" },
+        "unannounced_reason": { "type": ["string", "null"] },
         "timezone": { "type": "string", "default": "Asia/Hong_Kong" },
         "weighting": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
         "covers_lectures": { "type": "array", "items": { "type": "string" } },
-        "status": { "type": "string", "enum": ["upcoming", "submitted", "overdue", "unannounced"] },
-        "confidence": { "type": "string", "enum": ["confirmed", "inferred"] },
+        "submission_url": { "type": ["string", "null"] },
+        "format": { "type": ["object", "null"] },
+        "origin": { "type": "string", "enum": ["extracted", "manual"], "default": "extracted" },
+        "confirmed": { "type": "boolean", "default": false },
+        "status": { "type": "string", "enum": ["upcoming", "unannounced", "submitted", "done", "missed", "overdue"] },
+        "confidence": { "type": "string", "enum": ["explicit", "inferred"] },
         "source": { "type": "string", "minLength": 3 },
         "notes": { "type": "string", "default": "" }
       }
@@ -189,9 +200,13 @@
         "title": { "type": "string", "minLength": 1 },
         "citation": { "type": "string", "minLength": 1 },
         "kind": { "type": "string", "enum": ["required", "recommended", "optional"] },
+        "pages": { "type": ["string", "null"] },
         "page_count": { "type": "integer", "minimum": 1, "maximum": 2000 },
         "est_minutes": { "type": "number", "exclusiveMinimum": 0 },
         "due_on": { "type": "string", "format": "date" },
+        "confidence": { "type": "string", "enum": ["explicit", "inferred"], "default": "explicit" },
+        "confirmed": { "type": "boolean", "default": false },
+        "status": { "type": "string", "enum": ["unread", "todo", "done", "skimmed", "skipped"], "default": "unread" },
         "source": { "type": "string", "minLength": 3 }
       }
     },
@@ -218,7 +233,8 @@
         "canonical": { "type": "string", "minLength": 1 },
         "definition": { "type": "string", "minLength": 1 },
         "where_defined": { "type": "string", "minLength": 1 },
-        "first_lecture_id": { "type": ["string", "null"] }
+        "first_lecture_id": { "type": ["string", "null"] },
+        "confirmed": { "type": "boolean", "default": true }
       }
     },
     "GlossaryFile": {
@@ -289,7 +305,7 @@
       "additionalProperties": false,
       "properties": {
         "round": { "type": "integer", "enum": [1, 2, 3] },
-        "stage": { "type": "string", "enum": ["card", "question"] },
+        "stage": { "type": "string", "enum": ["cards", "questions", "cross_lecture", "card", "question"] },
         "lecture_id": { "type": "string" },
         "reviews": {
           "type": "array",
@@ -306,8 +322,8 @@
                 "items": {
                   "type": "string",
                   "enum": [
-                    "atomic", "context_free", "unambiguous", "concise", "accurate", "grounded", "card_type", "value",
-                    "distinct", "format_fit", "distractors", "marking_scheme", "difficulty_spread"
+                    "context_free", "notation", "accuracy", "atomicity", "clarity", "brevity", "value", "duplication",
+                    "correctness", "single_best_answer", "variant_distinctness", "format_fit", "markable", "difficulty"
                   ]
                 }
               },
@@ -317,6 +333,86 @@
           }
         },
         "missing_concepts": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "PipelineConfigFile": {
+      "type": "object",
+      "required": ["module_id", "module_code", "module_name", "priority_rank", "is_cs", "exam_type", "timezone", "max_review_rounds"],
+      "additionalProperties": false,
+      "properties": {
+        "module_id": { "type": "string", "minLength": 1 },
+        "module_code": { "type": "string", "minLength": 1 },
+        "module_name": { "type": "string", "minLength": 1 },
+        "canvas_course_id": { "type": ["string", "null"] },
+        "canvas_base_url": { "type": ["string", "null"] },
+        "priority_rank": { "type": "integer", "minimum": 1 },
+        "is_cs": { "type": "boolean" },
+        "exam_type": { "type": "string", "enum": ["closed_book", "open_book", "take_home", "no_final", "unknown"] },
+        "timezone": { "type": "string", "default": "Asia/Hong_Kong" },
+        "max_review_rounds": { "type": "integer", "const": 3 }
+      }
+    },
+    "FlaggedFile": {
+      "type": "object",
+      "required": ["module_id", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "module_id": { "type": "string", "minLength": 1 },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["item_id", "module_id", "lecture_id", "item_type", "reason", "round_3_feedback", "student_decision", "flagged_at"],
+            "additionalProperties": false,
+            "properties": {
+              "item_id": { "type": "string" },
+              "module_id": { "type": "string" },
+              "lecture_id": { "type": "string" },
+              "item_type": { "type": "string", "enum": ["card", "question"] },
+              "reason": { "type": "string", "enum": ["unresolved_round_3", "unverified_claim", "audit_conflict"] },
+              "round_3_feedback": { "type": "string" },
+              "student_decision": { "type": "string", "enum": ["pending", "accepted", "edited", "rejected"] },
+              "flagged_at": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      }
+    },
+    "ModuleAuditFile": {
+      "type": "object",
+      "required": ["module_id", "audited_at", "duplicate_groups", "notation_drifts", "prerequisite_gaps", "coverage_gaps", "exam_alignment_score"],
+      "additionalProperties": false,
+      "properties": {
+        "module_id": { "type": "string", "minLength": 1 },
+        "audited_at": { "type": "string", "format": "date-time" },
+        "duplicate_groups": { "type": "array", "items": { "type": "object" } },
+        "notation_drifts": { "type": "array", "items": { "type": "object" } },
+        "prerequisite_gaps": { "type": "array", "items": { "type": "object" } },
+        "coverage_gaps": { "type": "array", "items": { "type": "object" } },
+        "exam_alignment_score": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "RunSummaryFile": {
+      "type": "object",
+      "required": ["run_id", "module_id", "started_at", "completed_at", "lectures_processed", "concepts_extracted", "cards_accepted", "cards_revised", "cards_rejected", "cards_flagged", "questions_accepted", "questions_revised", "questions_rejected", "questions_flagged", "spot_check_sample_size", "spot_check_rejected_count"],
+      "additionalProperties": false,
+      "properties": {
+        "run_id": { "type": "string", "format": "uuid" },
+        "module_id": { "type": "string", "minLength": 1 },
+        "started_at": { "type": "string", "format": "date-time" },
+        "completed_at": { "type": "string", "format": "date-time" },
+        "lectures_processed": { "type": "integer", "minimum": 0 },
+        "concepts_extracted": { "type": "integer", "minimum": 0 },
+        "cards_accepted": { "type": "integer", "minimum": 0 },
+        "cards_revised": { "type": "integer", "minimum": 0 },
+        "cards_rejected": { "type": "integer", "minimum": 0 },
+        "cards_flagged": { "type": "integer", "minimum": 0 },
+        "questions_accepted": { "type": "integer", "minimum": 0 },
+        "questions_revised": { "type": "integer", "minimum": 0 },
+        "questions_rejected": { "type": "integer", "minimum": 0 },
+        "questions_flagged": { "type": "integer", "minimum": 0 },
+        "spot_check_sample_size": { "type": "integer", "minimum": 0 },
+        "spot_check_rejected_count": { "type": "integer", "minimum": 0 }
       }
     }
   }

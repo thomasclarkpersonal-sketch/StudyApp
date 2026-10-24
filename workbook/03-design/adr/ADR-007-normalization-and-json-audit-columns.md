@@ -23,6 +23,7 @@ In our conceptual data model (`A16`, `A18`), several entities have multivalued a
    - `Settings.fsrs_weights_json` (21-element numerical weight vector passed as a unit to `ts-fsrs`) and `Settings.token_rates_json` (rate table snapshot).
    - `Proposal.payload_json` (unreviewed candidate card or question draft waiting in the tutor proposal queue before export to `feedback.json`, `REQ-F-049`).
    - `FeedbackItem.payload_json` (snapshot exported to `feedback.json`, `REQ-F-063`).
+   - `Deadline.format_json` (optional free-form exam format breakdown object `{ mcq_weight, written_weight, ... }` imported from `deadlines.json`, `A18`).
    - `CardState.retrievability` (derived in real time from `stability` and elapsed time since `last_review`, `A16 §3 E05`).
 
 ---
@@ -34,16 +35,17 @@ In our conceptual data model (`A16`, `A18`), several entities have multivalued a
      - `concept_card (concept_id, card_id)` resolves `REL-06` (`Concept` ↔ `Card`).
      - `concept_prerequisite (concept_id, prerequisite_concept_id)` resolves `REL-05` (`Concept` ↔ `Concept`).
      - `card_tag (card_id, tag)` resolves `Card.tags` into `1NF`/`3NF`.
-     - `question_option (question_id, option_index, option_text, distractor_explanation)` resolves `Question.options` and `Question.distractor_explanations` into `1NF`/`3NF`.
+     - `question_option (question_id, option_key, option_text, distractor_explanation)` resolves `Question.options` and `Question.distractor_explanations` into `1NF`/`3NF`.
      - `question_marking_point (question_id, point_index, point_text)` and `question_attempt_point (attempt_id, point_index, met)` resolve `Question.marking_points` and `QuestionAttempt.points_met` into `1NF`/`3NF`.
      - `tutor_message_citation (message_id, citation_index, source_ref)` resolves `TutorMessage.citations` into `1NF`/`3NF`.
    - Derived attributes (`CardState.retrievability`, `ConceptState.mastery_level`, `DailyPlan.total_est_minutes`, `DailyPlan.required_minutes`) are **not stored as mutable columns** on base tables (which would create transitive/update anomalies); they are computed in the domain service / SQL view from their base `3NF` attributes (`A32 §4`).
 
-2. **Justified JSON Columns for Four Opaque / Staging / Snapshot Attributes (`G3.2`):**
-   We permit `TEXT` columns validated by `CHECK (json_valid(...))` and `Ajv` schemas in **four specific places** where the value is an atomic opaque vector or an immutable staging/audit snapshot that is never partially updated or joined in SQL:
-   - `settings.fsrs_weights_json` and `settings.token_rates_json`: passed as a single configuration object to `ts-fsrs` and `StatsService`.
-   - `proposal.payload_json`: holds an unapproved candidate card or question draft (`Proposal` queue, `E17`) until it is exported into `feedback.json → proposed` (`REQ-F-049`).
-   - `feedback_item.payload_json`: immutable export snapshot written when a `FeedbackItem` (`E18`) is queued for `feedback.json`.
+2. **Justified JSON Columns for Five Opaque / Staging / Snapshot Attributes (`G3.2`):**
+   We permit `TEXT` columns validated by `CHECK (json_valid(...))` and `Ajv` schemas in **five specific places** where the value is an atomic opaque vector or an immutable staging/audit snapshot that is never partially updated or joined in SQL:
+   - `settings.fsrs_weights_json` and `settings.token_rates_json`: passed as a single configuration object to `ts-fsrs` and `StatsService`/`SpendGuard`. In `R29 settings`, `grading_model` and `tutor_model` are validated dynamically against keys in `token_rates_json` (via `COALESCE(json_extract(token_rates_json, '$."' || grading_model || '".input_micro_per_mtok'), 0) > 0` and domain check `FLD-26` / `TC-I-256`) rather than hard-coding a fixed model enum in SQLite, so adopting a newer Claude model or retiring an old one in `Settings` (`[DOC study-app-spec.md §5]`) never requires a `STRICT` table rebuild migration.
+   - `proposal.payload_json`: holds an unapproved candidate card or question draft (`Proposal` queue, `E19`) until it is exported into `feedback.json → proposed` (`REQ-F-049`).
+   - `feedback_item.payload_json`: immutable export snapshot written when a `FeedbackItem` (`E20`) is queued for `feedback.json`.
+   - `deadline.format_json`: optional informational JSON object (`{ mcq_weight, written_weight, notes }`) imported from `deadlines.json` (`A18`).
 
 ---
 

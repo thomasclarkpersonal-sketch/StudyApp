@@ -16,9 +16,9 @@ CREATE TABLE IF NOT EXISTS schema_migrations (
 ) STRICT;
 -- R01: module (E01 Module)
 CREATE TABLE IF NOT EXISTS module (
-  id TEXT PRIMARY KEY CHECK (length(trim(id)) > 0),
-  code TEXT NOT NULL UNIQUE CHECK (length(trim(code)) > 0),
-  name TEXT NOT NULL CHECK (length(trim(name)) > 0),
+  id TEXT PRIMARY KEY CHECK (length(trim(id)) BETWEEN 1 AND 64),
+  code TEXT NOT NULL UNIQUE CHECK (length(trim(code)) BETWEEN 1 AND 32),
+  name TEXT NOT NULL CHECK (length(trim(name)) BETWEEN 1 AND 200),
   colour TEXT DEFAULT '#2563EB' CHECK (colour IS NULL OR (length(colour) = 7 AND substr(colour, 1, 1) = '#')),
   timezone TEXT NOT NULL DEFAULT 'Asia/Hong_Kong' CHECK (length(trim(timezone)) BETWEEN 1 AND 64),
   priority_rank INTEGER NOT NULL DEFAULT 1 CHECK (priority_rank >= 1),
@@ -32,12 +32,12 @@ CREATE TABLE IF NOT EXISTS module (
 ) STRICT;
 -- R02: lecture (E02 Lecture — deterministic ID <MODULE>-<WEEK>, BR-020)
 CREATE TABLE IF NOT EXISTS lecture (
-  id TEXT PRIMARY KEY CHECK (id GLOB '*-W[0-9][0-9]*'),
+  id TEXT PRIMARY KEY CHECK (id GLOB '*-W[0-9][0-9]*' AND length(id) <= 80),
   module_id TEXT NOT NULL,
   week TEXT NOT NULL CHECK (week GLOB 'W[0-9][0-9]*'),
-  number INTEGER NOT NULL CHECK (number >= 1),
-  title TEXT NOT NULL CHECK (length(trim(title)) > 0),
-  source_file TEXT NOT NULL CHECK (length(trim(source_file)) > 0),
+  number INTEGER NOT NULL CHECK (number BETWEEN 1 AND 26),
+  title TEXT NOT NULL CHECK (length(trim(title)) BETWEEN 1 AND 200),
+  source_file TEXT NOT NULL CHECK (length(trim(source_file)) BETWEEN 1 AND 300),
   processed_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) CHECK (processed_at GLOB '????-??-??T??:??:??*Z'),
   UNIQUE (module_id, week),
   UNIQUE (id, module_id),
@@ -45,13 +45,13 @@ CREATE TABLE IF NOT EXISTS lecture (
 ) STRICT;
 -- R03: concept (E03 Concept — deterministic ID <MODULE>-<WEEK>-K<nn>, BR-020)
 CREATE TABLE IF NOT EXISTS concept (
-  id TEXT PRIMARY KEY CHECK (id GLOB '*-W[0-9][0-9]*-K[0-9][0-9]*'),
+  id TEXT PRIMARY KEY CHECK (id GLOB '*-W[0-9][0-9]*-K[0-9][0-9]*' AND length(id) <= 80),
   module_id TEXT NOT NULL,
   lecture_id TEXT NOT NULL,
-  name TEXT NOT NULL CHECK (length(trim(name)) > 0),
-  summary TEXT NOT NULL CHECK (length(trim(summary)) > 0),
+  name TEXT NOT NULL CHECK (length(trim(name)) BETWEEN 1 AND 200),
+  summary TEXT NOT NULL CHECK (length(trim(summary)) BETWEEN 1 AND 500),
   importance TEXT NOT NULL CHECK (importance IN ('core', 'supporting', 'detail')),
-  source TEXT NOT NULL CHECK (length(trim(source)) > 0),
+  source TEXT NOT NULL CHECK (length(trim(source)) BETWEEN 1 AND 300),
   UNIQUE (id, module_id),
   FOREIGN KEY (module_id) REFERENCES module(id) ON DELETE RESTRICT ON UPDATE CASCADE,
   FOREIGN KEY (lecture_id, module_id) REFERENCES lecture(id, module_id) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -67,15 +67,15 @@ CREATE TABLE IF NOT EXISTS concept_prerequisite (
 ) STRICT;
 -- R06: card (E04 Card — deterministic ID <MODULE>-<WEEK>-C<nnn>, BR-008, BR-020)
 CREATE TABLE IF NOT EXISTS card (
-  id TEXT PRIMARY KEY CHECK (id GLOB '*-W[0-9][0-9]*-C[0-9][0-9][0-9]*'),
+  id TEXT PRIMARY KEY CHECK (id GLOB '*-W[0-9][0-9]*-C[0-9][0-9][0-9]*' AND length(id) <= 80),
   module_id TEXT NOT NULL,
   lecture_id TEXT NOT NULL,
   concept_id TEXT NOT NULL,
   type TEXT NOT NULL CHECK (type IN ('basic', 'cloze', 'reverse')),
-  front TEXT NOT NULL CHECK (length(trim(front)) > 0),
-  back TEXT NOT NULL CHECK (length(trim(back)) > 0),
-  extra TEXT NOT NULL DEFAULT '',
-  source TEXT NOT NULL CHECK (length(trim(source)) > 0),
+  front TEXT NOT NULL CHECK (length(trim(front)) >= 1 AND length(front) <= 2000),
+  back TEXT NOT NULL CHECK (length(trim(back)) >= 1 AND length(back) <= 2000),
+  extra TEXT NOT NULL DEFAULT '' CHECK (length(extra) <= 4000),
+  source TEXT NOT NULL CHECK (length(trim(source)) BETWEEN 1 AND 300),
   suspended INTEGER NOT NULL DEFAULT 0 CHECK (suspended IN (0, 1)),
   flagged INTEGER NOT NULL DEFAULT 0 CHECK (flagged IN (0, 1)),
   edited_by_user INTEGER NOT NULL DEFAULT 0 CHECK (edited_by_user IN (0, 1)),
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS card_state (
   card_id TEXT PRIMARY KEY,
   state TEXT NOT NULL DEFAULT 'New' CHECK (state IN ('New', 'Learning', 'Review', 'Relearning')),
   stability REAL NOT NULL DEFAULT 0.0 CHECK (stability >= 0.0),
-  difficulty REAL NOT NULL DEFAULT 0.0 CHECK (difficulty >= 0.0 AND difficulty <= 10.0),
+  difficulty REAL NOT NULL DEFAULT 0.0 CHECK (difficulty = 0.0 OR (difficulty >= 1.0 AND difficulty <= 10.0)),
   elapsed_days REAL NOT NULL DEFAULT 0.0 CHECK (elapsed_days >= 0.0),
   scheduled_days REAL NOT NULL DEFAULT 0.0 CHECK (scheduled_days >= 0.0),
   reps INTEGER NOT NULL DEFAULT 0 CHECK (reps >= 0),
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS concept_state (
   concept_id TEXT PRIMARY KEY,
   state TEXT NOT NULL DEFAULT 'New' CHECK (state IN ('New', 'Learning', 'Review', 'Relearning')),
   stability REAL NOT NULL DEFAULT 0.0 CHECK (stability >= 0.0),
-  difficulty REAL NOT NULL DEFAULT 0.0 CHECK (difficulty >= 0.0 AND difficulty <= 10.0),
+  difficulty REAL NOT NULL DEFAULT 0.0 CHECK (difficulty = 0.0 OR (difficulty >= 1.0 AND difficulty <= 10.0)),
   reps INTEGER NOT NULL DEFAULT 0 CHECK (reps >= 0),
   lapses INTEGER NOT NULL DEFAULT 0 CHECK (lapses >= 0),
   due TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) CHECK (due GLOB '????-??-??T??:??:??*Z'),
@@ -142,17 +142,17 @@ CREATE TABLE IF NOT EXISTS concept_state (
 ) STRICT;
 -- R11: question (E08 Question — deterministic ID <MODULE>-<WEEK>-Q<nnn>, BR-017, BR-020)
 CREATE TABLE IF NOT EXISTS question (
-  id TEXT PRIMARY KEY CHECK (id GLOB '*-W[0-9][0-9]*-Q[0-9][0-9][0-9]*'),
+  id TEXT PRIMARY KEY CHECK (id GLOB '*-W[0-9][0-9]*-Q[0-9][0-9][0-9]*' AND length(id) <= 80),
   module_id TEXT NOT NULL,
   lecture_id TEXT NOT NULL,
   concept_id TEXT NOT NULL,
-  variant_group TEXT NOT NULL CHECK (length(trim(variant_group)) > 0),
+  variant_group TEXT NOT NULL CHECK (length(trim(variant_group)) BETWEEN 1 AND 80),
   type TEXT NOT NULL CHECK (type IN ('mcq', 'short_answer', 'calculation', 'explain', 'scenario', 'compare', 'essay_plan')),
   difficulty INTEGER NOT NULL CHECK (difficulty IN (1, 2, 3)),
-  stem TEXT NOT NULL CHECK (length(trim(stem)) > 0),
+  stem TEXT NOT NULL CHECK (length(trim(stem)) >= 1 AND length(stem) <= 4000),
   correct_option TEXT CHECK ( (type = 'mcq' AND correct_option IN ('A', 'B', 'C', 'D')) OR (type <> 'mcq' AND correct_option IS NULL) ),
-  model_answer TEXT NOT NULL CHECK (length(trim(model_answer)) > 0),
-  source TEXT NOT NULL CHECK (length(trim(source)) > 0),
+  model_answer TEXT NOT NULL CHECK (length(trim(model_answer)) >= 1 AND length(model_answer) <= 4000),
+  source TEXT NOT NULL CHECK (length(trim(source)) BETWEEN 1 AND 300),
   suspended INTEGER NOT NULL DEFAULT 0 CHECK (suspended IN (0, 1)),
   flagged INTEGER NOT NULL DEFAULT 0 CHECK (flagged IN (0, 1)),
   UNIQUE (id, concept_id),
@@ -184,10 +184,10 @@ CREATE TABLE IF NOT EXISTS question_attempt (
   concept_id TEXT NOT NULL,
   mode TEXT NOT NULL DEFAULT 'daily_quiz' CHECK (mode IN ('daily_quiz', 'mock_exam')),
   mock_exam_id TEXT,
-  user_answer TEXT NOT NULL,
+  user_answer TEXT NOT NULL CHECK (length(user_answer) <= 10000),
   rating INTEGER NOT NULL CHECK (rating IN (1, 2, 3, 4)),
   grader TEXT NOT NULL CHECK (grader IN ('auto', 'self', 'claude', 'pending_claude')),
-  feedback TEXT NOT NULL DEFAULT '',
+  feedback TEXT NOT NULL DEFAULT '' CHECK (length(feedback) <= 2000),
   overridden INTEGER NOT NULL DEFAULT 0 CHECK (overridden IN (0, 1)),
   duration_ms INTEGER NOT NULL CHECK (duration_ms >= 0),
   attempted_at TEXT NOT NULL CHECK (attempted_at GLOB '????-??-??T??:??:??*Z'),
@@ -204,14 +204,14 @@ CREATE TABLE IF NOT EXISTS question_attempt_point (
 ) STRICT;
 -- R16: glossary_entry (E10 GlossaryEntry — deterministic ID <MODULE>-G<nnn>, BR-009, BR-020)
 CREATE TABLE IF NOT EXISTS glossary_entry (
-  id TEXT PRIMARY KEY CHECK (id GLOB '*-G[0-9][0-9][0-9]*'),
+  id TEXT PRIMARY KEY CHECK (id GLOB '*-G[0-9][0-9][0-9]*' AND length(id) <= 80),
   module_id TEXT NOT NULL,
-  term TEXT NOT NULL CHECK (length(trim(term)) > 0),
-  abbreviation TEXT NOT NULL CHECK (length(trim(abbreviation)) > 0),
+  term TEXT NOT NULL CHECK (length(trim(term)) BETWEEN 1 AND 300),
+  abbreviation TEXT NOT NULL CHECK (length(trim(abbreviation)) BETWEEN 1 AND 64),
   kind TEXT NOT NULL CHECK (kind IN ('standard', 'module_specific')),
-  canonical TEXT NOT NULL CHECK (length(trim(canonical)) > 0),
-  definition TEXT NOT NULL CHECK (length(trim(definition)) > 0),
-  where_defined TEXT NOT NULL CHECK (length(trim(where_defined)) > 0),
+  canonical TEXT NOT NULL CHECK (length(trim(canonical)) BETWEEN 1 AND 400),
+  definition TEXT NOT NULL CHECK (length(trim(definition)) >= 1 AND length(definition) <= 2000),
+  where_defined TEXT NOT NULL CHECK (length(trim(where_defined)) BETWEEN 1 AND 300),
   first_lecture_id TEXT,
   confirmed INTEGER NOT NULL DEFAULT 0 CHECK (confirmed IN (0, 1)),
   FOREIGN KEY (module_id) REFERENCES module(id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -219,23 +219,23 @@ CREATE TABLE IF NOT EXISTS glossary_entry (
 ) STRICT;
 -- R17: deadline (E11 Deadline — <MODULE>-D<nnn> or UUID, BR-004, BR-023, BR-033, BR-034)
 CREATE TABLE IF NOT EXISTS deadline (
-  id TEXT PRIMARY KEY CHECK (length(trim(id)) > 0),
+  id TEXT PRIMARY KEY CHECK (length(trim(id)) BETWEEN 1 AND 80),
   module_id TEXT NOT NULL,
-  title TEXT NOT NULL CHECK (length(trim(title)) > 0),
+  title TEXT NOT NULL CHECK (length(trim(title)) BETWEEN 1 AND 200),
   type TEXT NOT NULL CHECK (type IN ('exam', 'midterm', 'quiz', 'homework', 'project', 'coursework', 'other')),
   due_at TEXT CHECK (due_at IS NULL OR due_at GLOB '????-??-??T??:??:??*Z'),
   unannounced_reason TEXT CHECK (unannounced_reason IS NULL OR length(unannounced_reason) <= 500),
-  timezone TEXT NOT NULL DEFAULT 'Asia/Hong_Kong' CHECK (length(trim(timezone)) > 0),
+  timezone TEXT NOT NULL DEFAULT 'Asia/Hong_Kong' CHECK (length(trim(timezone)) BETWEEN 1 AND 64),
   weighting REAL CHECK (weighting IS NULL OR (weighting >= 0.0 AND weighting <= 100.0)),
-  submission_url TEXT CHECK (submission_url IS NULL OR length(submission_url) <= 2048),
+  submission_url TEXT CHECK (submission_url IS NULL OR length(submission_url) <= 500),
   format_json TEXT CHECK (format_json IS NULL OR json_valid(format_json) = 1),
   status TEXT NOT NULL DEFAULT 'upcoming' CHECK (status IN ('upcoming', 'unannounced', 'submitted', 'done', 'missed', 'overdue')),
   origin TEXT NOT NULL DEFAULT 'extracted' CHECK (origin IN ('extracted', 'manual')),
   confidence TEXT NOT NULL DEFAULT 'explicit' CHECK (confidence IN ('explicit', 'inferred')),
   confirmed INTEGER NOT NULL DEFAULT 0 CHECK (confirmed IN (0, 1)),
   manually_edited INTEGER NOT NULL DEFAULT 0 CHECK (manually_edited IN (0, 1)),
-  source TEXT NOT NULL CHECK (length(trim(source)) > 0),
-  notes TEXT NOT NULL DEFAULT '',
+  source TEXT NOT NULL CHECK (length(trim(source)) BETWEEN 1 AND 300),
+  notes TEXT NOT NULL DEFAULT '' CHECK (length(notes) <= 2000),
   CHECK ( (status = 'unannounced' AND due_at IS NULL) OR (status <> 'unannounced' AND due_at IS NOT NULL) ),
   FOREIGN KEY (module_id) REFERENCES module(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) STRICT;
@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS deadline_lecture (
 CREATE TABLE IF NOT EXISTS milestone (
   id TEXT PRIMARY KEY CHECK (length(trim(id)) > 0),
   deadline_id TEXT NOT NULL,
-  title TEXT NOT NULL CHECK (length(trim(title)) > 0),
+  title TEXT NOT NULL CHECK (length(trim(title)) BETWEEN 1 AND 200),
   due_on TEXT NOT NULL CHECK (due_on GLOB '????-??-??'),
   est_minutes INTEGER NOT NULL CHECK (est_minutes > 0 AND est_minutes <= 600),
   done INTEGER NOT NULL DEFAULT 0 CHECK (done IN (0, 1)),
@@ -262,8 +262,8 @@ CREATE TABLE IF NOT EXISTS milestone (
 CREATE TABLE IF NOT EXISTS task (
   id TEXT PRIMARY KEY CHECK (length(trim(id)) > 0),
   module_id TEXT,
-  title TEXT NOT NULL CHECK (length(trim(title)) > 0),
-  due_on TEXT NOT NULL CHECK (due_on GLOB '????-??-??'),
+  title TEXT NOT NULL CHECK (length(trim(title)) BETWEEN 1 AND 300),
+  due_on TEXT CHECK (due_on IS NULL OR due_on GLOB '????-??-??'),
   est_minutes INTEGER NOT NULL CHECK (est_minutes > 0 AND est_minutes <= 600),
   priority TEXT NOT NULL DEFAULT 'optional' CHECK (priority IN ('required', 'optional')),
   recurrence TEXT DEFAULT 'none' CHECK (recurrence IS NULL OR recurrence IN ('none', 'daily', 'weekly')),
@@ -273,21 +273,21 @@ CREATE TABLE IF NOT EXISTS task (
 ) STRICT;
 -- R21: reading (E14 Reading — <MODULE>-R<nnn> or UUID, REQ-F-005, REQ-F-041)
 CREATE TABLE IF NOT EXISTS reading (
-  id TEXT PRIMARY KEY CHECK (length(trim(id)) > 0),
+  id TEXT PRIMARY KEY CHECK (length(trim(id)) BETWEEN 1 AND 80),
   module_id TEXT NOT NULL,
   lecture_id TEXT,
-  title TEXT NOT NULL CHECK (length(trim(title)) > 0),
-  citation TEXT NOT NULL CHECK (length(trim(citation)) > 0),
+  title TEXT NOT NULL CHECK (length(trim(title)) BETWEEN 1 AND 300),
+  citation TEXT NOT NULL CHECK (length(trim(citation)) BETWEEN 1 AND 500),
   pages TEXT CHECK (pages IS NULL OR length(pages) BETWEEN 1 AND 100),
   kind TEXT NOT NULL CHECK (kind IN ('required', 'recommended', 'optional')),
-  page_count INTEGER NOT NULL CHECK (page_count >= 1 AND page_count <= 2000),
-  est_minutes REAL NOT NULL CHECK (est_minutes > 0.0),
+  page_count INTEGER NOT NULL CHECK (page_count >= 1 AND page_count <= 1000),
+  est_minutes REAL NOT NULL CHECK (est_minutes >= 1.0),
   due_on TEXT NOT NULL CHECK (due_on GLOB '????-??-??'),
   status TEXT NOT NULL DEFAULT 'unread' CHECK (status IN ('unread', 'todo', 'done', 'skimmed', 'skipped')),
   confidence TEXT NOT NULL DEFAULT 'explicit' CHECK (confidence IN ('explicit', 'inferred')),
   confirmed INTEGER NOT NULL DEFAULT 0 CHECK (confirmed IN (0, 1)),
   completed_at TEXT CHECK (completed_at IS NULL OR completed_at GLOB '????-??-??T??:??:??*Z'),
-  source TEXT NOT NULL CHECK (length(trim(source)) > 0),
+  source TEXT NOT NULL CHECK (length(trim(source)) BETWEEN 1 AND 300),
   FOREIGN KEY (module_id) REFERENCES module(id) ON DELETE RESTRICT ON UPDATE CASCADE,
   FOREIGN KEY (lecture_id) REFERENCES lecture(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) STRICT;
@@ -295,7 +295,7 @@ CREATE TABLE IF NOT EXISTS reading (
 CREATE TABLE IF NOT EXISTS daily_plan (
   id TEXT PRIMARY KEY CHECK (length(trim(id)) > 0),
   plan_date TEXT NOT NULL UNIQUE CHECK (plan_date GLOB '????-??-??'),
-  budget_min INTEGER NOT NULL CHECK (budget_min >= 15 AND budget_min <= 720),
+  budget_min INTEGER NOT NULL DEFAULT 120 CHECK (budget_min >= 15 AND budget_min <= 720),
   generated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) CHECK (generated_at GLOB '????-??-??T??:??:??*Z')
 ) STRICT;
 -- R23: daily_plan_item (E16 DailyPlanItem — 9-step ordered checklist item, BR-035)
@@ -305,7 +305,7 @@ CREATE TABLE IF NOT EXISTS daily_plan_item (
   kind TEXT NOT NULL CHECK (kind IN ('carryover', 'card_review', 'quiz', 'new_cards', 'required_reading', 'milestone', 'assessment_prep', 'recommended_reading', 'task')),
   ref_id TEXT NOT NULL CHECK (length(trim(ref_id)) > 0),
   module_id TEXT,
-  title TEXT NOT NULL CHECK (length(trim(title)) > 0),
+  title TEXT NOT NULL CHECK (length(trim(title)) BETWEEN 1 AND 300),
   est_minutes REAL NOT NULL CHECK (est_minutes >= 0.0),
   priority TEXT NOT NULL CHECK (priority IN ('required', 'optional')),
   order_index INTEGER NOT NULL CHECK (order_index >= 1),
@@ -320,7 +320,7 @@ CREATE TABLE IF NOT EXISTS daily_plan_item (
 CREATE TABLE IF NOT EXISTS tutor_thread (
   id TEXT PRIMARY KEY CHECK (length(trim(id)) > 0),
   module_id TEXT NOT NULL,
-  title TEXT NOT NULL CHECK (length(trim(title)) > 0),
+  title TEXT NOT NULL CHECK (length(trim(title)) BETWEEN 1 AND 200),
   mode TEXT NOT NULL DEFAULT 'explain' CHECK (mode IN ('explain', 'socratic', 'quiz_me')),
   linked_type TEXT DEFAULT 'none' CHECK (linked_type IS NULL OR linked_type IN ('card', 'question', 'attempt', 'concept', 'reading', 'deadline', 'none')),
   linked_id TEXT,
@@ -333,7 +333,7 @@ CREATE TABLE IF NOT EXISTS tutor_message (
   id TEXT PRIMARY KEY CHECK (length(trim(id)) > 0),
   thread_id TEXT NOT NULL,
   role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
-  content TEXT NOT NULL CHECK (length(trim(content)) > 0),
+  content TEXT NOT NULL CHECK (length(trim(content)) >= 1 AND length(content) <= 20000),
   model TEXT,
   input_tokens INTEGER NOT NULL DEFAULT 0 CHECK (input_tokens >= 0),
   output_tokens INTEGER NOT NULL DEFAULT 0 CHECK (output_tokens >= 0),
@@ -368,10 +368,10 @@ CREATE TABLE IF NOT EXISTS feedback_item (
   id TEXT PRIMARY KEY CHECK (length(trim(id)) > 0),
   module_id TEXT NOT NULL,
   kind TEXT NOT NULL CHECK (kind IN ('reported', 'topup', 'proposed')),
-  item_type TEXT NOT NULL CHECK (item_type IN ('card', 'question', 'concept')),
+  item_type TEXT NOT NULL CHECK (item_type IN ('card', 'question', 'concept', 'proposal')),
   item_id TEXT NOT NULL CHECK (length(trim(item_id)) > 0),
   reason TEXT CHECK ( (kind = 'reported' AND reason IN ('wrong', 'unclear')) OR (kind <> 'reported' AND (reason IS NULL OR reason IN ('wrong', 'unclear', 'low_variants', 'tutor_proposed'))) ),
-  comment TEXT NOT NULL DEFAULT '',
+  comment TEXT NOT NULL DEFAULT '' CHECK (length(comment) <= 2000),
   payload_json TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(payload_json) = 1),
   exported INTEGER NOT NULL DEFAULT 0 CHECK (exported IN (0, 1)),
   created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) CHECK (created_at GLOB '????-??-??T??:??:??*Z'),
@@ -380,23 +380,23 @@ CREATE TABLE IF NOT EXISTS feedback_item (
 ) STRICT;
 -- R29: settings (E21 Settings — singleton configuration row, BR-025..028, BR-035, BR-041, ADR-007)
 CREATE TABLE IF NOT EXISTS settings (
-  id TEXT PRIMARY KEY CHECK (id = 'default'),
-  daily_budget_min INTEGER NOT NULL DEFAULT 90 CHECK (daily_budget_min >= 15 AND daily_budget_min <= 720),
+  id TEXT PRIMARY KEY DEFAULT 'default' CHECK (id = 'default'),
+  daily_budget_min INTEGER NOT NULL DEFAULT 120 CHECK (daily_budget_min >= 15 AND daily_budget_min <= 720),
   new_cards_per_day INTEGER NOT NULL DEFAULT 20 CHECK (new_cards_per_day >= 0 AND new_cards_per_day <= 500),
   review_cards_per_day INTEGER NOT NULL DEFAULT 200 CHECK (review_cards_per_day >= 1 AND review_cards_per_day <= 2000),
   quiz_per_day INTEGER NOT NULL DEFAULT 10 CHECK (quiz_per_day >= 0 AND quiz_per_day <= 100),
   reading_lookahead_days INTEGER NOT NULL DEFAULT 3 CHECK (reading_lookahead_days >= 0 AND reading_lookahead_days <= 30),
-  minutes_per_page REAL NOT NULL DEFAULT 3.0 CHECK (minutes_per_page > 0.0 AND minutes_per_page <= 60.0),
+  minutes_per_page REAL NOT NULL DEFAULT 2.5 CHECK (minutes_per_page >= 0.5 AND minutes_per_page <= 15.0),
   desired_retention REAL NOT NULL DEFAULT 0.90 CHECK (desired_retention >= 0.70 AND desired_retention <= 0.99),
   scheduler_mode TEXT NOT NULL DEFAULT 'fsrs' CHECK (scheduler_mode IN ('fsrs', 'sm2')),
   assessment_mode_days INTEGER NOT NULL DEFAULT 21 CHECK (assessment_mode_days >= 1 AND assessment_mode_days <= 90),
-  grading_model TEXT NOT NULL DEFAULT 'claude-haiku-4-5' CHECK (length(trim(grading_model)) BETWEEN 1 AND 100 AND grading_model NOT GLOB '*[^A-Za-z0-9._-]*'),
-  tutor_model TEXT NOT NULL DEFAULT 'claude-sonnet-4-6' CHECK (length(trim(tutor_model)) BETWEEN 1 AND 100 AND tutor_model NOT GLOB '*[^A-Za-z0-9._-]*'),
-  monthly_spend_cap_micro_usd INTEGER CHECK (monthly_spend_cap_micro_usd IS NULL OR monthly_spend_cap_micro_usd >= 0),
+  grading_model TEXT NOT NULL DEFAULT 'claude-haiku-5-5' CHECK (length(trim(grading_model)) BETWEEN 1 AND 100 AND grading_model NOT GLOB '*[^A-Za-z0-9._-]*'),
+  tutor_model TEXT NOT NULL DEFAULT 'claude-sonnet-5-5' CHECK (length(trim(tutor_model)) BETWEEN 1 AND 100 AND tutor_model NOT GLOB '*[^A-Za-z0-9._-]*'),
+  monthly_spend_cap_micro_usd INTEGER CHECK (monthly_spend_cap_micro_usd IS NULL OR (monthly_spend_cap_micro_usd > 0 AND monthly_spend_cap_micro_usd <= 1000000000)),
   monthly_spend_cap_mode TEXT NOT NULL DEFAULT 'block' CHECK (monthly_spend_cap_mode IN ('block', 'warn')),
-  timezone TEXT NOT NULL DEFAULT 'Asia/Hong_Kong' CHECK (length(trim(timezone)) > 0),
+  timezone TEXT NOT NULL DEFAULT 'Asia/Hong_Kong' CHECK (length(trim(timezone)) BETWEEN 1 AND 64),
   notifications_enabled INTEGER NOT NULL DEFAULT 0 CHECK (notifications_enabled IN (0, 1)),
-  fsrs_weights_json TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(fsrs_weights_json) = 1),
+  fsrs_weights_json TEXT DEFAULT NULL CHECK (fsrs_weights_json IS NULL OR (json_valid(fsrs_weights_json) = 1 AND json_type(fsrs_weights_json) = 'array' AND json_array_length(fsrs_weights_json) IN (17, 19, 21))),
   token_rates_json TEXT NOT NULL DEFAULT '{"claude-haiku-4-5":{"input_micro_per_mtok":1000000,"output_micro_per_mtok":5000000,"cache_read_micro_per_mtok":100000},"claude-sonnet-4-6":{"input_micro_per_mtok":3000000,"output_micro_per_mtok":15000000,"cache_read_micro_per_mtok":300000},"claude-haiku-5-5":{"input_micro_per_mtok":100000,"output_micro_per_mtok":500000,"cache_read_micro_per_mtok":10000},"claude-sonnet-5-5":{"input_micro_per_mtok":2000000,"output_micro_per_mtok":10000000,"cache_read_micro_per_mtok":200000}}' CHECK (json_valid(token_rates_json) = 1),
   updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) CHECK (updated_at GLOB '????-??-??T??:??:??*Z'),
   CHECK ( json_type(token_rates_json) = 'object' AND COALESCE(json_extract(token_rates_json, '$."' || grading_model || '".input_micro_per_mtok'), 0) > 0 AND COALESCE(json_extract(token_rates_json, '$."' || grading_model || '".output_micro_per_mtok'), 0) > 0 AND COALESCE(json_extract(token_rates_json, '$."' || grading_model || '".cache_read_micro_per_mtok'), 0) > 0 AND COALESCE(json_extract(token_rates_json, '$."' || tutor_model || '".input_micro_per_mtok'), 0) > 0 AND COALESCE(json_extract(token_rates_json, '$."' || tutor_model || '".output_micro_per_mtok'), 0) > 0 AND COALESCE(json_extract(token_rates_json, '$."' || tutor_model || '".cache_read_micro_per_mtok'), 0) > 0 )
@@ -448,9 +448,9 @@ CREATE TABLE IF NOT EXISTS auth_session (
   expires_at TEXT NOT NULL CHECK (expires_at GLOB '????-??-??T??:??:??*Z'),
   revoked_at TEXT CHECK (revoked_at IS NULL OR revoked_at GLOB '????-??-??T??:??:??*Z')
 ) STRICT;
--- Derived 3NF Read Views (ADR-007, A32 §4)
-CREATE VIEW IF NOT EXISTS v_card_state_with_retrievability AS SELECT cs.card_id, cs.state, cs.stability, cs.difficulty, cs.elapsed_days, cs.scheduled_days, cs.reps, cs.lapses, cs.due, cs.last_review, CASE WHEN cs.state = 'New' OR cs.last_review IS NULL OR cs.stability <= 0.0 THEN 0.0 ELSE pow(1.0 + (19.0 / 81.0) * (max(0.0, julianday('now') - julianday(cs.last_review)) / cs.stability), -0.5) END AS retrievability FROM card_state cs;
-CREATE VIEW IF NOT EXISTS v_concept_mastery AS SELECT c.id AS concept_id, c.module_id, c.lecture_id, c.importance, cs.state, cs.stability, cs.difficulty, cs.reps, cs.lapses, cs.due, cs.last_quiz, COUNT(qa.id) AS attempt_count, CASE WHEN cs.state = 'New' AND COUNT(qa.id) = 0 THEN 'unseen' WHEN cs.stability < 3.0 OR cs.lapses >= 3 THEN 'weak' WHEN cs.stability < 14.0 THEN 'developing' WHEN cs.stability >= 14.0 AND COUNT(qa.id) >= 2 AND cs.lapses = 0 THEN 'mastered' WHEN cs.stability >= 14.0 AND COUNT(qa.id) >= 2 THEN 'strong' ELSE 'developing' END AS mastery_level FROM concept c JOIN concept_state cs ON cs.concept_id = c.id LEFT JOIN question_attempt qa ON qa.concept_id = c.id GROUP BY c.id;
+-- Derived 3NF Read Views (ADR-007, A32 §4; V01 projects current_elapsed_days for SQL inspection while M03 computes elapsed days and retrievability from its injected nowIso clock via ts-fsrs v5; V02 classifies mastery_level with SM-5 = mastered + strong per BR-044 and ASM-066(d))
+CREATE VIEW IF NOT EXISTS v_card_state_with_retrievability AS SELECT cs.card_id, cs.state, cs.stability, cs.difficulty, cs.elapsed_days, cs.scheduled_days, cs.reps, cs.lapses, cs.due, cs.last_review, CASE WHEN cs.state = 'New' OR cs.last_review IS NULL THEN 0.0 ELSE max(0.0, julianday('now') - julianday(cs.last_review)) END AS current_elapsed_days FROM card_state cs;
+CREATE VIEW IF NOT EXISTS v_concept_mastery AS SELECT c.id AS concept_id, c.module_id, c.lecture_id, c.importance, cs.state, cs.stability, cs.difficulty, cs.reps, cs.lapses, cs.due, cs.last_quiz, COUNT(qa.id) AS attempt_count, CASE WHEN cs.state = 'New' AND COUNT(qa.id) = 0 THEN 'unseen' WHEN cs.stability >= 14.0 AND COUNT(qa.id) >= 2 AND cs.lapses = 0 THEN 'mastered' WHEN cs.stability >= 14.0 AND COUNT(qa.id) >= 2 THEN 'strong' WHEN cs.stability < 3.0 OR cs.lapses >= 3 THEN 'weak' ELSE 'developing' END AS mastery_level FROM concept c JOIN concept_state cs ON cs.concept_id = c.id LEFT JOIN question_attempt qa ON qa.concept_id = c.id GROUP BY c.id;
 CREATE VIEW IF NOT EXISTS v_daily_plan_summary AS SELECT dp.id, dp.plan_date AS date, dp.budget_min, COALESCE(SUM(CASE WHEN dpi.deferred = 0 THEN dpi.est_minutes ELSE 0.0 END), 0.0) AS total_est_minutes, COALESCE(SUM(CASE WHEN dpi.priority = 'required' THEN dpi.est_minutes ELSE 0.0 END), 0.0) AS required_minutes, CASE WHEN COALESCE(SUM(CASE WHEN dpi.priority = 'required' THEN dpi.est_minutes ELSE 0.0 END), 0.0) > dp.budget_min THEN 1 ELSE 0 END AS over_budget_warning, CASE WHEN COUNT(dpi.id) > 0 AND SUM(CASE WHEN dpi.priority = 'required' AND dpi.completed = 0 THEN 1 ELSE 0 END) = 0 THEN 1 ELSE 0 END AS completed, dp.generated_at FROM daily_plan dp LEFT JOIN daily_plan_item dpi ON dpi.plan_id = dp.id GROUP BY dp.id;
 -- Justified Secondary Indexes (A33 §4 — every index tied to a named query)
 -- IDX-01: Daily flashcard review queue query (GET /api/review/next, REQ-N-001, REQ-N-002)
@@ -483,3 +483,5 @@ CREATE INDEX IF NOT EXISTS idx_tutor_thread_module_updated ON tutor_thread(modul
 CREATE INDEX IF NOT EXISTS idx_tutor_message_created_cost ON tutor_message(created_at, cost_micro_usd) WHERE role = 'assistant';
 -- IDX-15: Monthly Claude API spend aggregation on written-answer marking calls (GET /api/stats, SM-6, BR-041)
 CREATE INDEX IF NOT EXISTS idx_grading_call_log_called_cost ON grading_call_log(called_at, cost_micro_usd);
+-- Seed singleton R29 settings row (id = 'default', TC-I-097)
+INSERT OR IGNORE INTO settings (id) VALUES ('default');

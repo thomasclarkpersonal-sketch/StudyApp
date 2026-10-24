@@ -305,7 +305,7 @@
       "additionalProperties": false,
       "properties": {
         "round": { "type": "integer", "enum": [1, 2, 3] },
-        "stage": { "type": "string", "enum": ["cards", "questions", "cross_lecture", "card", "question"] },
+        "stage": { "type": "string", "enum": ["cards", "questions", "cross_lecture"] },
         "lecture_id": { "type": "string" },
         "reviews": {
           "type": "array",

@@ -30,10 +30,10 @@ Before and between subagent invocations, `pipeline-cli` (TypeScript + a small Py
    - Extracts raw text per page (`pypdf`), normalising Unicode ligatures (`\ufb00`–`\ufb04` $\rightarrow$ `ff`, `fi`, `fl`, `ffi`, `ffl`).
    - Scans PDF `/Contents` and `/PieceInfo` / `LaTeXiT` streams to recover embedded LaTeX equation strings per slide (`REQ-F-001`, `ASM-046`).
    - Classifies each slide as `text_sufficient`, `image_led`, or `unreadable_visual` (`BR-007`) and writes `<workspace>/lectures/<Wnn>/ingested-slides.json` wrapped in `<untrusted_course_material>` tags (`REQ-N-014`).
-2. **`pipeline-cli build-reviewer-bundle --stage card|question --round <1|2|3>`:**
-   - Constructs a clean, self-contained input file `<workspace>/lectures/<Wnn>/reviewer-input.r<n>.json` containing **only** the candidate items (`cards.round<n>.json` or `questions.round<n>.json`), `ingested-slides.json` (plus paths to slide PNGs), and `glossary.json`.
-   - Asserts programmatically (`TC-I-N12`) that `0` keys or files from `creator-notes`, `review.round<n-1>.json`, or conversation history are present (`BR-011`, `REQ-N-012`).
-3. **`pipeline-cli apply-verdicts --stage card|question --round <1|2|3>`:**
+2. **`pipeline-cli build-reviewer-bundle --stage <cards|questions|cross_lecture> --round <1|2|3>`:**
+   - Constructs a clean, self-contained input file `<workspace>/lectures/<Wnn>/reviewer-input.r<n>.json` containing **only** the candidate items (`cards.draft.json` or `questions.draft.json`), `ingested-slides.json` (plus paths to slide PNGs), and `glossary.json`.
+   - Asserts programmatically (`TC-I-N12`) that `0` keys or files from `creator-notes`, `*.review.r<n-1>.json`, or conversation history are present (`BR-011`, `REQ-N-012`).
+3. **`pipeline-cli apply-verdicts --stage <cards|questions|cross_lecture> --round <1|2|3>`:**
    - Deterministically executes Decision Table `DT-01` (`BR-012`–`BR-014`): freezes `accept` items into `*.final.json`, immediately removes `reject` items in rounds `1`–`2` (recording concept IDs that need a replacement under a new ID), prepares the `revise` delta for round `r + 1`, and routes any round-3 non-`accept` items into `flagged.json` (`reason = "failed_3_rounds"`).
 4. **`pipeline-cli spot-check` & `pipeline-cli export`:**
    - Samples `ceil(0.10 * N)` accepted items for the student's interactive CLI review (`REQ-F-017`, `BR-015`), validates all 6 export JSON files against `A34` JSON Schemas (`Ajv`, `REQ-N-020`), and writes `run-summary.json`.
@@ -41,9 +41,9 @@ Before and between subagent invocations, `pipeline-cli` (TypeScript + a small Py
 ### 2.2 Native Claude Code Subagent Definitions (`.claude/agents/`)
 Six dedicated subagent files with least-privilege tool allowlists (`Read` only on the staging bundle and slide PNGs, `Write` only on their designated output JSON file, `Bash` disabled):
 - `extractor.md` (`AI-01`): reads syllabus/Canvas bundle $\rightarrow$ writes `glossary.json`, `deadlines.json`, `readings.json`, `concepts.skeleton.json`.
-- `card-creator.md` (`AI-02`): reads `ingested-slides.json`, slide PNGs, `glossary.json`, and (on round `r > 1`) the current round's `revise` feedback $\rightarrow$ writes `cards.round<r>.json` and `concepts.json`.
-- `card-reviewer.md` (`AI-03`): spawned as a **fresh subagent invocation per round**; reads only `reviewer-input.r<r>.json` and slide PNGs; performs Pass 1 (blind answer) and Pass 2 (8-criterion pass/fail rubric `failed_criteria`, `verdict: "accept" | "revise" | "reject"`) $\rightarrow$ writes `card-review.round<r>.json`.
-- `question-creator.md` (`AI-04a`) & `question-reviewer.md` (`AI-04b`): analogous fresh-context loop for `questions.round<r>.json` and `question-review.round<r>.json`.
+- `card-creator.md` (`AI-02`): reads `ingested-slides.json`, slide PNGs, `glossary.json`, and (on round `r > 1`) the current round's `revise` feedback $\rightarrow$ writes `cards.draft.json` and `concept-map.json`.
+- `card-reviewer.md` (`AI-03`): spawned as a **fresh subagent invocation per round**; reads only `reviewer-input.r<r>.json` and slide PNGs; performs Pass 1 (blind answer) and Pass 2 (8-criterion pass/fail rubric `failed_criteria`, `verdict: "accept" | "revise" | "reject"`) $\rightarrow$ writes `cards.review.r<r>.json`.
+- `question-creator.md` (`AI-04a`) & `question-reviewer.md` (`AI-04b`): analogous fresh-context loop for `questions.draft.json` and `questions.review.r<r>.json`.
 - `module-auditor.md` (`AI-05`): reads all lecture finals for a module $\rightarrow$ writes `module-audit.json` (`REQ-F-016`, `BR-019`).
 
 ---

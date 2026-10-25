@@ -45,7 +45,7 @@ Every `FOREIGN KEY` in [`schema.sql`](schema.sql) defines explicit `ON DELETE` a
 
 ## 3. Index Justification Table (`A33.3`)
 
-Every index (`IDX-01`–`IDX-15`) in [`schema.sql`](schema.sql) is justified by a named hot query and latency target (`REQ-N-001`–`REQ-N-003`, `REQ-N-007`). No table partitioning is used because the 4-year degree volume (`12,000` cards, `16,000` questions, `500,000` review log rows, `REQ-N-007`) occupies `< 150 MB` in SQLite, where B-tree composite indexes execute in `< 2 ms`.
+Every index (`IDX-01`–`IDX-15`) in [`schema.sql`](schema.sql) is justified by a named hot query and latency target (`REQ-N-001`–`REQ-N-003`, `REQ-N-007`). No table partitioning is used because the 4-year degree volume (`12,000` cards, `16,000` questions, `500,000` review log rows, `REQ-N-007`) is served directly by B-tree composite indexes (`IDX-01`–`IDX-15`) designed to meet `REQ-N-001` (`<= 100 ms` p95), `REQ-N-002` (`<= 300 ms` p95), and `REQ-N-003` (`<= 1,000 ms` p95; empirically benchmarked in `TC-S-007` in `SL-10`).
 
 | Index Name | Table & Columns | Named Query / Access Pattern | Target `REQ-N` |
 | :-- | :-- | :-- | :-- |
@@ -76,7 +76,7 @@ When `packages/server/src/db/connection.ts` opens a database file path (`STUDY_D
 
 ### 4.2 Versioned Migration Strategy
 - Numbered forward SQL migration files live in `packages/server/src/db/migrations/NNN_<name>.sql` (`001_initial_schema.sql`, etc.).
-- On startup, `migrator.ts` compares applied versions in `schema_migrations` (verifying `checksum_sha256` against each file on disk) and applies any pending migration inside an exclusive transaction (`BEGIN IMMEDIATE ... COMMIT`) only **after** creating a pre-migration online backup (§4.3).
+- On startup, `migrator.ts` compares applied versions in `schema_migrations` (verifying `checksum_sha256` against each file on disk) and applies any pending migration inside an exclusive transaction (`BEGIN IMMEDIATE ... COMMIT`) only **after** creating a pre-migration online backup (§4.3). In `SL-12`, if the student's recorded `ASM-070` answer in `checkpoints.md` selects the `4.x` default models (`claude-haiku-4-5` / `claude-sonnet-4-6`), an idempotent migration (`UPDATE settings SET grading_model = 'claude-haiku-4-5', tutor_model = 'claude-sonnet-4-6' WHERE id = 'default' AND grading_model = 'claude-haiku-5-5' AND tutor_model = 'claude-sonnet-5-5'`) updates the existing `R1` `settings` row without overwriting any model choice already customized by the student.
 - Rollback approach (`A61`): Because a pre-migration snapshot is written before every migration, rolling back a schema migration restores the pre-migration `.db` snapshot and replays any exported JSON files if needed.
 
 ### 4.3 Crash-Safe Online Backup and Restore (`REQ-N-011`, `BR-024`)
@@ -88,7 +88,7 @@ Therefore, all backups use SQLite's online **`VACUUM INTO`** (or `better-sqlite3
    - Opens the backup file read-only, runs `PRAGMA integrity_check` and `PRAGMA foreign_key_check` (asserting both return `'ok'` / `0` rows), computes its `SHA-256` digest (`backup_sha256`), and records both in `import_batch`.
    - Retains the most recent `30` backup snapshots in `<STUDY_DATA_DIR>/backups/` (mode `0600`).
 3. **Mid-Write Crash Recovery (`SIGKILL` test `TC-S-011`):**
-   - Because `PRAGMA journal_mode = WAL` and `PRAGMA synchronous = FULL` are set on the primary connection, if `SIGKILL` terminates the Node.js process mid-import or mid-review, SQLite automatically rolls back the uncommitted WAL frames on the next connection open in `< 50 ms`, leaving `100%` of previously committed `card_review_log` and `question_attempt` rows intact.
+   - Because `PRAGMA journal_mode = WAL` and `PRAGMA synchronous = FULL` are set on the primary connection, if `SIGKILL` terminates the Node.js process mid-import or mid-review, SQLite automatically rolls back the uncommitted WAL frames on the next connection open (`REQ-N-011`, verified by `TC-S-011` in `SL-06`), leaving `100%` of previously committed `card_review_log` and `question_attempt` rows intact.
    - To restore a prior backup snapshot (`POST /api/backup/restore` or CLI `study-admin restore <backup-file>`), the restore procedure verifies the backup's `application_id` (`0x53544459`) and `PRAGMA integrity_check`, checkpoints and closes the active DB connection, atomically renames the verified backup into place, and reopens the connection.
 
 ### 4.4 Encryption at Rest and File Permissions (`A33`, `A36`)

@@ -81,14 +81,14 @@ Every report traces to one or more requirements in `A10` and names its audience 
     4. **Pipeline Processing Lead Time (`SM-1`):** derived from `import_batch` (`R30`) and `import_batch_lecture` (`R31`, `MIN(imported_at)` per lecture) compared against `deadline.due_at` (`R17`) and `deadline_lecture` (`R18`) for each assessment covering that lecture (`Target: >= 7.0 days before assessment`).
     5. **Monthly Claude API Spend (`SM-6`):** derived from `grading_call_log` (`R32`) + `tutor_message` (`R25`) for the current calendar month bounded in `Settings.timezone` (default `Asia/Hong_Kong` per `ASM-022`, `ASM-067`):
        $$\text{Spend (USD)} = \frac{\sum \text{cost\_micro\_usd}}{1,000,000}$$
-       Broken down by feature (`marking` vs `tutor`), model (`claude-haiku-4-5` vs `claude-sonnet-4-6`, or `claude-haiku-5-5` / `claude-sonnet-5-5` per `Settings.token_rates_json`, `ASM-070`, `ASM-059`), and token category (`input_tokens`, `cached_tokens`, `output_tokens`), compared against `Settings.monthly_spend_cap_micro_usd` and `Settings.monthly_spend_cap_mode` (`'block'` [default] or `'warn'`, `BR-041`, `ASM-067`).
+       Broken down by feature (`marking` vs `tutor`), model (`claude-haiku-5-5` vs `claude-sonnet-5-5` per `ASM-059`, or `claude-haiku-4-5` / `claude-sonnet-4-6` per `Settings.token_rates_json` and `ASM-070`), and token category (`input_tokens`, `cached_tokens`, `output_tokens`), compared against `Settings.monthly_spend_cap_micro_usd` and `Settings.monthly_spend_cap_mode` (`'block'` [default] or `'warn'`, `BR-041`, `ASM-067`).
   - **Charts and Breakdown Tables (chosen per `Appendix B5`):**
     - **Daily Review Count & Retention Trend (Line Graph + Tabular Toggle):** 30-day daily time series (`date`, `cards_reviewed`, `questions_attempted`, `retention_pct`) — line graph for trend over time (`B5`), with an accessible table view for keyboard/screen-reader inspection.
-    - **Concept Mastery by Module & Assessment Scope (Horizontal Stacked Bar Chart + Table on `SCR-04` & `SCR-08`):** derived from `v_concept_mastery` (`A32 §4.3`, `BR-044`): counts of concepts per module/assessment in `mastered (stability >= 21d AND attempts >= 2)`, `strong (stability >= 14d AND attempts >= 2)`, `developing (stability >= 3d)`, `weak (stability < 3d)`, and `unseen (state = 'New')` — bar chart for category comparison (`B5`).
+    - **Concept Mastery by Module & Assessment Scope (Horizontal Stacked Bar Chart + Table on `SCR-04` & `SCR-08`):** derived from `v_concept_mastery` (`A32 §4.3`, `BR-044`, `ASM-066(d)`): counts of concepts per module/assessment in `mastered (stability >= 14d AND attempts >= 2 AND lapses = 0)`, `strong (stability >= 14d AND attempts >= 2 AND lapses >= 1; SM-5 / BR-044 concept mastery counts mastered + strong)`, `developing (3d <= stability < 14d with lapses < 3, or stability >= 14d with < 2 attempts and lapses < 3)`, `weak (below mastery with stability < 3d OR lapses >= 3)`, and `unseen (state = 'New' AND attempts = 0)` — bar chart for category comparison (`B5`).
     - **30-Day Review Load Forecast (`R3`, `REQ-F-065`, Bar Chart + Table):** projected daily due cards and concepts for `today + 1` to `today + 30` from `card_state.due` (`R08`) and `concept_state.due` (`R10`), plus FSRS optimizer comparison (`default` vs `fitted` weights log-loss / RMSE on `card_review_log` when `COUNT(*) >= 400`).
 - **Filters, sorting, grouping, and totals:** Filter by `module_id` (`All modules` or specific module) and time window (`7d`, `30d`, `90d`, `Semester`); tables right-align all numeric counts, percentages (1 decimal place), and USD amounts (`$0.00`).
-- **Volume and performance expectation:** Aggregates up to `500,000` `card_review_log` rows using `idx_card_review_log_reviewed_at`; response time `< 500 ms` (`p95`).
-- **Sample layout (`SCR-08`):**
+- **Volume and performance expectation:** Aggregates up to `500,000` `card_review_log` rows using `idx_card_review_log_reviewed_at`; design target `<= 1,000 ms` (`p95`, aligned with `REQ-N-003` / `REQ-N-007`; measured in `SL-17`).
+- **Sample layout (`SCR-08`, illustrative wireframe computed at `ASM-059` `5.5` rates):**
   ```text
   ================================================================================
   STATISTICS & SPEND DASHBOARD               Data as of: 2026-10-28 14:15 HKT
@@ -101,19 +101,19 @@ Every report traces to one or more requirements in `A10` and names its audience 
   |   [PASS: Target >= 85%] |   [PASS: Target >= 5/7] |   [PASS: Target < 2.0%]  |
   +-------------------------+-------------------------+--------------------------+
   | Assessment Lead (SM-1)  | Oct Claude Spend (SM-6) | Cache Hit Ratio          |
-  |   18.2d before Final    |   $4.12 / $15.00 cap    |   86.4% cached input     |
+  |   18.2d before Final    |   $4.12 / $15.00 cap    |   95.9% cached input     |
   |   [PASS: 10/10 lecs]    |   [OK: 27.5% of cap]    |   Haiku $0.24·Sonnet$3.88|
   +-------------------------+-------------------------+--------------------------+
-  CONCEPT MASTERY BY ASSESSMENT SCOPE (v_concept_mastery)
-  Module / Assessment        Mastered(>=21d) Strong(>=14d) Developing Weak Unseen
-  COMP4901B Final (120 conc)       42 (35.0%)    30 (25.0%)  20(16.7%)  18   10
-  COMP3211  Midterm (64 conc)      28 (43.8%)    14 (21.9%)  10(15.6%)  12    0
+  CONCEPT MASTERY BY ASSESSMENT SCOPE (v_concept_mastery — SM-5 = Mastered + Strong)
+  Module / Assessment        Mastered(>=14d,0L) Strong(>=14d,>=1L) Developing Weak Unseen
+  COMP4901B Final (120 conc)          42 (35.0%)         30 (25.0%)  20(16.7%)  18     10
+  COMP3211  Midterm (64 conc)         28 (43.8%)         14 (21.9%)  10(15.6%)  12      0
   --------------------------------------------------------------------------------
-  MONTHLY CLAUDE API SPEND BREAKDOWN (October 2026)
+  MONTHLY CLAUDE API SPEND BREAKDOWN (October 2026 — at ASM-059 5.5 rates)
   Feature        Model                  Calls   Input Tok  Cached Tok  Output Tok   Spend
-  Quiz Marking   claude-haiku-4-5         112      84,200   4,120,000      29,400   $0.24
-  Course Tutor   claude-sonnet-4-6         48     192,000   1,850,000      34,100   $3.88
-  TOTAL                                   160     276,200   5,970,000      63,500   $4.12
+  Quiz Marking   claude-haiku-5-5         112     200,000   7,000,000     300,000   $0.24
+  Course Tutor   claude-sonnet-5-5         48     200,000   2,400,000     300,000   $3.88
+  TOTAL                                   160     400,000   9,400,000     600,000   $4.12
   ================================================================================
   ```
 
@@ -129,7 +129,7 @@ Every report traces to one or more requirements in `A10` and names its audience 
     - `Concept performance rollup`: groups exam attempts by `concept_id`, computes `score_pct` (`100%` for correct MCQ or `SUM(met) / COUNT(point_index)` for written questions), flags any concept with `rating IN (1, 2)` (`Again` or `Hard`) or `score_pct < 60` as `Weak Concept`, and counts linked active flashcards in `concept_card` (`R05`).
 - **Filters, sorting, grouping, and totals:** Weak concepts sorted by `score_pct ASC`, then `ConceptState.stability ASC`; question review list filterable by `[All | Incorrect / Partial | Correct]`.
 - **Display choice (`Appendix B5`):** Summary score banner, weak-concept action table (for immediate remedial action), and expandable per-question comparison cards with side-by-side student answer vs marking points.
-- **Volume and performance expectation:** `10–35` questions per mock exam; renders immediately (`< 300 ms`) once marking completes.
+- **Volume and performance expectation:** `10–35` questions per mock exam; design target `<= 300 ms` (`p95`, aligned with `REQ-N-002`; measured in `SL-15`) once marking completes.
 - **Sample layout (`SCR-09` Results View):**
   ```text
   ================================================================================
@@ -160,7 +160,7 @@ Every report traces to one or more requirements in `A10` and names its audience 
   - Fields in `run-summary.json` (`E27`): `run_id`, `module_id`, `started_at`, `completed_at`, `lectures_processed`, `concepts_extracted`, `cards_accepted`, `cards_revised`, `cards_rejected`, `cards_flagged`, `questions_accepted`, `questions_revised`, `questions_rejected`, `questions_flagged`, `spot_check_sample_size`, `spot_check_rejected_count`.
 - **Filters, sorting, grouping, and totals:** Sorted in exact execution order (`BR-005`: CS modules first, then nearest assessment); column totals at bottom.
 - **Display choice (`Appendix B5`):** Fixed-width CLI table + structured JSON file + `SCR-06` import batch history table.
-- **Volume and performance expectation:** `1–26` lectures per run; summary generation `< 100 ms`.
+- **Volume and performance expectation:** `1–26` lectures per run; summary generation included within `REQ-N-006` (`<= 15 min/lecture` pipeline run target; measured in `SL-05`).
 - **Sample layout (CLI stdout & `SCR-06` summary):**
   ```text
   ================================================================================

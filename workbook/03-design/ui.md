@@ -104,7 +104,7 @@ flowchart TD
 | [Study App]  [Today*] [Review] [Quiz] [Modules] [Schedule] [Tutor] [Stats] [Import] [Settings]   |
 +--------------------------------------------------------------------------------------------------+
 | TODAY — Wednesday, 21 Oct 2026 (Asia/Hong_Kong)                Last 7d: 6/7 days (SM-4b) [Sync]  |
-| Study Time Budget: [=================>          ] 68 / 90 min (22 min remaining)                 |
+| Study Time Budget: [=================>          ] 68 / 120 min (52 min remaining)                |
 | [!] ASSESSMENT MODE ACTIVE: COMP4901B Final Exam in 18 days (covers W01-W10)   [Start Mock Exam] |
 +--------------------------------------------------------------------------------------------------+
 | UPCOMING DEADLINES (Top 3)                                                     [View All / .ics] |
@@ -164,7 +164,7 @@ flowchart TD
 | | Past rewards before step t do not depend on action a_t, so including them adds noise without | |
 | | changing the expected gradient direction (causality).                                        | |
 | +----------------------------------------------------------------------------------------------+ |
-| [Mark with Claude (Haiku 4.5)]   [Self-Mark Against Rubric]   [r: Report Question]               |
+| [Mark with Claude (Haiku 5.5)]   [Self-Mark Against Rubric]   [r: Report Question]               |
 +--------------------------------------------------------------------------------------------------+
 | MARKING RESULT (Claude Grader — 1.8s, $0.0002):                                                  |
 | [x] Point 1: Actions at step t cannot affect rewards received at steps t' < t (causality).       |
@@ -187,8 +187,8 @@ flowchart TD
 | Lecture W04: Reinforcement Learning for LLMs (12 concepts)          Scope Coverage: 10/12 (>=2x) |
 | +----------------------------------------------------------------------------------------------+ |
 | | ID                 | Concept Name          | Imp. | Mastery       | Stab. | Quiz Attempts    | |
-| | COMP4901B-W04-K01  | MDP Formulation       | core | [Mastered]    | 21.4d | 3 attempts       | |
-| | COMP4901B-W04-K02  | Policy Gradient Thm   | core | [Developing]  |  6.1d | 2 attempts       | |
+| | COMP4901B-W04-K01  | MDP Formulation       | core | [Mastered]    | 16.4d | 3 attempts (0L)  | |
+| | COMP4901B-W04-K02  | Policy Gradient Thm   | core | [Developing]  |  6.1d | 2 attempts (0L)  | |
 | | COMP4901B-W04-K03  | REINFORCE Baseline    | core | [Weak !]      |  1.8d | 1 attempt [Quiz] | |
 | +----------------------------------------------------------------------------------------------+ |
 +--------------------------------------------------------------------------------------------------+
@@ -242,7 +242,7 @@ flowchart TD
 | Thread: "Why does baseline b(s) have zero expectation?"      [Delete Thread]| THREAD HISTORY     |
 | --------------------------------------------------------------------------- | [Search threads..] |
 | [Student]: Can you show why E[grad log pi(a|s) * b(s)] = 0?                 | - Baseline proof*  |
-| [Claude Tutor (Sonnet 4.6 · 1.4s TTFT · $0.008)]:                           | - MDP Bellman eq   |
+| [Claude Tutor (Sonnet 5.5 · 1.4s TTFT · $0.008)]:                           | - MDP Bellman eq   |
 | Using the module's notation $\pi_\theta(a_t \mid s_t)$ (Policy in this      |                    |
 | module), we factor $b(s_t)$ out of the inner sum over actions:              | PROPOSAL QUEUE (1) |
 | $$\sum_a \nabla_\theta \pi_\theta(a|s) b(s) = b(s) \nabla_\theta 1 = 0$$    | [Card Draft]       |
@@ -290,17 +290,18 @@ flowchart TD
 | SETTINGS, BACKUPS & EXPORTS                                                                      |
 +--------------------------------------------------------------------------------------------------+
 | DAILY LIMITS & FSRS SCHEDULER                                                                    |
-| Daily Study Budget (min): [ 90 ]   New Cards/Day/Mod: [ 20 ]   Max Due Reviews/Day/Mod: [ 200 ]  |
-| Daily Quiz Concepts/Mod:  [ 10 ]   Reading Min/Page:  [ 3.0 ]  Desired Retention:      [ 0.90 ]  |
-| Scheduler Mode: ([FSRS*] [SM-2 Fallback])   Assessment Mode Window (days): [ 21 ]                |
+| Daily Study Budget (min): [ 120 ]  New Cards/Day/Mod: [ 20 ]   Max Due Reviews/Day/Mod: [ 200 ]  |
+| Daily Quiz Concepts/Mod:  [ 10 ]   Reading Min/Page:  [ 2.5 ]  Desired Retention:      [ 0.90 ]  |
+| Reading Lookahead (days): [ 3 ]    Scheduler Mode: ([FSRS*] [SM-2 Fallback])  Exam Win: [ 21 ]   |
+| Timezone: [Asia/Hong_Kong v]       Notifications: [ ] Enabled (Daily Due & 48h/24h Deadlines)    |
 |                                                                                                  |
 | CLAUDE API MODELS & SPEND GUARD (R2)                                                             |
-| Marking Model: [claude-haiku-4-5 v]   Tutor Model: [claude-sonnet-4-6 v]                         |
+| Marking Model: [claude-haiku-5-5 v]   Tutor Model: [claude-sonnet-5-5 v]                         |
 | Monthly Spend Cap (USD): [ 15.00 ]    Cap Mode: ([Block* (Default)] [Warn Only])                 |
 |                                                                                                  |
 | EXPORTS & DATABASE BACKUPS                                                       [Save Settings] |
 | [Export feedback.json (3 unexported)]  [Download calendar.ics]  [Export Anki TSV (deck.anki.tsv)]|
-| [Create Verified SQLite Backup Now]    [Restore Prior Backup... (Requires Confirmation Modal)]   |
+| [Create Verified SQLite Backup Now]    Backup File: [study-backup-...db] [x] Confirm [Restore]   |
 +--------------------------------------------------------------------------------------------------+
 ```
 
@@ -321,14 +322,14 @@ flowchart TD
 
 ## 4. Field Validation Table (`G3.5`, `A35.3`, Appendix `B4`)
 
-Every user-editable input field across `SCR-01`–`SCR-11` is validated on both client and server (`ADR-003 §2.3`) using the validation categories in Catalog Appendix `B4` (`Missing data`, `Range`, `Size`, `Values`, `Picture / template`, `Class / composition`, `Combinations`, `Expected values`, `Reasonableness`), and displays the exact plain-language error message below (`G3.5`):
+Every user-editable input field across `SCR-01`–`SCR-11` (`FLD-01`–`FLD-30`) is validated on both client and server (`ADR-003 §2.3`) using the validation categories in Catalog Appendix `B4` (`Missing data`, `Range`, `Size`, `Values`, `Picture / template`, `Class / composition`, `Combinations`, `Expected values`, `Reasonableness`), and displays the exact plain-language error message below (`G3.5`):
 
 | Field ID | Screen | Field Name | Data Type | Req? | Validation Types (`Appendix B4`) & Rule | Exact Error Message Text (`B6`) | `BR` / `REQ` Trace |
 | :-- | :-- | :-- | :-- | :-: | :-- | :-- | :-- |
-| `FLD-01` | `SCR-02` | `rating` (Card Rating) | `integer` | Yes | `Missing data`, `Values` (`{1, 2, 3, 4}`) | `"Select a rating between 1 (Again) and 4 (Easy)."` | `REQ-F-023`, `BR-026` |
-| `FLD-02` | `SCR-02` | `front` (Edit Card Front) | `text` | Yes | `Missing data`, `Size` (`1..2000` chars after trim) | `"Card front cannot be empty and must be under 2,000 characters."` | `REQ-F-025`, `BR-007` |
-| `FLD-03` | `SCR-02` | `back` (Edit Card Back) | `text` | Yes | `Missing data`, `Size` (`1..2000` chars after trim), `Reasonableness` (warns if `> 15` words, `BR-008`) | `"Card back cannot be empty and must be under 2,000 characters."` | `REQ-F-025`, `BR-008` |
-| `FLD-04` | `SCR-02` | `extra` (Edit Card Extra) | `text` | No | `Size` (`0..4000` chars) | `"Extra notes must be 4,000 characters or fewer."` | `REQ-F-025`, `BR-008` |
+| `FLD-01` | `SCR-02` | `rating` (Card Rating) | `integer` | Yes | `Missing data`, `Values` (`{1, 2, 3, 4}`) | `"Select a rating between 1 (Again) and 4 (Easy)."` | `REQ-F-025`, `REQ-F-026`, `BR-026` |
+| `FLD-02` | `SCR-02` | `front` (Edit Card Front) | `text` | Yes | `Missing data`, `Size` (`1..2000` chars after trim) | `"Card front cannot be empty and must be under 2,000 characters."` | `REQ-F-078`, `BR-007` |
+| `FLD-03` | `SCR-02` | `back` (Edit Card Back) | `text` | Yes | `Missing data`, `Size` (`1..2000` chars after trim), `Reasonableness` (warns if `> 15` words, `BR-008`) | `"Card back cannot be empty and must be under 2,000 characters."` | `REQ-F-078`, `BR-008` |
+| `FLD-04` | `SCR-02` | `extra` (Edit Card Extra) | `text` | No | `Size` (`0..4000` chars) | `"Extra notes must be 4,000 characters or fewer."` | `REQ-F-078`, `BR-008` |
 | `FLD-05` | `SCR-03` | `userAnswer` (MCQ Option) | `enumeration` | Yes | `Missing data`, `Values` (`{'A', 'B', 'C', 'D'}`) | `"Choose option A, B, C, or D before submitting."` | `REQ-F-032`, `BR-017` |
 | `FLD-06` | `SCR-03` | `userAnswer` (Written Answer) | `text` | Yes | `Missing data`, `Size` (`1..10000` chars after trim) | `"Enter your written answer (up to 10,000 characters) before submitting."` | `REQ-F-033`, `REQ-F-043` |
 | `FLD-07` | `SCR-03` | `rating` (Override Quiz Rating) | `integer` | Yes | `Missing data`, `Values` (`{1, 2, 3, 4}`) | `"Choose a replacement rating between 1 (Again) and 4 (Easy)."` | `REQ-F-044`, `BR-031` |
@@ -338,31 +339,33 @@ Every user-editable input field across `SCR-01`–`SCR-11` is validated on both 
 | `FLD-11` | `SCR-05` | `type` (Deadline Type) | `enumeration` | Yes | `Missing data`, `Values` (`exam`, `midterm`, `quiz`, `homework`, `project`, `coursework`, `other`) | `"Select a valid deadline type."` | `REQ-F-036` |
 | `FLD-12` | `SCR-05` | `dueAt` & `status` (Deadline Due Date) | `date-time` | Cond | `Picture / template` (ISO-8601), `Combinations` (`dueAt == null` iff `status == 'unannounced'`, `BR-004`) | `"Enter a valid date and time, or mark the deadline status as Unannounced (TBD)."` | `REQ-F-036`, `BR-004`, `AT-048` |
 | `FLD-13` | `SCR-05` | `weighting` (Deadline Weight %) | `number` | No | `Range` (`0 <= weighting <= 100`) | `"Weighting must be between 0 and 100."` | `REQ-F-036`, `AT-048` |
-| `FLD-14` | `SCR-05` | `title` (Milestone / Task Title) | `text` | Yes | `Missing data`, `Size` (`1..200` chars after trim) | `"Enter a title of 1 to 200 characters."` | `REQ-F-038`, `REQ-F-056` |
-| `FLD-15` | `SCR-05` | `dueOn` (Milestone / Task / Reading Due Date) | `date` | Yes | `Missing data`, `Picture / template` (`YYYY-MM-DD`) | `"Enter a valid calendar date in YYYY-MM-DD format."` | `REQ-F-038`, `REQ-F-041`, `REQ-F-056` |
-| `FLD-16` | `SCR-05` | `estMinutes` (Milestone / Task / Reading Duration) | `integer` | Yes | `Missing data`, `Range` (`1..600` minutes), `Reasonableness` (warns if `> 180` min for a single step) | `"Estimated time must be between 1 and 600 minutes."` | `REQ-F-038`, `REQ-F-056` |
+| `FLD-14` | `SCR-05` | `title` (Milestone / Task Title) | `text` | Yes | `Missing data`, `Size` (`1..200` chars for Milestone, `1..300` chars for Task after trim) | `"Enter a title of 1 to 200 characters (up to 300 characters for a task)."` | `REQ-F-056`, `REQ-F-082` |
+| `FLD-15` | `SCR-05` | `dueOn` (Milestone / Task / Reading Due Date) | `date` | Cond | `Missing data` (required for Milestone and Reading; optional `YYYY-MM-DD` or `null` for Task), `Picture / template` (`YYYY-MM-DD`) | `"Enter a valid calendar date in YYYY-MM-DD format."` | `REQ-F-041`, `REQ-F-056`, `REQ-F-082` |
+| `FLD-16` | `SCR-05` | `estMinutes` (Milestone / Task / Reading Duration) | `integer` | Yes | `Missing data`, `Range` (`1..600` minutes), `Reasonableness` (warns if `> 180` min for a single step) | `"Estimated time must be between 1 and 600 minutes."` | `REQ-F-040`, `REQ-F-056`, `REQ-F-082` |
 | `FLD-17` | `SCR-06` | `importFiles` (6 Module JSON Files) | `json` | Yes | `Missing data`, `Picture / template` & `Expected values` (valid JSON matching `pipeline-contracts.schema.json` `A34`) | `"Import validation failed: <file> (<field>: <schema error>). Fix or re-export the file and try again."` | `REQ-F-021`, `REQ-N-020`, `AT-037` |
 | `FLD-18` | `SCR-07` | `mode` (Tutor Mode) | `enumeration` | Yes | `Values` (`{'explain', 'socratic', 'quiz_me'}`) | `"Select a tutor mode: Explain, Socratic, or Quiz Me."` | `REQ-F-046` |
 | `FLD-19` | `SCR-07` | `content` (Tutor User Message) | `text` | Yes | `Missing data`, `Size` (`1..8000` chars), `Combinations` (coursework guard `BR-040` on `homework`/`project`/`coursework` topics) | `"Enter a question or message between 1 and 8,000 characters."` | `REQ-F-046`, `REQ-F-051`, `BR-040` |
 | `FLD-20` | `SCR-07` | `q` (Tutor Thread Search) | `text` | No | `Size` (`0..200` chars) | `"Search query must be 200 characters or fewer."` | `REQ-F-052` |
 | `FLD-21` | `SCR-09` | `durationMinutes` (Mock Exam Duration) | `integer` | Yes | `Missing data`, `Range` (`10..300` minutes) | `"Mock exam duration must be between 10 and 300 minutes."` | `REQ-F-054` |
 | `FLD-22` | `SCR-09` | `questionCount` (Mock Exam Size) | `integer` | Yes | `Missing data`, `Range` (`5..100` questions) | `"Mock exam question count must be between 5 and 100."` | `REQ-F-054` |
-| `FLD-23` | `SCR-10` | `dailyBudgetMin` (Daily Study Budget) | `integer` | Yes | `Missing data`, `Range` (`15..720` minutes) | `"Daily study budget must be between 15 and 720 minutes."` | `REQ-F-039`, `REQ-F-055`, `BR-036` |
-| `FLD-24` | `SCR-10` | `newCardsPerDay` / `reviewCardsPerDay` / `quizPerDay` | `integer` | Yes | `Range` (`0..500` new cards, `1..2000` review cards, `0..100` quiz concepts) | `"Enter a valid daily limit (New cards: 0–500, Reviews: 1–2000, Quizzes: 0–100)."` | `REQ-F-026`, `BR-025`, `BR-028` |
-| `FLD-25` | `SCR-10` | `desiredRetention` (FSRS Target Retention) | `number` | Yes | `Range` (`0.70..0.99`) | `"Desired retention must be a decimal between 0.70 and 0.99 (default 0.90)."` | `BR-026` |
-| `FLD-26` | `SCR-10` | `monthlySpendCapUsd`, `monthlySpendCapMode`, `gradingModel`, `tutorModel` & `tokenRatesJson` (Monthly Claude Cap, Mode, Models & Token Rates) | `money` + `enumeration` + `text` + `json` | No / Yes | `Class / composition` (`monthlySpendCapUsd`: nullable non-negative decimal with `<= 2` decimal places; `tokenRatesJson`: valid JSON object mapping each configured model ID to positive integer `input_micro_per_mtok`, `output_micro_per_mtok`, `cache_read_micro_per_mtok`, seeded with `claude-haiku-4-5`, `claude-sonnet-4-6`, `claude-haiku-5-5`, and `claude-sonnet-5-5` per `ASM-070` and `ASM-059`), `Range` (`0.00..1000.00`), `Values` (`monthlySpendCapMode` in `{'block', 'warn'}`, default `'block'` per `ASM-067`), `Size` & `Picture / template` (`gradingModel` and `tutorModel`: `1..100` chars matching `^[A-Za-z0-9._-]+$`, extensible in `Settings` without a schema migration per `[DOC study-app-spec.md §5]` and `ADR-007 §2.2`), `Combinations` (both `gradingModel` and `tutorModel` must exist as keys with positive rate entries in `tokenRatesJson`, `DEC-016`, `TC-I-256`) | `"Monthly spend cap must be a non-negative dollar amount (for example, 15.00), spend cap mode must be 'block' or 'warn', and selected Claude models must have positive token rates in token_rates_json."` | `REQ-F-048`, `REQ-F-083`, `REQ-F-089`, `BR-041`, `ASM-059`, `ASM-067`, `ASM-070`, `DEC-016` |
-| `FLD-27` | `SCR-10` | `backupFileName` & `confirmOverwrite` | `text` + `boolean` | Yes | `Expected values` (existing verified backup file), `Combinations` (`confirmOverwrite == true`, `UDP-04`) | `"Select a verified backup file and tick the confirmation box to restore."` | `REQ-N-011`, `UDP-04` |
+| `FLD-23` | `SCR-10` | `dailyBudgetMin` (Daily Study Budget) | `integer` | Yes | `Missing data`, `Range` (`15..720` minutes, default `120`) | `"Daily study budget must be between 15 and 720 minutes."` | `REQ-F-039`, `REQ-F-055`, `BR-036` |
+| `FLD-24` | `SCR-10` | `newCardsPerDay` / `reviewCardsPerDay` / `quizPerDay` | `integer` | Yes | `Range` (`0..500` new cards, `1..2000` review cards, `0..100` quiz concepts) | `"Enter a valid daily limit (New cards: 0–500, Reviews: 1–2000, Quizzes: 0–100)."` | `REQ-F-027`, `REQ-F-029`, `BR-025`, `BR-028` |
+| `FLD-25` | `SCR-10` | `desiredRetention` (FSRS Target Retention) | `number` | Yes | `Range` (`0.70..0.99`) | `"Desired retention must be a decimal between 0.70 and 0.99 (default 0.90)."` | `REQ-F-026`, `BR-026` |
+| `FLD-26` | `SCR-10` | `monthlySpendCapUsd`, `monthlySpendCapMode`, `gradingModel`, `tutorModel` & `tokenRatesJson` (Monthly Claude Cap, Mode, Models & Token Rates) | `money` + `enumeration` + `text` + `json` | No / Yes | `Class / composition` (`monthlySpendCapUsd`: nullable positive decimal `> 0.00` with `<= 2` decimal places, or `null` for no cap per `A18`; `tokenRatesJson`: valid JSON object mapping each configured model ID to positive integer `input_micro_per_mtok`, `output_micro_per_mtok`, `cache_read_micro_per_mtok`, seeded with `claude-haiku-5-5` and `claude-sonnet-5-5` per `ASM-059` [initial `gradingModel` / `tutorModel` defaults] and `claude-haiku-4-5` and `claude-sonnet-4-6` per `ASM-070`), `Range` (`0.01..1000.00`, or `null`), `Values` (`monthlySpendCapMode` in `{'block', 'warn'}`, default `'block'` per `ASM-067`), `Size` & `Picture / template` (`gradingModel` and `tutorModel`: `1..100` chars matching `^[A-Za-z0-9._-]+$`, extensible in `Settings` without a schema migration per `[DOC study-app-spec.md §5]` and `ADR-007 §2.2`), `Combinations` (both `gradingModel` and `tutorModel` must exist as keys with positive rate entries in `tokenRatesJson`, `DEC-016`, `TC-I-256`) | `"Monthly spend cap must be a positive dollar amount between 0.01 and 1000.00 (or blank for no cap), spend cap mode must be 'block' or 'warn', and selected Claude models must have positive token rates in token_rates_json."` | `REQ-F-048`, `REQ-F-083`, `REQ-F-089`, `BR-041`, `ASM-059`, `ASM-067`, `ASM-070`, `DEC-016` |
+| `FLD-27` | `SCR-10` | `backupFileName` & `confirmOverwrite` | `text` + `boolean` | Yes | `Picture / template` (`^[a-zA-Z0-9_.-]+\.db$`, no path separators or `..`), `Expected values` (existing verified Study App backup file in `STUDY_APP_BACKUP_DIR` with `PRAGMA application_id = 0x53544459`), `Combinations` (`confirmOverwrite == true`, `UDP-04`) | `"Select a verified backup file and tick the confirmation box to restore."` | `REQ-N-011`, `UDP-04` |
 | `FLD-28` | `SCR-11` | `password` (Owner Password in `R3`) | `text` | Yes | `Missing data`, `Size` (`8..256` chars), `Expected values` (matches `STUDY_APP_PASSWORD_HASH`) | `"Invalid password. Please try again."` (or `"Too many failed login attempts. Please wait 60 seconds."` on `429`) | `REQ-F-059`, `REQ-N-015`, `BR-045` |
+| `FLD-29` | `SCR-10` | `minutesPerPage`, `readingLookaheadDays` & `assessmentModeDays` (Reading Speed, Reading Lookahead & Assessment Mode Window) | `number` + `integer` | Yes | `Missing data`, `Range` (`minutesPerPage`: `0.5..15.0` min/page, default `2.5`; `readingLookaheadDays`: integer `0..30` days, default `3`; `assessmentModeDays`: integer `1..90` days, default `21`), `Reasonableness` (warns if `minutesPerPage > 10.0` min/page) | `"Enter a valid reading speed (0.5–15.0 min/page), reading lookahead window (0–30 days), and assessment mode window (1–90 days)."` | `REQ-F-039`, `REQ-F-040`, `REQ-F-053`, `BR-035`, `BR-043` |
+| `FLD-30` | `SCR-10` | `schedulerMode`, `timezone` & `notificationsEnabled` (Scheduler Mode, IANA Timezone & Notifications Toggle) | `enumeration` + `text` + `boolean` | Yes | `Values` (`schedulerMode` in `{'fsrs', 'sm2'}`, default `'fsrs'`; `notificationsEnabled` in `{true, false}`, default `false`), `Size` & `Expected values` (`timezone`: `1..64` chars after trim, valid IANA timezone identifier recognised by `Intl.DateTimeFormat`, default `'Asia/Hong_Kong'`, `ASM-022`), `Class / composition` (`SettingsUpdateRequest` sets `additionalProperties: false` so unknown keys fail with HTTP `422`) | `"Select a valid scheduler mode ('fsrs' or 'sm2'), enter a valid IANA timezone (e.g. 'Asia/Hong_Kong'), and specify true or false for notifications."` | `REQ-F-026`, `REQ-F-038`, `REQ-F-039`, `REQ-F-062`, `REQ-F-094`, `BR-026`, `ASM-022` |
 
 ---
 
 ## 5. Destructive Action Confirmation, Reversal (`Undo`), and Accessibility (`WCAG 2.2 AA`)
 
 ### 5.1 Confirmation & Reversal Rules (`A35.2`, `Appendix B6`)
-1. **Card Rating / Suspend / Flag (`SCR-02`):** Immediately reversible via a `Ctrl+Z` / `[Undo Last Action]` toast shown for `10` seconds after rating, suspending, or flagging a card.
-2. **Quiz Rating (`SCR-03`):** Immediately reversible via the inline `[Override Rating: 1 | 2 | 3 | 4]` control (`REQ-F-044`).
+1. **Card Suspend / Flag / Content Edit (`SCR-02`):** Suspending, flagging, or editing a card is immediately reversible via a `Ctrl+Z` / `[Undo Last Action]` toast shown for `10` seconds that dispatches an idempotent `PATCH /api/cards/{cardId}` (`updateCardStateOrContent`, `OP-10`, `REQ-F-025`, `TC-I-028`) restoring the prior `suspended`, `flagged`, or `front`/`back`/`extra` values. Flashcard ratings (`1`–`4` via `POST /api/review/{cardId}/rate`, `OP-09`) are confirmation-free (preserving Anki's rapid `Space`/`1`–`4` workflow) and append-only in `card_review_log` (`BR-027`, preserving review history per `[SEED §10]` / `AGENTS.md §3`).
+2. **Quiz Rating (`SCR-03`):** Immediately reversible via the inline `[Override Rating: 1 | 2 | 3 | 4]` control (`PATCH /api/quiz/attempts/{attemptId}`, `REQ-F-044`, `REQ-F-087`, `BR-031`, `TC-I-037`).
 3. **Tutor Thread Deletion (`SCR-07`, `REQ-F-052`):** Opens a confirmation modal (`"Delete thread '<title>' and all its messages? This cannot be undone. [Cancel] [Delete Thread]"`) before calling `DELETE /api/tutor/threads/:id`.
-4. **Database Backup Restore (`SCR-10`, `UDP-04`):** Opens a two-step confirmation modal displaying the current vs backup row counts and automatically creates a safety backup of the current database before restoring.
+4. **Database Backup Restore (`SCR-10`, `UDP-04`):** Requires entering a verified backup file name in `STUDY_APP_BACKUP_DIR` (`study-backup-<timestamp>-<id>.db`) and ticking the explicit `confirmOverwrite` checkbox (`FLD-27`), and automatically creates a verified pre-restore safety snapshot (`study-safety-<timestamp>-<id>.db`) of the current database before restoring (`POST /api/backup/restore`, `TC-I-112`, `TC-I-113`).
 
 ### 5.2 Accessibility (`WCAG 2.2 Level AA`, `REQ-N-018`, `REQ-N-019`) & Workflow Continuity (`G3.15`)
 - **Full Keyboard Operability (`REQ-N-019`):** All screens are navigable via `Tab`/`Shift+Tab` with a `2px solid #2563eb` focus ring (`outline-offset: 2px`), and `SCR-02`/`SCR-03` bind single-key shortcuts (`Space`, `1`–`4`, `r`, `f`, `s`, `e`, `a`, `Esc`) whenever focus is not inside a text input.

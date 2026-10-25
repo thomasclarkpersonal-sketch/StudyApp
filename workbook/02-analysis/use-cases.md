@@ -473,7 +473,7 @@ flowchart LR
 - **Primary actor:** Student (`E1`), with export to Calendar Application (`E5`).
 - **Scope and level:** Study App (`P7`); user goal.
 - **Main success scenario:**
-  1. The student configures `Settings.daily_budget_min` (default 90 minutes) and defines backward-counted `Milestone` steps (`title`, `due_on`, `est_minutes`) on a coursework or project deadline (`REQ-F-055`, `REQ-F-056`).
+  1. The student configures `Settings.daily_budget_min` (default 120 minutes) and defines backward-counted `Milestone` steps (`title`, `due_on`, `est_minutes`) on a coursework or project deadline (`REQ-F-055`, `REQ-F-056`).
   2. On each day's `DailyPlan` generation (`UC-10`), the system includes any `Milestone` due on or before today at step 6 of the plan (`REQ-F-039`, `REQ-F-056`).
   3. The system compares the sum of `est_minutes` across today's plan items against `daily_budget_min` (`REQ-F-055`, `DT-06`).
   4. When total estimated duration exceeds `daily_budget_min` and `optional` items exist, the system defers `optional` items (step 8 recommended readings and optional tasks) in reverse priority order until the plan fits within `daily_budget_min` (`REQ-F-055`, `DT-06`).

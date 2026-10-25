@@ -305,18 +305,20 @@
       "additionalProperties": false,
       "properties": {
         "round": { "type": "integer", "enum": [1, 2, 3] },
-        "stage": { "type": "string", "enum": ["cards", "questions", "cross_lecture", "card", "question"] },
+        "stage": { "type": "string", "enum": ["cards", "questions", "cross_lecture"] },
         "lecture_id": { "type": "string" },
         "reviews": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["item_id", "blind_answer", "blind_matches", "failed_criteria", "verdict", "feedback"],
+            "required": ["item_id", "blind_answer", "blind_match", "failed_criteria", "verdict", "feedback"],
             "additionalProperties": false,
             "properties": {
-              "item_id": { "type": "string" },
-              "blind_answer": { "type": "string", "minLength": 1 },
-              "blind_matches": { "type": "boolean" },
+              "id": { "type": "string", "minLength": 1 },
+              "item_type": { "type": "string", "enum": ["card", "question"] },
+              "item_id": { "type": "string", "minLength": 1 },
+              "blind_answer": { "type": "string", "minLength": 0, "maxLength": 2000 },
+              "blind_match": { "type": "boolean" },
               "failed_criteria": {
                 "type": "array",
                 "items": {
@@ -328,16 +330,27 @@
                 }
               },
               "verdict": { "type": "string", "enum": ["accept", "revise", "reject"] },
-              "feedback": { "type": "string" }
+              "feedback": { "type": "string", "maxLength": 2000 }
             }
           }
         },
-        "missing_concepts": { "type": "array", "items": { "type": "string" } }
+        "missing_concepts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["summary", "source"],
+            "additionalProperties": false,
+            "properties": {
+              "summary": { "type": "string", "minLength": 1 },
+              "source": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
       }
     },
     "PipelineConfigFile": {
       "type": "object",
-      "required": ["module_id", "module_code", "module_name", "priority_rank", "is_cs", "exam_type", "timezone", "max_review_rounds"],
+      "required": ["module_id", "semester", "assessments_json", "cards_per_lecture", "variants_json", "max_revision_rounds", "parallel_lectures", "human_spot_check_rate"],
       "additionalProperties": false,
       "properties": {
         "module_id": { "type": "string", "minLength": 1 },
@@ -348,8 +361,56 @@
         "priority_rank": { "type": "integer", "minimum": 1 },
         "is_cs": { "type": "boolean" },
         "exam_type": { "type": "string", "enum": ["closed_book", "open_book", "take_home", "no_final", "unknown"] },
-        "timezone": { "type": "string", "default": "Asia/Hong_Kong" },
-        "max_review_rounds": { "type": "integer", "const": 3 }
+        "semester": {
+          "type": "object",
+          "required": ["week1_start", "reading_weeks", "exam_period", "timezone"],
+          "additionalProperties": false,
+          "properties": {
+            "week1_start": { "type": "string", "format": "date" },
+            "reading_weeks": { "type": "array", "items": { "type": "integer", "minimum": 1 } },
+            "exam_period": { "type": "array", "items": { "type": "string", "format": "date" }, "minItems": 2, "maxItems": 2 },
+            "timezone": { "type": "string", "default": "Asia/Hong_Kong" }
+          }
+        },
+        "assessments_json": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "date", "covers_lectures", "format"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "date": { "type": ["string", "null"], "format": "date" },
+              "covers_lectures": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+              "format": {
+                "type": "object",
+                "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+              }
+            }
+          }
+        },
+        "cards_per_lecture": {
+          "type": "object",
+          "required": ["min", "max"],
+          "additionalProperties": false,
+          "properties": {
+            "min": { "type": "integer", "default": 15, "minimum": 1 },
+            "max": { "type": "integer", "default": 40, "minimum": 1 }
+          }
+        },
+        "variants_json": {
+          "type": "object",
+          "required": ["core", "supporting", "detail"],
+          "additionalProperties": false,
+          "properties": {
+            "core": { "type": "array", "items": { "type": "integer", "minimum": 0 }, "minItems": 2, "maxItems": 2 },
+            "supporting": { "type": "array", "items": { "type": "integer", "minimum": 0 }, "minItems": 2, "maxItems": 2 },
+            "detail": { "type": "array", "items": { "type": "integer", "minimum": 0 }, "minItems": 2, "maxItems": 2 }
+          }
+        },
+        "max_revision_rounds": { "type": "integer", "minimum": 1, "maximum": 2, "default": 2 },
+        "parallel_lectures": { "type": "integer", "minimum": 1, "maximum": 10, "default": 6 },
+        "human_spot_check_rate": { "type": "number", "minimum": 0.05, "maximum": 1.0, "default": 0.1 }
       }
     },
     "FlaggedFile": {
@@ -362,16 +423,17 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["item_id", "module_id", "lecture_id", "item_type", "reason", "round_3_feedback", "student_decision", "flagged_at"],
+            "required": ["id", "item_id", "module_id", "lecture_id", "item_type", "reason", "disposition"],
             "additionalProperties": false,
             "properties": {
-              "item_id": { "type": "string" },
-              "module_id": { "type": "string" },
-              "lecture_id": { "type": "string" },
-              "item_type": { "type": "string", "enum": ["card", "question"] },
-              "reason": { "type": "string", "enum": ["unresolved_round_3", "unverified_claim", "audit_conflict"] },
-              "round_3_feedback": { "type": "string" },
-              "student_decision": { "type": "string", "enum": ["pending", "accepted", "edited", "rejected"] },
+              "id": { "type": "string", "minLength": 1 },
+              "item_id": { "type": "string", "minLength": 1 },
+              "module_id": { "type": "string", "minLength": 1 },
+              "lecture_id": { "type": "string", "minLength": 1 },
+              "item_type": { "type": "string", "enum": ["source_point", "card", "question"] },
+              "reason": { "type": "string", "enum": ["unclear_source", "failed_3_rounds"] },
+              "details": { "type": "string" },
+              "disposition": { "type": "string", "enum": ["pending", "accept_edited", "keep_flagged", "discard"] },
               "flagged_at": { "type": "string", "format": "date-time" }
             }
           }
@@ -380,24 +442,25 @@
     },
     "ModuleAuditFile": {
       "type": "object",
-      "required": ["module_id", "audited_at", "duplicate_groups", "notation_drifts", "prerequisite_gaps", "coverage_gaps", "exam_alignment_score"],
+      "required": ["id", "module_id", "uncovered_outcomes_json", "low_variant_concepts_json", "duplicate_pairs_json", "notation_deviations_json", "proposed_synthesis_json"],
       "additionalProperties": false,
       "properties": {
+        "id": { "type": "string", "minLength": 1 },
         "module_id": { "type": "string", "minLength": 1 },
         "audited_at": { "type": "string", "format": "date-time" },
-        "duplicate_groups": { "type": "array", "items": { "type": "object" } },
-        "notation_drifts": { "type": "array", "items": { "type": "object" } },
-        "prerequisite_gaps": { "type": "array", "items": { "type": "object" } },
-        "coverage_gaps": { "type": "array", "items": { "type": "object" } },
-        "exam_alignment_score": { "type": "number", "minimum": 0, "maximum": 1 }
+        "uncovered_outcomes_json": { "type": "object" },
+        "low_variant_concepts_json": { "type": "object" },
+        "duplicate_pairs_json": { "type": "array", "items": { "type": "object" } },
+        "notation_deviations_json": { "type": "array", "items": { "type": "object" } },
+        "proposed_synthesis_json": { "type": "array", "items": { "type": "object" } }
       }
     },
     "RunSummaryFile": {
       "type": "object",
-      "required": ["run_id", "module_id", "started_at", "completed_at", "lectures_processed", "concepts_extracted", "cards_accepted", "cards_revised", "cards_rejected", "cards_flagged", "questions_accepted", "questions_revised", "questions_rejected", "questions_flagged", "spot_check_sample_size", "spot_check_rejected_count"],
+      "required": ["id", "module_id", "cards_accepted", "cards_rejected", "cards_flagged", "questions_accepted", "questions_rejected", "questions_flagged"],
       "additionalProperties": false,
       "properties": {
-        "run_id": { "type": "string", "format": "uuid" },
+        "id": { "type": "string", "minLength": 1 },
         "module_id": { "type": "string", "minLength": 1 },
         "started_at": { "type": "string", "format": "date-time" },
         "completed_at": { "type": "string", "format": "date-time" },

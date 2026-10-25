@@ -186,7 +186,7 @@ FeedbackItem,reason,enumeration,`wrong` | `unclear` | `null` (when `kind != repo
 FeedbackItem,comment,text,`0..2000` chars,Student's explanation of what is wrong/unclear or top-up note.,"`[DOC flashcard-pipeline.md §10]`, `[DOC study-app-spec.md §2]`"
 FeedbackItem,created_at,date-time,ISO-8601 UTC timestamp,UTC timestamp when the feedback item was queued.,`[DOC study-app-spec.md §2]`
 FeedbackItem,exported,boolean,`true` | `false` (default `false`),Whether the item has been exported in `feedback.json`.,`[DOC study-app-spec.md §2]`
-Settings,id,identifier,Constant `1`,Singleton settings row identifier (`1`).,`[DOC study-app-spec.md §2]`
+Settings,id,identifier,Constant `'default'`,Singleton settings row identifier (`'default'`).,"`[DOC study-app-spec.md §2]`, `ASM-066`"
 Settings,daily_budget_min,number,Integer `15..720` (default `120`),Global daily study time budget in minutes.,"`[DOC study-app-spec.md §1.4, §2]`"
 Settings,new_cards_per_day,number,Integer `0..500` (default `20`),Default daily new-card limit per module.,"`[DOC study-app-spec.md §1.1, §2]`"
 Settings,review_cards_per_day,number,Integer `1..2000` (default `200`),Default daily due-review card limit per module.,"`[DOC study-app-spec.md §1.1, §2]`"
@@ -200,7 +200,7 @@ Settings,grading_model,text,Model identifier string,Claude model ID used for mar
 Settings,tutor_model,text,Model identifier string,Claude model ID used for the tutor chat.,"`[DOC study-app-spec.md §4, §5]`"
 Settings,monthly_spend_cap_usd,money,Exact decimal `> 0.00` (USD) or `null`,"Optional monthly Claude API spend cap in USD (`null` = no cap, `[USER Q-06]`), evaluated over the calendar month in `Settings.timezone` (default `Asia/Hong_Kong` per `ASM-022`, `ASM-067`).","`[SEED §7 Misuse]`, `[USER Q-06]`, `[DOC study-app-spec.md §5]`, `ASM-022`, `ASM-067`"
 Settings,monthly_spend_cap_mode,enumeration,`block` | `warn` (default `block`),"Action when cumulative current-month Claude API spend (bounded in `Settings.timezone`, default `Asia/Hong_Kong` per `ASM-022`) reaches `monthly_spend_cap_usd` (`block` [default per `ASM-067`] blocks the API call and falls back to self-marking for quizzes, preserving `RSK-008`; `warn` [opt-in per `ASM-067`] displays a spend-cap warning and allows the call).","`[SEED §1]`, `[SEED §7 Misuse]`, `[DOC study-app-spec.md §1.5]`, `[USER Q-06]`, `ASM-022`, `ASM-067`, `RSK-008`, `BR-041`"
-Settings,fsrs_weights_json,text,JSON array of 17/19 floats or `null`,Custom fitted `ts-fsrs` weight vector JSON (`null` until fitted in `UC-20`).,"`[SEED §3 story 19]`, `[DOC study-app-spec.md §4, §7]`"
+Settings,fsrs_weights_json,text,JSON array of 17/19/21 floats or `null`,"Custom fitted `ts-fsrs` v5 weight vector JSON (`21`-weight FSRS-6 vector, or `17`/`19`-weight legacy vector migrated by `ts-fsrs`; `null` until fitted in `UC-20`).","`[SEED §3 story 19]`, `[DOC study-app-spec.md §4, §7]`, `ASM-066`"
 Settings,token_rates_json,money,JSON map of exact decimal USD rates per 1M tokens,Per-million-token input/output/cache prices per model for computing `SM-6` **(Proposal for CP2)**.,"`A01 §3 SM-6`, `DEC-012` **(Proposal for CP2)**"
 ImportBatch,id,identifier,UUID,"Unique import log record identifier, needed to verify `SM-1` **(Proposal for CP2)**.","`A01 §3 SM-1`, `DEC-012` **(Proposal for CP2)**"
 ImportBatch,module_id,identifier,Foreign key → `Module.id`,Imported `Module.id`.,`A01 §3 SM-1` **(Proposal for CP2)**

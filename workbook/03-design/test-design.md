@@ -1,6 +1,6 @@
 # A39 · Test Design
 
-Owner: QA & Test Engineer. Stage 3, written 2026-10-21. Catalog entry: A39 (`03-design/test-design.md`, accompanied by [`test-cases.csv`](test-cases.csv) containing all **291** Integration and System test cases per protocol §5.3).
+Owner: QA & Test Engineer. Stage 3, written 2026-10-21. Catalog entry: A39 (`03-design/test-design.md`, accompanied by [`test-cases.csv`](test-cases.csv) containing all **293** Integration and System test cases per protocol §5.3).
 
 ---
 
@@ -12,15 +12,15 @@ Owner: QA & Test Engineer. Stage 3, written 2026-10-21. Catalog entry: A39 (`03-
 - **Tools & Environment:** `Vitest` (`v2.x`) on Node.js 22 LTS; zero network or disk I/O (in-memory fixtures only).
 - **Stage 4b Rule (P1, P2):** Per catalog `A39`, unit-level test cases (`TC-U-nnn`) are specified and committed per slice in Stage 4b (`A50`) before production code for that slice is written, with red $\rightarrow$ green $\rightarrow$ refactor evidence (or mutation-kill evidence for structural invariants) recorded in `A50` (`G4.2`).
 
-### 1.2 Integration & Contract Test Plan (`TC-I-001`–`TC-I-260`, `TC-I-N10`, `TC-I-N12`, `TC-I-N17`, `TC-I-N20`)
+### 1.2 Integration & Contract Test Plan (`TC-I-001`–`TC-I-262`, `TC-I-N10`, `TC-I-N12`, `TC-I-N17`, `TC-I-N20`)
 
 - **Scope:**
-  1. All **38 HTTP/SSE API operations** (`TC-I-001`–`TC-I-116`, `TC-I-256`–`TC-I-260`) through Hono routing, `authMiddleware`, `Ajv` request/response validation, domain services, and real SQLite 3 (`better-sqlite3` in WAL mode on isolated per-test temporary files).
+  1. All **38 HTTP/SSE API operations** (`TC-I-001`–`TC-I-116`, `TC-I-256`–`TC-I-262`) through Hono routing, `authMiddleware`, `Ajv` request/response validation, domain services, and real SQLite 3 (`better-sqlite3` in WAL mode on isolated per-test temporary files).
   2. All **7 `pipeline-cli` commands** (`CLI-01`–`CLI-07` $\rightarrow$ `TC-I-117`–`TC-I-137`) on isolated temporary workspace directories.
-  3. All **28 UI/API field validation rules** (`FLD-01`–`FLD-28` $\rightarrow$ `TC-I-138`–`TC-I-165`, `TC-I-174`–`TC-I-201`, `TC-I-256`), testing exact boundary values and invalid inputs against the plain-language error messages in `A35 §4`.
+  3. All **30 UI/API field validation rules** (`FLD-01`–`FLD-30` $\rightarrow$ `TC-I-138`–`TC-I-165`, `TC-I-174`–`TC-I-201`, `TC-I-256`, `TC-I-261`–`TC-I-262`), testing exact boundary values and invalid inputs against the plain-language error messages in `A35 §4`.
   4. All **5 external integration contracts** (`INT-01`–`INT-05` $\rightarrow$ `TC-I-166`–`TC-I-173`, `TC-I-N20`) using `Ajv` (Draft 2020-12), mock Anthropic/Canvas HTTPS servers, RFC 5545 `.ics` parsers, and Anki `.tsv` parsers.
   5. All **48 complete decision-table rules** (`DT-01-C1`–`DT-06-C8` $\rightarrow$ `TC-I-202`–`TC-I-249`, mapped 1-to-1 to `AT-051`–`AT-098`).
-  6. Pipeline extraction, Creator/Reviewer rubric evaluation, Module Auditor, FSRS parameter fitting, full feedback/top-up loop, model token-rate consistency, anti-spoofing login rate-limiting, `monthly_spend_cap_mode='warn'` call progression (`TC-I-258`), assessment-mode scheduling & checklist prep (`TC-I-259`), and `<24 h` deadline browser notifications (`TC-I-260`) (`TC-I-250`–`TC-I-260`, `TC-I-N10`, `TC-I-N12`, `TC-I-N17`).
+  6. Pipeline extraction, Creator/Reviewer rubric evaluation, Module Auditor, FSRS parameter fitting, full feedback/top-up loop, model token-rate consistency, anti-spoofing login rate-limiting, `monthly_spend_cap_mode='warn'` call progression (`TC-I-258`), assessment-mode scheduling & checklist prep (`TC-I-259`), `<24 h` deadline browser notifications (`TC-I-260`), and `SCR-10` settings boundary/invalid/unknown-key validation (`TC-I-261`–`TC-I-262`) (`TC-I-250`–`TC-I-262`, `TC-I-N10`, `TC-I-N12`, `TC-I-N17`).
 - **Test Data:** Synthetic non-copyrighted course fixtures (`tests/fixtures/` and `tests/eval/fixtures/`) per `DEC-008`.
 
 ### 1.3 System, NFR, AI Evaluation & Architecture Test Plan (`TC-S-001`–`TC-S-027` / `TC-S-N01`–`TC-S-N23`)
@@ -37,18 +37,18 @@ Every row in [`test-cases.csv`](test-cases.csv) specifies `id`, `level`, `traces
 | :-- | :-- | :-- | --: | :-- |
 | **1. Every HTTP interface operation (`38` ops in `A34`)**: success + error + authorization-denied | `getHealth` (`1`) .. `restoreDatabaseBackup` (`38`) | `TC-I-001`–`TC-I-114` (`3` per operation: `normal`, `error/recovery`, `authorization`) + `TC-I-115`–`TC-I-116` | `116` | **100% (`38/38` ops × 3)** |
 | **2. Every CLI command (`7` commands in `A34`)**: success + error + authorization/boundary | `CLI-01` (`sync-canvas`) .. `CLI-07` (`clean-rounds`) | `TC-I-117`–`TC-I-137` (`3` per command: `normal`, `error/recovery`, `authorization`) | `21` | **100% (`7/7` cmds × 3)** |
-| **3. Every input validation rule (`28` fields in `A35 §4`)**: boundary + invalid | `FLD-01` .. `FLD-28` | `TC-I-138`–`TC-I-165` (`FLD-01`–`FLD-14`) & `TC-I-174`–`TC-I-201` (`FLD-15`–`FLD-28`) | `56` | **100% (`28/28` fields × 2)** |
+| **3. Every input validation rule (`30` fields in `A35 §4`)**: boundary + invalid | `FLD-01` .. `FLD-30` | `TC-I-138`–`TC-I-165` (`FLD-01`–`FLD-14`), `TC-I-174`–`TC-I-201` (`FLD-15`–`FLD-28`), & `TC-I-261`–`TC-I-262` (`FLD-29`–`FLD-30`) | `58` | **100% (`30/30` fields)** |
 | **4. Every external integration (`5` contracts in `A34 §4`)**: contract test | `INT-01` (Pipeline JSON), `INT-02` (Claude API), `INT-03` (Canvas API), `INT-04` (`.ics`), `INT-05` (Anki `.tsv`) | `TC-I-166`–`TC-I-173`, `TC-I-N20` | `9` | **100% (`5/5` integrations)** |
 | **5. Every complete decision-table rule (`48` rules in `A15`)**: 1 case each | `DT-01-C1`..`C8`, `DT-02-C1`..`C8`, `DT-03-C1`..`C8`, `DT-04-C1`..`C8`, `DT-05-C1`..`C8`, `DT-06-C1`..`C8` (`AT-051`–`AT-098`) | `TC-I-202`–`TC-I-249` | `48` | **100% (`48/48` complete rules)** |
 | **6. Every measurable `REQ-N` (`23` NFRs in `A10 §3`)**: verification case | `REQ-N-001` .. `REQ-N-023` | `TC-S-001`–`TC-S-023` (matching `A10` aliases `TC-S-N01`–`TC-S-N23`) + `TC-I-N10`, `TC-I-N12`, `TC-I-N17`, `TC-I-N20` | `26` | **100% (`23/23` `REQ-N`s)** |
 | **7. Every programmable architecture rule (`4` rules in `A31 §7`)** | `ARCH-01` .. `ARCH-04` | `TC-S-024`–`TC-S-027` | `4` | **100% (`4/4` `ARCH` rules)** |
-| **8. Every functional requirement (`94` `REQ-F`s in `A10 §2`)** | `REQ-F-001` .. `REQ-F-094` | `TC-I-001`–`TC-I-260`, `TC-S-001`–`TC-S-023` | `11` additional (`291` total) | **100% (`94/94` `REQ-F`s, `0` orphans)** |
+| **8. Every functional requirement (`94` `REQ-F`s in `A10 §2`)** | `REQ-F-001` .. `REQ-F-094` | `TC-I-001`–`TC-I-262`, `TC-S-001`–`TC-S-023` | `11` additional (`293` total) | **100% (`94/94` `REQ-F`s, `0` orphans)** |
 
 ---
 
 ## 3. System, NFR, and Architecture Test Case Summary (`TC-S-001`–`TC-S-027`)
 
-*(The full 291-row catalog including all `TC-I-001`–`TC-I-260` rows is in [`test-cases.csv`](test-cases.csv).)*
+*(The full 293-row catalog including all `TC-I-001`–`TC-I-262` rows is in [`test-cases.csv`](test-cases.csv).)*
 
 | TC ID (`A10` Alias) | `REQ` / `SLO` / `ARCH` Trace | Slice | Case Type | Summary of Steps & Concrete Pass Criteria (`A39.2`) | Runtime Complexity & Budget |
 | :-- | :-- | :-- | :-- | :-- | :-- |
@@ -62,7 +62,7 @@ Every row in [`test-cases.csv`](test-cases.csv) specifies `id`, `level`, `traces
 | `TC-S-008` (`TC-S-N08`) | `REQ-N-008`, `SLO-08`, `REQ-F-021`, `REQ-F-024`, `REQ-F-029`, `REQ-F-039` | `SL-11` | `normal` | Run full `R1` study workflow on `127.0.0.1` with outbound network blocked. **Expected:** `100%` pass (`HTTP 200`/`201`) with `0` outbound network requests. | $O(1)$ workflow script; budget `<= 15 s` |
 | `TC-S-009` (`TC-S-N09`) | `REQ-N-009`, `SLO-09`, `REQ-F-060`, `REQ-F-061` | `SL-18` | `error/recovery` | Complete card reviews, MCQs, and 2 queued written answers while browser is offline, then restore network. **Expected:** `100%` offline completion; `100%` queue flush within `<= 30 s` of reconnect. | $O(Q)$ for $Q=2$ queued items; budget `<= 30 s` |
 | `TC-S-010` (`TC-I-N10`) | `REQ-N-010`, `EVAL-06` | `SL-07` | `normal` | Compare 100 persisted `CardState` and `ConceptState` transitions against direct `ts-fsrs` v5 reference vectors. **Expected:** `100/100` match (`<= 1e-6` float tolerance, exact integer days). | $O(N)$ for $N=100$; budget `<= 5 s` |
-| `TC-S-011` (`TC-S-N11`) | `REQ-N-011`, `BR-024` | `SL-06` | `error/recovery` | Send `SIGKILL` to server mid-import and mid-rating; restart and run backup restore. **Expected:** `0` committed review logs lost; `PRAGMA integrity_check = 'ok'`; backup restores cleanly. | $O(D)$ DB size (`~5 MB`); budget `<= 15 s` |
+| `TC-S-011` (`TC-S-N11`) | `REQ-N-011`, `BR-024` | `SL-06` | `error/recovery` | Send `SIGKILL` to server mid-import and mid-rating; restart and run backup restore. **Expected:** `0` committed review logs lost; `PRAGMA integrity_check = 'ok'`; backup restores cleanly. | $O(D)$ in DB size; budget `<= 15 s` |
 | `TC-S-012` (`TC-I-N12`) | `REQ-N-012`, `REQ-F-071`, `REQ-F-074`, `EVAL-02`, `EVAL-03` | `SL-02` | `normal` | Inspect `reviewer-input.r<n>.json` bundles and run `EVAL-02`/`EVAL-03`. **Expected:** `0` Creator reasoning tokens in bundle; `>= 95%` card defect recall, `>= 93.3%` question defect recall, `0` unflagged context-dependent cards. | Bundle check `<= 1 s`; live eval `<= 180 s` |
 | `TC-S-013` (`TC-S-N13`) | `REQ-N-013`, `BR-002` | `SL-03` | `authorization` | Inject canary secrets `sk-ant-CANARY-999` (`ANTHROPIC_API_KEY`), `canvas-CANARY-888` (`CANVAS_API_TOKEN`), `$argon2id$v=19$m=65536,t=3,p=4$CANARY-777` (`STUDY_APP_PASSWORD_HASH`), and `sess-CANARY-666` (`SESSION_SECRET`); scan frontend `dist/`, all 38 API responses, `app.log`, and git tree. **Expected:** `0` canary occurrences anywhere. | $O(F)$ file/response scan; budget `<= 10 s` |
 | `TC-S-014` (`TC-S-N14`) | `REQ-N-014`, `EVAL-05`, `BR-001` | `SL-02` | `invalid` | Pass 15 adversarial prompt-injection and XSS/KaTeX payloads through `CLI-01`, `CLI-02`, UI renderer, and Tutor/Reviewer. **Expected:** `15/15` contained inside `<untrusted_course_material>`; `0` script executions or rubric bypasses. | $O(N)$ for $N=15$; budget `<= 10 s` |
@@ -88,7 +88,7 @@ In BUILD mode, the independent Gate G4 Reviewer attempts to break each slice wit
 
 ### 4.1 Input and Failure Classes the System MUST Handle (In Scope for G4)
 
-1. **All User-Typed UI Inputs and HTTP/CLI Arguments (`TB-01`, `FLD-01`–`FLD-28`):**
+1. **All User-Typed UI Inputs and HTTP/CLI Arguments (`TB-01`, `FLD-01`–`FLD-30`):**
    - Empty strings, whitespace-only strings (`"   \t\n"`), leading/trailing whitespace, and strings at `max_length`, `max_length + 1`, and `10× max_length`.
    - ASCII and Unicode control characters (`\x00` null byte, `\x01`–`\x1F`, `\x7F`), zero-width spaces (`U+200B`, `U+FEFF`), right-to-left override characters (`U+202E`), lone UTF-16 surrogates, and invalid UTF-8 byte sequences in HTTP bodies.
    - HTML, SVG, Event-Handler, and Markdown XSS vectors (`<script>`, `<img src=x onerror=...>`, `<svg onload=...>`, `[link](javascript:alert(1))`) in card fronts/backs, question stems, explanations, task titles, and tutor messages — must be neutralized `100%` by `DOMPurify` (`REQ-N-014`).

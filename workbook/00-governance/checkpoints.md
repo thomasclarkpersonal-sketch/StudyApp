@@ -156,3 +156,101 @@ Full detail: workbook/README.md
 ```text
 approve
 ```
+
+---
+
+## CP3 — Design Baseline (2026-10-21, ADVISORY)
+
+Status: **Original CP3 (`2026-10-21`) Approved** `[USER CP3]`; **CP3 Corrective Addendum (`2026-10-25`, ADVISORY) — Pending user reply** (proceeding on stated assumptions per `DEC-005` and protocol §7). Baseline set: `A30` (`ADR-001`–`ADR-007`), `A31`, `A32`, `A33` (with `schema.sql`), `A34` (with `openapi.yaml` and `schemas/pipeline-contracts.schema.json`), `A35`, `A36`, `A37`, `A38`, `A39` (with `test-cases.csv`), `A40`, `A41`, `A42`, plus `CR-003` (Stage 2 post-CP2 decomposition) and `CR-004` updates to `A03` and `traceability-matrix.md`/`.csv` (pending user confirmation on the `CP3 Corrective Addendum`).
+
+```text
+HUMAN CHECKPOINT CP3 — Design Baseline
+Decision needed: Approve | Approve with changes | Reject (ADVISORY — continuing on stated assumptions unless you request changes)
+
+Summary
+- Produced and reviewed all Stage 3 architecture and design artifacts (A30–A42, plus CR-001 updates to A03 and traceability-matrix.md/.csv) on branch stage-3/design; Gate G3 passed at r2 (48 PASS / 0 FAIL / 0 N/A, workbook/00-governance/reviews/G3-r2.md) after resolving all 12 G3-r1 findings and all observations (workbook/00-governance/dispositions.md).
+- Architecture Decision Records (A30, workbook/03-design/adr/README.md, ADR-001–ADR-007, DEC-016–DEC-022): adopted TypeScript 5.6 + React 18 + Vite 5 + Tailwind CSS + Hono 4 on Node.js 22 LTS + ts-fsrs v5 + better-sqlite3 + KaTeX + marked + DOMPurify + Ajv + @anthropic-ai/sdk + Vitest + Playwright (ADR-001); SQLite 3 WAL mode + external non-git JSON workspace (ADR-002); 3-tier modular monolith with single-location rule enforcement and justified DB/UI backstops (ADR-003); Claude Code subagents + deterministic pipeline-cli context isolation (ADR-004); allowlisted read-only HKUST Canvas REST sync + local PDF/LaTeXiT fallback (ADR-005); localhost bypass in R1–R2 and Fly.io Hong Kong (hkg) container with Argon2id owner auth in R3 (ADR-006); and 3NF relational normalization with 5 justified JSON columns (ADR-007).
+- Architecture Overview (A31, workbook/03-design/architecture.md): 12 modules (M01–M08 in the study app, M09–M12 in the generation pipeline) with an acyclic dependency DAG (ARCH-01), sequence diagrams across UC-01–UC-21, single-module assignment for all 45 business rules (BR-001–BR-045) and 6 decision tables (DR-01–DR-06 / DT-01–DT-06) (ARCH-02), and 4 automated architectural fitness tests (ARCH-01–ARCH-04).
+- Logical & Physical Data Design (A32, A33, workbook/03-design/db/logical-model.md, physical-design.md & schema.sql): 34 3NF SQLite STRICT tables (R01–R34), 3 derived read views (V01–V03), and 15 secondary indexes (IDX-01–IDX-15) verified in live SQLite 3 execution with explicit ON DELETE rules, full A18 attribute/CHECK parity, and verified online VACUUM INTO backups before every import and restore.
+- Interface Contracts (A34, workbook/03-design/api/interfaces.md, openapi.yaml & schemas/pipeline-contracts.schema.json): 38 REST/SSE operations across 36 paths in OpenAPI 3.1.0 with RFC 9457 ProblemDetails error envelopes, 7 deterministic CLI commands (CLI-01–CLI-07), 5 external/file contracts (INT-01–INT-05), and 20 JSON Schema Draft 2020-12 definitions covering all 6 module export files, feedback.json, and workspace files (E23–E27).
+- UI & Dialogue Design and Reports (A35, A41, workbook/03-design/ui.md & reports.md): 11 screens (SCR-01–SCR-11) with full dialogue navigation graph, wireframes, 28 input validation rules (FLD-01–FLD-28), Anki keyboard shortcuts (Space, 1–4, r, f, s, e, a, Esc), WCAG 2.2 AA contrast and non-colour urgency badges; plus 9 operational/analytical reports and exports (RPT-01–RPT-09).
+- Security, Privacy & Observability (A36, A37, A38, workbook/03-design/security.md, privacy.md & observability.md): STRIDE threat model across all 5 trust boundaries (TB-01–TB-05) and full 38×4 + 7×4 authorization matrix; attribute-level privacy data map with zero IP storage, zero staff PII, and Anthropic-only course material transmission; and 9 SLOs (SLO-01–SLO-09), redacted NDJSON logging, 5 metrics (MET-01–MET-05), and 6 alerts (ALT-01–ALT-06).
+- Test Design & Data/Model Quality Plan (A39, A42, workbook/03-design/test-design.md, test-cases.csv & data-model-quality.md): 286 Integration and System test cases (TC-I-001–TC-I-255, TC-I-N10/12/17/20, TC-S-001–TC-S-027) with 100% coverage of operations, FLD rules, DT rules, REQ-Fs, and REQ-Ns; end-to-end lineage matrix, 15 automated data-quality rules (DQR-01–DQR-15) with Halt/Quarantine/Alert actions, 9 AI/model component specs (AI-01–AI-09), and 6 held-out evaluation datasets (EVAL-01–EVAL-06) with numeric thresholds.
+- Slice Plan (A40, workbook/03-design/slice-plan.md): 21 vertical slices (SL-01–SL-21) ordered risk-first (starting with SL-01-walking-skeleton across slide/LaTeXiT extraction -> Card Creator -> isolated Card Reviewer -> SQLite WAL import -> FSRS review UI), confirming the A05 WBS (CR-001) and assigning all 286 test cases.
+
+Assumptions that need your confirmation (high impact, low or medium confidence, or marked for this checkpoint)
+- ASM-028 & ASM-060 (resolved by ADR-006 / DEC-021 for R3): When R3 adds remote phone access, deploying a single Docker container with a 1 GB persistent volume on Fly.io (Hong Kong region, ~$2.10–$5.00/mo, or Tailscale Serve at $0/mo) is acceptable — if wrong: we can target another host or keep Tailscale-only in R3.
+- ASM-044 (H/L, carried to SL-01): Your Claude subscription's rolling and weekly limits sustain single-lecture and batch processing in Claude Code — empirically tested in SL-01 (`TC-S-006`).
+- ASM-046 (H/M, carried to SL-01): 150 DPI slide PNGs + extracted text + recovered LaTeXiT equations give Creators and Reviewers sufficient fidelity on visual/math slides — empirically tested in SL-01 (`TC-S-016`).
+
+Questions and observations raised since the last checkpoint
+- None open (all 12 G3-r1 findings and 4 G3-r1/r2 observations resolved in workbook/00-governance/dispositions.md).
+
+Changes to baselined artifacts since the last checkpoint
+- CR-001 (workbook/00-governance/assumptions-decisions.md): Added accepted out-of-scope failure-class risks RSK-023 and RSK-024 to A03 (risk-register.md), confirmed A05 WBS slices SL-01–SL-21 unchanged, and populated Stage 3 design and test columns in traceability-matrix.md/.csv.
+
+Risks you are being asked to accept
+- RSK-023 (L/M, A03 & A39 §4.2): Out-of-band manual editing or corruption of study.db or pipeline export JSON files outside the app/CLI — mitigation: SQLite application_id header check, PRAGMA quick_check on startup, Ajv schema gate on import, and automatic pre-import VACUUM INTO backups.
+- RSK-024 (L/H, A03 & A39 §4.2): Local OS user-account compromise or malware on the student's laptop in R1–R2 — mitigation: bind server strictly to 127.0.0.1, chmod 0600 on study.db and .env, and never expose API keys to browser or git.
+- Operational/external residual risks already in A03 (`A39 §4.2`): RSK-004 (Claude subscription rolling/weekly rate limits -> pause/resume per lecture), RSK-014 (Canvas token revocation/rate-limit -> automatic fallback to local files), and RSK-008 (student sharing the R3 owner password -> Argon2id + 30-day revocable sessions).
+
+On approval, these artifacts become the baseline: A30 (ADR-001–ADR-007), A31, A32, A33 (with schema.sql), A34 (with openapi.yaml and pipeline-contracts.schema.json), A35, A36, A37, A38, A39 (with test-cases.csv), A40, A41, A42, plus CR-001 updates to A03 and traceability-matrix.md/.csv
+Full detail: workbook/README.md
+```
+
+### User reply (verbatim, 2026-10-21)
+
+```text
+Approve
+```
+
+### CP3 Corrective Addendum (2026-10-25, ADVISORY — Pending user reply)
+
+Following the `stage-2/requirements` rebase and `CR-003` integration on `main` (`3ca0121`), this corrective addendum aligns the `CP3` summary with the rebased Stage 2 baseline (`117` atomic requirements, `141` acceptance scenarios, `263` data dictionary attributes, `DEC-015`/`DEC-016` numbering, `ASM-069`/`ASM-070`, `CR-003`, and `CR-004`) and the Gate G3 re-review (`reviews/G3-r4.md` on snapshot `b03f918`, `2026-10-25`). The original `CP3` message and reply (`2026-10-21`) and `reviews/G3-r1.md` / `reviews/G3-r2.md` / `reviews/G3-r3.md` are preserved unedited (`R1`; see `Questions and observations raised since the last checkpoint` below for the provenance and gate-conformance disclosure), while this addendum remains **pending user reply** under `DEC-005` (`ADVISORY` checkpoint mode, protocol §7).
+
+```text
+HUMAN CHECKPOINT CP3 (Corrective Addendum) — Design Baseline, CR-003 & CR-004
+Decision needed: Approve | Approve with changes | Reject (ADVISORY — continuing on stated assumptions unless you request changes)
+
+Summary (aligned with rebased Stage 2 baseline on main and Gate G3-r4 on 2026-10-25)
+- Stage 3 architecture and design artifacts (A30–A42) and CR-004 updates to A03, A13, A18, and the 117-row traceability-matrix.md/.csv on branch stage-3/design passed Gate G3 cycle r4 (`60 PASS, 0 FAIL, 0 N/A`: `44` catalog + `16` gate checks in `reviews/G3-r4.md` on snapshot `b03f918`, `2026-10-25`; see `workbook/README.md` and `workbook/00-governance/assumptions-decisions.md` for full details).
+- Architecture Decision Records (A30, ADR-001–ADR-007, DEC-017–DEC-023): TypeScript 5.6 + React 18 + Vite 5 + Tailwind CSS + Workbox + Hono 4 on Node.js 22 LTS + ts-fsrs v5 (`v5.4.2`, FSRS-6 21-weight vector + 17/19 legacy migration, ASM-066(a)) + better-sqlite3 + KaTeX + marked + DOMPurify + Ajv + ical-generator + @anthropic-ai/sdk + Vitest + Playwright + Python 3 (`pypdf` + `poppler-utils` `pdftoppm` for CLI-02, verified in SL-01, ASM-066(b)) (ADR-001, DEC-017); SQLite 3 WAL mode + external non-git JSON workspace (ADR-002, DEC-018); 3-tier modular monolith with single-location rule enforcement and justified DB/UI backstops (ADR-003, DEC-019); Claude Code subagents + deterministic pipeline-cli context isolation (ADR-004, DEC-020); allowlisted 6-endpoint read-only HKUST Canvas REST sync + local fallback (ADR-005, DEC-021, resolving ASM-048); localhost bypass in R1–R2 and Fly.io Hong Kong (hkg) container with Argon2id owner auth, 14-day revocable `__Host-study_session` cookies, startup bind-address guard (`0.0.0.0` only on Fly.io; `127.0.0.1` loopback under local Tailscale Serve), and trusted-proxy per-IP login rate limiting in R3 (ADR-006, DEC-022, ASM-028, ASM-060, ASM-069); and 3NF relational normalization across 34 tables with 5 justified JSON columns (ADR-007, DEC-023).
+- Architecture, Data, API, UI, Security, Privacy, Observability, Reports & Quality (A31–A38, A41, A42): 12 modules (M01–M12) enforcing BR-001–BR-045 and DR-01–DR-06; 34 3NF SQLite STRICT tables (R01–R34) synchronised 1-for-1 with all 263 A18 attributes (Settings.id = 'default' seeded row, daily_budget_min 15..720 DEFAULT 120, minutes_per_page 0.5..15.0 DEFAULT 2.5, monthly_spend_cap_mode IN ('block', 'warn') DEFAULT 'block' per ASM-067, fsrs_weights_json NULL or 17/19/21-float array, v_concept_mastery V02 with SM-5 = mastered + strong per ASM-066(d), and R29 seeding `claude-haiku-5-5` / `claude-sonnet-5-5` defaults per ASM-059 while pre-seeding 5.5 and 4.x rates in token_rates_json per ASM-059/ASM-070); 38 REST/SSE operations in OpenAPI 3.1.0 (`additionalProperties: false` on all 22 request-body schemas) + 7 CLI commands + 20 JSON Schemas; 11 screens (SCR-01–SCR-11, "Last 7d" consistency without streak counters) and 30 field validation rules (FLD-01–FLD-30); STRIDE threat model & 38×4 + 7×4 authorization matrix; privacy data map; 9 SLOs; 9 reports (RPT-01–RPT-09); and 15 data-quality rules (DQR-01–DQR-15), 9 AI specs (AI-01–AI-09), and 6 evaluation sets (EVAL-01–EVAL-06).
+- Test Design & Slice Plan (A39, A40): 293 Integration and System test cases (TC-I-001–TC-I-262, TC-I-N10/12/17/20, TC-S-001–TC-S-027) and 21 vertical slices (SL-01–SL-21) covering all 117 atomic requirements and 141 acceptance scenarios (AT-001–AT-141), with entry gates on SL-12 (ASM-070) and SL-18 (ASM-028).
+
+Questions and observations raised since the last checkpoint
+- None open (all 6 observations and review errata across `G3-r1.md`, `G3-r2.md`, and `G3-r3.md` are dispositioned as Fixed in `workbook/00-governance/dispositions.md` rows 50–55, and `G3-r4.md` raised `0` new observations):
+  1. `G3-r1.md` (`37e8142`) & `G3-r2.md` (`c68dc01`, `b5f96b2`) provenance & checklist conformance: predate the rebase onto `main` `3ca0121` (unreachable git objects) and used non-protocol `G3.1`–`G3.16` checklists citing non-existent IDs (`BR-047`, `DR-008`, `FLD-29`, `Q-24`, `UC-19`) — preserved unedited per protocol §4.2, and re-verified across all `60` checks (`44` catalog + `16` gate) in `reviews/G3-r4.md` (`dispositions.md` row 55; default if you don't answer: rely on `reviews/G3-r4.md` as the Gate G3 review of record).
+  2. `G3-r3.md` (`181b625`) `OBS-G3-r3-01` (`ADR-007 §3` line 55 said `22 instead of 29` tables instead of `34`) — Fixed in `ADR-007:55` (`22 instead of 34`) and `dispositions.md` row 54 (default if you don't answer: keep `34` tables across `A32`/`A33`/`ADR-007`).
+  3. `G3-r3.md` (`181b625`) evidence errata (`G3-r1` commit/date, `G3.12` Option 1 mis-cited as Option 2, `A42.2`/`A42.3` `DQR-01`–`15` & `AI-01`–`09` IDs, and `ASM-059` cost figures) — Fixed in `dispositions.md` row 55 and re-verified in `reviews/G3-r4.md` (default if you don't answer: accept the corrected citations in `G3-r4.md`).
+
+Ask-first items (AGENTS.md §3, [SEED §10])
+1. ASM-070 (H/M, open — default marking & tutor models before R2 / SL-12): Please confirm whether to keep the seeded `claude-haiku-5-5` ($0.10/$0.50/$0.01 per MTok) and `claude-sonnet-5-5` ($2.00/$10.00/$0.20 per MTok) defaults on the `ASM-059` cost basis ($2.3–$18/mo marking + tutor, within $2–$40/mo in A02/A22) or switch to `claude-haiku-4-5` ($1.00/$5.00/$0.10 per MTok) and `claude-sonnet-4-6` ($3.00/$15.00/$0.30 per MTok; $6–$35.5/mo on the same volumes, also pre-seeded in `Settings.token_rates_json`). Default if unanswered when `SL-12` starts (`DEC-005`): `SL-12` proceeds on the seeded `claude-haiku-5-5` / `claude-sonnet-5-5` defaults and migrates `id='default'` to `4.x` only if a verbatim reply from you in `checkpoints.md` selects `4.x`.
+2. ASM-028 & A37 §3 (M/M, open — third-party cloud hosting of course-derived `study.db` before R3 / SL-18): Please confirm before `R3` (`SL-18`) whether you approve deploying `study.db` (which contains flashcards, quiz questions, and glossary terms derived from HKUST course material; raw PDFs never leave your laptop) to a Fly.io Hong Kong (`hkg`) volume (~$2.35–$5.00/mo per `ASM-069`) or prefer local Tailscale Serve ($0/mo, zero third-party cloud storage). Default if unanswered or declined when `SL-18` starts: `SL-18` uses local Tailscale Serve bound strictly to `127.0.0.1` (`R1`–`R2` slices `SL-01`–`SL-17` run strictly on `127.0.0.1`).
+
+Assumptions that need your confirmation (high impact, low or medium confidence, or marked for this checkpoint)
+- ASM-058 (H/M, open — downgrade disclosure from CP2 addendum): Running the personal generation pipeline interactively in Claude Code CLI on your subscription is within Anthropic's Consumer Terms; `CR-003` lowered its status from `H/confirmed` in the CP2 addendum back to `M/open` pending pre-`SL-01` clause verification (`RSK-021`) — if wrong: pipeline runs move to API billing with your prior approval (`UDP-01`).
+- ASM-067 (H/M, open): `Settings.monthly_spend_cap_mode` defaults to `'block'` (hard-stopping new Claude calls at 100% of the monthly cap in `Settings.timezone` [default `Asia/Hong_Kong`, `ASM-022`] while preserving self-marking fallback, `RSK-008`), with `'warn'` as an opt-in setting — if wrong: change default mode to `'warn'`.
+- ASM-068 (H/M, open): `>= 95.0%` (`95.0–100.0%`) notation compliance and source citation accuracy benchmark threshold in `REQ-N-012` / `AT-126` / `EVAL-02` validated in `SL-02` — if wrong: adjust threshold in `REQ-N-012` and `EVAL-02`.
+- ASM-028 (M/M, open), ASM-060 (L/M, open until SL-18) & ASM-069 (L/M, open until SL-18): Fly.io `hkg` container + 1 GB volume (~$2.35–$5.00/mo per `ASM-069` on 2026-10-23, within `ASM-060` $0–$10/mo; original CP3 quoted ~$2.10–$5.00/mo as `DEC-021`, now `DEC-022`) or Tailscale Serve ($0/mo).
+- ASM-059 (M/L, open) & ASM-070 (H/M, open until SL-12): `Settings.token_rates_json` pre-seeds both `5.5` (`ASM-059`, default) and `4.x` (`ASM-070`) rates and dynamically enforces positive rate entries for any configured `grading_model` / `tutor_model` (`TC-I-256`).
+- ASM-066 (M/M, open): Adopted Node.js 22 LTS, TypeScript 5.6, SQLite 3 WAL, `ts-fsrs v5.4.2` (FSRS-6), KaTeX 0.16, Python 3 (`pypdf` + `poppler-utils`) (`ADR-001` / `DEC-017`), `Asia/Hong_Kong`/`UTC`/`Europe/London` timezone test fixtures (`A20 §2`, `A39`), `v_concept_mastery` (`V02`) with `SM-5 = mastered + strong`, and singleton `Settings.id = 'default'`.
+- ASM-048 (M/L, open, SL-03), ASM-044 (H/L, open, SL-01) & ASM-046 (H/M, open, SL-01): Empirically tested in `SL-01` (`TC-S-006`, `TC-S-016`) and `SL-03` (`RSK-014`).
+
+Changes to baselined artifacts since the last checkpoint
+- CR-003 (Stage 2 artifacts `A00`, `A07 §4`, `A10`, `A12`–`A14`, `A16`–`A20`, `A22`, `traceability-matrix.md`/`.csv`; full detail in `assumptions-decisions.md`): split 26 compound `REQ-F` rows into 54 atomic rows (`117` requirements total: `94 REQ-F` + `23 REQ-N`; `67` user-stated Must in `A22 §2` alongside `DEC-015`), added `Settings.monthly_spend_cap_mode` (`263` attributes in `A16`/`A18`), tagged `REQ-N-012` `>= 95%` to `ASM-068`, and added `UC-12 ext 2b`, `UC-13 ext 4b`, and `AT-138`–`AT-141` (`141` scenarios).
+- CR-004 (Stage 1/2/3 artifacts `A00`, `A03`, `A13`, `A18`, `A30`–`A42`, `traceability-matrix.md`/`.csv`, `dispositions.md`, `AGENTS.md §4`; full detail in `assumptions-decisions.md`): added `RSK-023`–`024` and aligned `A03` status/assumption mappings; aligned `Settings.id = 'default'`, `daily_budget_min = 120` (`15..720`), `minutes_per_page = 2.5` (`0.5..15.0`), `monthly_spend_cap_micro_usd > 0`, `fsrs_weights_json` (`17/19/21` floats), `V01`/`V02`, and `R01`–`R29` `CHECK` constraints across `A13`, `A18`, `ADR-007` (`34` tables), `A32`–`A35`, and `A39`; seeded `5.5` model defaults (`ASM-059`) with `4.x` rates (`ASM-070`) and gated `SL-12` (`ASM-070`) and `SL-18` (`ASM-028`); set `additionalProperties: false` on all 22 OpenAPI request schemas; added `FLD-29`–`30` (`30` field rules) and `TC-I-256`–`262` (`293` test cases); and populated all `117` rows of `traceability-matrix.md`/`.csv`.
+
+Risks you are being asked to accept
+- RSK-023 (L/M, A03 & A39 §4.2): Out-of-band manual editing or corruption of `study.db` or pipeline export JSON files outside the app/CLI.
+- RSK-024 (L/H, A03 & A39 §4.2): Local OS user-account compromise or malware on the student's laptop in `R1`–`R2`.
+- Operational/external residual risks in A03 (A39 §4.2): `RSK-004` (Claude subscription rate limits), `RSK-014` (Canvas token revocation/rate-limit -> local fallback), and `RSK-008` (student sharing the `R3` owner password; mitigated by Argon2id, 14-day revocable `__Host-study_session` cookie [correcting the original 2026-10-21 CP3 summary's "30-day" text to match `ADR-006 §3.2` and `A36 §4.1`], `127.0.0.1` loopback bind under Tailscale Serve, trusted-proxy per-IP login rate limit, and default `'block'` spend cap per `ASM-067`).
+
+On approval, these artifacts and change requests are confirmed as the Stage 3 baseline: A30 (ADR-001–ADR-007), A31, A32, A33 (with schema.sql), A34 (with openapi.yaml and pipeline-contracts.schema.json), A35, A36, A37, A38, A39 (with test-cases.csv), A40, A41, A42, plus CR-003 and CR-004 updates to A03, A13, A18, and traceability-matrix.md/.csv.
+Full detail: workbook/README.md
+```
+
+### User reply to CP3 Corrective Addendum
+
+_Pending user reply (ADVISORY checkpoint per `DEC-005` and protocol §7: Gate `G3-r4` APPROVED on `2026-10-25`, the build proceeds on the stated assumptions in `ASM-058`–`ASM-060` and `ASM-066`–`ASM-070`, `DEC-017`–`DEC-023`, `CR-003`, and `CR-004`, and this addendum remains marked pending in `workbook/README.md` until the user replies)._
+
